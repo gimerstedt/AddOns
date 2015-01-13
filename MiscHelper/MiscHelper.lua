@@ -1,20 +1,20 @@
+-- misc helper
+MH = {}
+MH_PREP = "[MiscHelper]"
+
 -- info command
-SLASH_MISCHELPER1 = '/mischelper'
+SLASH_MISCHELPER1, SLASH_MISCHELPER2 = '/mischelper', '/mh'
 function SlashCmdList.MISCHELPER()	
-	sysout("====== MiscHhelper ======", 1, 1, 0.3)
-	sysout("Notifies you if no aura is active.")
-	sysout("/safebop", 1, 1, 0.3)
-	sysout("Casts Blessing of Protection on your target if your target is NOT a warrior and targetTarget if target is hostile and targetTarget is not a warrior.")
-	sysout("/t1", 1, 1, 0.3)
-	sysout("Targets, attacks and keeps SotC up.")
+	MH.m("/ctri", MH_PREP, 1, 1, 0.3)
+	MH.m("Generates a run in order and writes it in /p", MH_PREP)
 end
 
 -- automatic cthun run in order
-SLASH_CTHUNRUNIN1 = '/cthun'
+SLASH_CTHUNRUNIN1 = '/ctri'
 function SlashCmdList.CTHUNRUNIN()
 	-- return if you're not targeting the melee
 	if UnitInParty("target") == nil then
-		sysout("You must target the melee in your group.")
+		MH.m("You must target the melee in your group.", MH_PREP)
 		return
 	end
 
@@ -87,27 +87,40 @@ function SlashCmdList.CTHUNRUNIN()
 	local groupNumber = getSubGroupNumber()
 
 	-- send to chat
-	SendChatMessage("--------------- (1) "..UnitName(ordered[1]).." ---------------", "PARTY")
+	MH.p("--------------- (1) "..UnitName(ordered[1]).." ---------------")
 	if mod(groupNumber, 2) == 0 then
-		SendChatMessage("(3) "..orderedWithNames[3].." ----- (2) "..orderedWithNames[2], "PARTY")
-		SendChatMessage("(5) "..orderedWithNames[5].." ----- (4) "..orderedWithNames[4], "PARTY")
+		MH.p("(3) "..orderedWithNames[3].." ----- (2) "..orderedWithNames[2])
+		MH.p("(5) "..orderedWithNames[5].." ----- (4) "..orderedWithNames[4])
 	else
-		SendChatMessage("(2) "..orderedWithNames[2].." ----- (3) "..orderedWithNames[3], "PARTY")
-		SendChatMessage("(4) "..orderedWithNames[4].." ----- (5) "..orderedWithNames[5], "PARTY")
+		MH.p("(2) "..orderedWithNames[2].." ----- (3) "..orderedWithNames[3])
+		MH.p("(4) "..orderedWithNames[4].." ----- (5) "..orderedWithNames[5])
 	end
 end
 
-function sysout(msg, r, g, b)
+function MH.m(msg, prepend, r, g, b)
+	prepend = prepend or ""
 	r = r or 0.7
 	g = g or 0.6
 	b = b or 1
-	if msg then		
-		DEFAULT_CHAT_FRAME:AddMessage("[MiscHelper] " .. tostring(msg), r, g, b)		
+	if msg then
+		DEFAULT_CHAT_FRAME:AddMessage(tostring(prepend).." "..tostring(msg), r, g, b)		
 	end
 end
 
+function MH.p(msg, prepend)
+	prepend = prepend or ""
+	if msg then
+		SendChatMessage(tostring(prepend).." "..tostring(msg), "PARTY")
+	end
+end
 
 SLASH_RLUI1 = '/rl'
-function SlashCmdList.RLUI()	
+function SlashCmdList.RLUI()
 	ReloadUI()
+end
+
+SLASH_TEST1 = '/test'
+function SlashCmdList.TEST()
+	MH.m("testar MH.m", "[prepend]", 0.4, 0.2, 0.9)
+	MH.p("testar MH.p", "[prepend]")
 end
