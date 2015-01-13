@@ -1,0 +1,8 @@
+## Interface: 11200
+## Title: MiscHelper
+## Notes: Boldi's misc stuff
+## Author: Boldilocks
+## Version: 0.1
+## Dependencies: Zorlen
+
+MiscHelper.lua
