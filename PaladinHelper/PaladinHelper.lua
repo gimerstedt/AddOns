@@ -2,26 +2,26 @@
 if not Zorlen_isCurrentClassPaladin then return end
 
 -- prepend for chat print
-C_PREP = "[PaladinHelper]"
+PH_PREP = "[PaladinHelper] "
 
 -- info command
 SLASH_PALADINHELPER1, SLASH_PALADINHELPER2 = '/paladinhelper', '/ph'
 function SlashCmdList.PALADINHELPER()	
-	MH.m("Notifies you if no aura is active.", C_PREP)
-	MH.m("/safebop", C_PREP, 1, 1, 0.3)
-	MH.m("Casts Blessing of Protection on your target if your target is NOT a warrior and targetTarget if target is hostile and targetTarget is not a warrior.", C_PREP)
-	MH.m("/t1", C_PREP, 1, 1, 0.3)
-	MH.m("Targets, attacks and keeps SotC up.", C_PREP)
+	MH.m("Notifies you if no aura is active.", PH_PREP)
+	MH.m("/safebop", PH_PREP, 1, 1, 0.3)
+	MH.m("Casts Blessing of Protection on your target if your target is NOT a warrior and targetTarget if target is hostile and targetTarget is not a warrior.", PH_PREP)
+	MH.m("/t1", PH_PREP, 1, 1, 0.3)
+	MH.m("Targets, attacks and keeps SotC up.", PH_PREP)
 end
 
 -- cast bop on target if target is not warrior or on targettarget if target is hostile and targettarget is not warrior
 SLASH_BOP1 = '/safebop'
 function SlashCmdList.BOP(msg)
-	if UnitIsFriend("player", "target") and Zorlen_isClass("warrior", target) ~= true then
+	if UnitIsFriend("player", "target") and Zorlen_isClass("warrior", "target") ~= true and Zorlen_checkBuffByName("Invulnerability", "target") == false then
 		Zorlen_castSpellByName("Blessing of Protection", 3)
 	end
 	if Zorlen_canAttack("target") then
-		if Zorlen_isClass("warrior", "targetTarget") ~= true then
+		if Zorlen_isClass("warrior", "targetTarget") ~= true and Zorlen_checkBuffByName("Invulnerability", "target") == false then
 			TargetUnit("targetTarget")
 			Zorlen_castSpellByName("Blessing of Protection", 3)
 			TargetLastTarget()
@@ -39,7 +39,7 @@ end
 -- notify if no aura active
 local function notifyIfAuraMissing()
 	if isPaladinAuraActive() ~= true then
-		MH.m("No aura active!", C_PREP)
+		MH.m("No aura active!", PH_PREP)
 	end
 end
 

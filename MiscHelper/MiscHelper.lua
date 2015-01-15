@@ -1,16 +1,20 @@
 -- misc helper
 MH = {}
-MH_PREP = "[MiscHelper]"
+MH_PREP = "[MiscHelper] "
 
 -- info command
 SLASH_MISCHELPER1, SLASH_MISCHELPER2 = '/mischelper', '/mh'
 function SlashCmdList.MISCHELPER()	
 	MH.m("/ctri", MH_PREP, 1, 1, 0.3)
 	MH.m("Generates a run in order and writes it in /p", MH_PREP)
+	MH.m("/ri", MH_PREP, 1,1,0,3)
+	MH.m("Resets instances.")
+	MH.m("/ress", MH_PREP, 1,1,0,3)
+	MH.m("Resurrects the target if in range and notifies in /s (announces on cd if druid)")
 end
 
 -- automatic cthun run in order
-SLASH_CTHUNRUNIN1 = '/ctri'
+SLASH_CTHUNRUNIN1, SLASH_CTHUNRUNIN2 = '/ctri', '/cthunrunin'
 function SlashCmdList.CTHUNRUNIN()
 	-- return if you're not targeting the melee
 	if UnitInParty("target") == nil then
@@ -97,13 +101,68 @@ function SlashCmdList.CTHUNRUNIN()
 	end
 end
 
+-- reload ui
+SLASH_RLUI1 = '/rl'
+function SlashCmdList.RLUI()
+	ReloadUI()
+end
+
+-- reset instances
+SLASH_RESETINSTANCES1, SLASH_RESETINSTANCES2 = '/ri', '/resetinstances'
+function SlashCmdList.RESETINSTANCES()
+	ResetInstances()
+end
+
+-- resurrect target
+SLASH_RESS1 = '/ress'
+function SlashCmdList.RESS()
+	if UnitIsDead("target") == nil then
+		MH.m("Target is not dead", MH_PREP)
+		return
+	end
+	local spellName = ''
+	if UnitClass("player") == "Paladin" then
+		spellName = "Redemption"
+	elseif UnitClass("player") == "Priest" then
+		spellName = "Resurrection"
+	elseif UnitClass("player") == "Druid" then
+		spellName = "Rebirth"
+		if Zorlen_checkCooldownByName(spellName) == false then
+			MH.s(spellName.." on cooldown.")
+			return
+		end
+	else
+		return
+	end
+
+	if CheckInteractDistance("target", 4) then
+		CastSpellByName(spellName)
+		MH.s("Resurrecting "..UnitName("target")..".")
+	else
+		MH.m("Target is out of range.", MH_PREP)
+	end
+end
+
+SLASH_TEST1 = '/test'
+function SlashCmdList.TEST()
+	MH.m("testar MH.m", "[prepend]", 0.4, 0.2, 0.9)
+	MH.p("testar MH.p", "[prepend]")
+end
+
 function MH.m(msg, prepend, r, g, b)
 	prepend = prepend or ""
 	r = r or 0.7
 	g = g or 0.6
 	b = b or 1
 	if msg then
-		DEFAULT_CHAT_FRAME:AddMessage(tostring(prepend).." "..tostring(msg), r, g, b)		
+		DEFAULT_CHAT_FRAME:AddMessage(tostring(prepend)..tostring(msg), r, g, b)		
+	end
+end
+
+function MH.s(msg, prepend)
+	prepend = prepend or ""
+	if msg then
+		SendChatMessage(tostring(prepend).." "..tostring(msg), "SAY")
 	end
 end
 
@@ -114,13 +173,9 @@ function MH.p(msg, prepend)
 	end
 end
 
-SLASH_RLUI1 = '/rl'
-function SlashCmdList.RLUI()
-	ReloadUI()
-end
-
-SLASH_TEST1 = '/test'
-function SlashCmdList.TEST()
-	MH.m("testar MH.m", "[prepend]", 0.4, 0.2, 0.9)
-	MH.p("testar MH.p", "[prepend]")
+function MH.r(msg, prepend)
+	prepend = prepend or ""
+	if msg then
+		SendChatMessage(tostring(prepend).." "..tostring(msg), "RAID")
+	end
 end
