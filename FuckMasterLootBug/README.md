@@ -10,4 +10,3 @@ to empty groups and then reinvites everyone.
 3rd and more /meep will swap target into the group and the previous target
 back to its original position or swap back to original position and re-invite
 if there is no target selected.
-

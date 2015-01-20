@@ -6,19 +6,21 @@ MH_PREP = "[MiscHelper] "
 SLASH_MISCHELPER1, SLASH_MISCHELPER2 = '/mischelper', '/mh'
 function SlashCmdList.MISCHELPER()	
 	MH.m("/ctri - /cthunrunin", MH_PREP, 1, 1, 0.3)
-	MH.m("Generates a run in order and writes it in /p", MH_PREP)
+	MH.m("Generates a run in order and writes it in /party.", MH_PREP)
 	MH.m("/ri - /resetinstances", MH_PREP, 1,1,0,3)
-	MH.m("Resets instances.")
+	MH.m("Resets instances.", MH_PREP)
 	MH.m("/ress", MH_PREP, 1,1,0,3)
-	MH.m("Resurrects the target if in range and notifies in /s (announces on cd if druid)")
+	MH.m("Resurrects the target if in range and notifies in /s (announces on cd if druid).", MH_PREP)
 	MH.m("/cdb - /checkdebuffs", MH_PREP, 1,1,0,3)
-	MH.m("Reports missing debuffs to /raid")
+	MH.m("Reports missing debuffs on target to /raid.", MH_PREP)
 	MH.m("/rmic - /raidmembersincombat", MH_PREP, 1,1,0,3)
-	MH.m("Reports raid members in combat in /raid")
+	MH.m("Reports raid members in combat in /raid.", MH_PREP)
 	MH.m("/cc (hitRate) - /critcap (hitRate)", MH_PREP, 1,1,0,3)
-	MH.m("Reports your crit cap based on the hitRate input.")
+	MH.m("Reports your crit cap based on the hitRate input.", MH_PREP)
 	MH.m("/cbot - /checkbuffsontarget", MH_PREP, 1,1,0,3)
-	MH.m("Reports all buffs on target.")
+	MH.m("Reports all buffs on target.", MH_PREP)
+	MH.m("/grn - /getraidmembernames", MH_PREP, 1,1,0,3)
+	MH.m("List all raid members in a frame for copy/paste.", MH_PREP)
 end
 
 -- automatic cthun run in order
@@ -226,6 +228,7 @@ function SlashCmdList.CRITCAP(msg)
 	MH.m("Your crit cap with "..hitRate.."% hit is "..critCap.."%.", MH_PREP)
 end
 
+-- check buffs on target
 SLASH_CHECKBUFFSONTARGET1, SLASH_CHECKBUFFSONTARGET2 = '/cbot', '/checkbuffsontarget'
 function SlashCmdList.CHECKBUFFSONTARGET()
 	local u = unit or "target"
@@ -244,6 +247,33 @@ function SlashCmdList.CHECKBUFFSONTARGET()
 			counter = counter + 1
 		end
 	end
+end
+
+-- put raid members in a list for copy/paste
+SLASH_GETRAIDMEMBERNAMES1, SLASH_GETRAIDMEMBERNAMES2 = '/grn', '/getraidmembernames'
+function SlashCmdList.GETRAIDMEMBERNAMES()
+	local m = GetNumRaidMembers();
+	local names = {}
+	for i = 1, m do
+		local name = GetRaidRosterInfo(i);
+		table.insert(names, name)
+	end
+
+	e = CreateFrame("Frame", "GRNHolder", UIParent)
+	e:SetBackdrop(StaticPopup1:GetBackdrop())
+	e:SetHeight(60+10*table.getn(names))
+	e:SetWidth(200)
+	e:SetPoint("CENTER", 0,0)
+		
+	f = CreateFrame("EditBox", "GRNFrame", e)
+	f:SetMultiLine(true)
+	f:SetFont("Fonts\\FRIZQT__.TTF", 12)
+	f:SetPoint("TOPLEFT", e, "TOPLEFT", 25, -25)
+	f:SetPoint("TOPRIGHT", e, "TOPRIGHT", -30, -25)
+	f:SetText(table.concat(names, "\n"))
+	
+	c = CreateFrame("Button", nil, e, "UIPanelCloseButton")
+	c:SetPoint("TOPRIGHT", e, "TOPRIGHT", 0,0)
 end
 
 function MH.m(msg, prepend, r, g, b)
