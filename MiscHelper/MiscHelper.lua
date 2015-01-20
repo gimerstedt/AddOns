@@ -21,6 +21,8 @@ function SlashCmdList.MISCHELPER()
 	MH.m("Reports all buffs on target.", MH_PREP)
 	MH.m("/grn - /getraidmembernames", MH_PREP, 1,1,0,3)
 	MH.m("List all raid members in a frame for copy/paste.", MH_PREP)
+	MH.m("/ss", MH_PREP, 1,1,0,3)
+	MH.m("Sit/stand up repeatedly for no good reason.", MH_PREP)
 end
 
 -- automatic cthun run in order
@@ -155,8 +157,6 @@ end
 
 SLASH_TEST1 = '/test'
 function SlashCmdList.TEST(msg)
-	local n = GetRaidRosterInfo(msg)
-	MH.m(n)
 end
 
 -- report missing debuffs on target
@@ -274,6 +274,22 @@ function SlashCmdList.GETRAIDMEMBERNAMES()
 	
 	c = CreateFrame("Button", nil, e, "UIPanelCloseButton")
 	c:SetPoint("TOPRIGHT", e, "TOPRIGHT", 0,0)
+end
+
+-- sitstand
+SLASH_SITSTAND1 = '/ss'
+function SlashCmdList.SITSTAND()
+	if sitFrame == nil then
+		sitFrame = CreateFrame("frame")
+	end
+	local function sos() SitOrStand() end
+	if breakSit == nil then
+		breakSit = 1
+		sitFrame:SetScript("OnUpdate", sos)
+	else
+		breakSit = nil
+		sitFrame:SetScript("OnUpdate", nil)
+	end
 end
 
 function MH.m(msg, prepend, r, g, b)
