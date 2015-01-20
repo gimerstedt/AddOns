@@ -5,12 +5,20 @@ MH_PREP = "[MiscHelper] "
 -- info command
 SLASH_MISCHELPER1, SLASH_MISCHELPER2 = '/mischelper', '/mh'
 function SlashCmdList.MISCHELPER()	
-	MH.m("/ctri", MH_PREP, 1, 1, 0.3)
+	MH.m("/ctri - /cthunrunin", MH_PREP, 1, 1, 0.3)
 	MH.m("Generates a run in order and writes it in /p", MH_PREP)
-	MH.m("/ri", MH_PREP, 1,1,0,3)
+	MH.m("/ri - /resetinstances", MH_PREP, 1,1,0,3)
 	MH.m("Resets instances.")
 	MH.m("/ress", MH_PREP, 1,1,0,3)
 	MH.m("Resurrects the target if in range and notifies in /s (announces on cd if druid)")
+	MH.m("/cdb - /checkdebuffs", MH_PREP, 1,1,0,3)
+	MH.m("Reports missing debuffs to /raid")
+	MH.m("/rmic - /raidmembersincombat", MH_PREP, 1,1,0,3)
+	MH.m("Reports raid members in combat in /raid")
+	MH.m("/cc (hitRate) - /critcap (hitRate)", MH_PREP, 1,1,0,3)
+	MH.m("Reports your crit cap based on the hitRate input.")
+	MH.m("/cbot - /checkbuffsontarget", MH_PREP, 1,1,0,3)
+	MH.m("Reports all buffs on target.")
 end
 
 -- automatic cthun run in order
@@ -50,7 +58,7 @@ function SlashCmdList.CTHUNRUNIN()
 		elseif v == "Mage" then
 			table.insert(orderedWithGaps, 20, k)
 		elseif v == "Warlock" then
-			table.insert(orderedWithGaps, 20, k)
+			table.insert(orderedWithGaps, 9, k)
 
 		elseif v == "Hunter" then
 			table.insert(orderedWithGaps, 80, k)
@@ -144,9 +152,98 @@ function SlashCmdList.RESS()
 end
 
 SLASH_TEST1 = '/test'
-function SlashCmdList.TEST()
-	MH.m("testar MH.m", "[prepend]", 0.4, 0.2, 0.9)
-	MH.p("testar MH.p", "[prepend]")
+function SlashCmdList.TEST(msg)
+	local n = GetRaidRosterInfo(msg)
+	MH.m(n)
+end
+
+-- report missing debuffs on target
+SLASH_CHECKDEBUFFS1, SLASH_CHECKDEBUFFS2 = '/cdb', '/checkdebuffs'
+function SlashCmdList.CHECKDEBUFFS()
+	if UnitInRaid("player") ~= true or isEnemy("target") ~= true then
+		MH.m("You are either in not in a raid or your target is not an enemy or you do not have a target.", MH_PREP)
+		return
+	end
+	local debuffsMissing = {}
+	for i=1, 16 do
+		db = UnitDebuff("target", i)
+		if db == nil then 
+			MH.r(UnitName("target").." has no debuffs!", MH_PREP)
+			break
+		end
+		if string.find(db,"Spell_Shadow_CurseOfAchimonde") then table.insert(debuffsMissing, "Curse of Shadows") end
+		if string.find(db, "Spell_Shadow_ChillTouch") then table.insert(debuffsMissing, "Curse of Elements") end
+		if string.find(db, "Spell_Shadow_UnholyStrength") then table.insert(debuffsMissing, "Curse of Recklessness") end
+		if string.find(db, "Spell_Nature_FaerieFire") then table.insert(debuffsMissing, "Faerie Fire") end
+		if string.find(db, "Spell_Shadow_BlackPlague") then table.insert(debuffsMissing, "Shadow Weaving") end
+		if string.find(db, "Ability_Warrior_Sunder") then table.insert(debuffsMissing, "Sunder Armor") end
+	end
+	if table.getn(debuffsMissing) > 0 then
+		local outputString = UnitName("target").." is missing"
+		for i = 1, table.getn(debuffsMissing) do
+			outputString = outputString.." "..debuffsMissing[i].."!"
+		end
+		MH.r(outputString)
+	end
+end
+
+-- check raid for members in combat
+SLASH_RAIDMEMBERSINCOMBAT1, SLASH_RAIDMEMBERSINCOMBAT2 = '/rmic', '/raidmembersincombat'
+function SlashCmdList.RAIDMEMBERSINCOMBAT()
+	if UnitInRaid("player") ~= true then
+		return
+	end
+	local t = ""
+	for i = 1, 40 do
+		if GetRaidRosterInfo(i) ~= nil then
+			local n = GetRaidRosterInfo(i)
+			if UnitAffectingCombat("raid"..i) then
+				t = t..n..", "
+			end
+		end
+	end
+	if t ~= "" then
+		t = string.sub(t, 0,-3)
+		MH.r("Players in combat: "..t..".", MH_PREP)
+	else
+		MH.m("No players within range in combat.", MH_PREP)
+	end
+end
+
+-- only relevant for DW melee
+SLASH_CRITCAP1, SLASH_CRITCAP2 = '/cc', '/critcap'
+function SlashCmdList.CRITCAP(msg)
+	if msg == "" then
+		MH.m("You must specify your current hit rate.", MH_PREP)
+		return
+	end
+	local missRate = 27
+	local hitRate = msg
+	local dodgeRate = 5.6
+	local glancingRate = 40
+	local critCap = 100 - (missRate - hitRate) - dodgeRate - glancingRate
+
+	MH.m("Your crit cap with "..hitRate.."% hit is "..critCap.."%.", MH_PREP)
+end
+
+SLASH_CHECKBUFFSONTARGET1, SLASH_CHECKBUFFSONTARGET2 = '/cbot', '/checkbuffsontarget'
+function SlashCmdList.CHECKBUFFSONTARGET()
+	local u = unit or "target"
+	if not unit and not UnitExists("target") then
+		u = "player"
+	end
+	if UnitName(u) then
+		if not UnitBuff(u, 1) then
+			return
+		end
+		local counter = 1
+		while (UnitBuff(u, counter)) do
+			ZORLEN_Buff_Tooltip:SetUnitBuff(u, counter)
+			local name = ZORLEN_Buff_TooltipTextLeft1:GetText()
+			MH.m(counter..": "..name)
+			counter = counter + 1
+		end
+	end
 end
 
 function MH.m(msg, prepend, r, g, b)
@@ -162,20 +259,20 @@ end
 function MH.s(msg, prepend)
 	prepend = prepend or ""
 	if msg then
-		SendChatMessage(tostring(prepend).." "..tostring(msg), "SAY")
+		SendChatMessage(tostring(prepend)..tostring(msg), "SAY")
 	end
 end
 
 function MH.p(msg, prepend)
 	prepend = prepend or ""
 	if msg then
-		SendChatMessage(tostring(prepend).." "..tostring(msg), "PARTY")
+		SendChatMessage(tostring(prepend)..tostring(msg), "PARTY")
 	end
 end
 
 function MH.r(msg, prepend)
 	prepend = prepend or ""
 	if msg then
-		SendChatMessage(tostring(prepend).." "..tostring(msg), "RAID")
+		SendChatMessage(tostring(prepend)..tostring(msg), "RAID")
 	end
 end
