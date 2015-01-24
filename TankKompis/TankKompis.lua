@@ -46,6 +46,7 @@ SLASH_CHALLSHOUT1 = '/tkshout'
 function SlashCmdList.CHALLSHOUT()
 	if GetSpellCooldown(TK_GetSpellId("Challenging Shout", 1), BOOKTYPE_SPELL) == 0 then
 		MH.y(TK_CS_TXT, TK_PREP)
+		CastSpellByName("Challenging Shout", 1)
 	end
 end
 
