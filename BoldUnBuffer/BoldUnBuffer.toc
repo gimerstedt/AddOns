@@ -1,5 +1,5 @@
 ## Interface: 11200
-## Title: BoldUnBuffer
+## Title: |cffffaaffBold|rUnBuffer
 ## Notes: Boldi's remover of unwanted buffs
 ## Author: Boldilocks
 ## Version: 0.2

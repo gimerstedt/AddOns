@@ -1,14 +1,14 @@
 -- pretty sure this one isn't working, need to test
 function ReportMissingDebuffsOnTarget()
 	if not UnitInRaid("player") or not isEnemy("target") then
-		BL.m("You are either in not in a raid or your target is not an enemy or you do not have a target.", BL_PREP)
+		BC.m("You are either in not in a raid or your target is not an enemy or you do not have a target.", BC_PREP)
 		return
 	end
 	local debuffsMissing = {}
 	for i=1, 16 do
 		db = UnitDebuff("target", i)
 		if db == nil then 
-			BL.r(UnitName("target").." has no debuffs!", BL_PREP)
+			BC.r(UnitName("target").." has no debuffs!", BC_PREP)
 			break
 		end
 		if not string.find(db, "Spell_Shadow_CurseOfAchimonde") then table.insert(debuffsMissing, "Curse of Shadows") end
@@ -24,7 +24,7 @@ function ReportMissingDebuffsOnTarget()
 		for i = 1, table.getn(debuffsMissing) do
 			outputString = outputString.." "..debuffsMissing[i].."!"
 		end
-		BL.r(outputString)
+		BC.r(outputString)
 	end
 end
 
@@ -36,15 +36,15 @@ function ReportBuffsOnTarget()
 	end
 	if UnitName(u) then
 		if not UnitBuff(u, 1) then
-			BL.m("Target has no visible buffs.", BL_PREP)
+			BC.m("Target has no visible buffs.", BC_PREP)
 			return
 		end
 		local counter = 1
 		while (UnitBuff(u, counter)) do
 			ZORLEN_Buff_Tooltip:SetUnitBuff(u, counter)
 			local name = ZORLEN_Buff_TooltipTextLeft1:GetText()
-			BL.m(counter..": "..name, BL_PREP)
-			BL.m(counter..": ("..UnitBuff(u, counter)..")", BL_PREP)
+			BC.m(counter..": "..name, BC_PREP)
+			BC.m(counter..": ("..UnitBuff(u, counter)..")", BC_PREP)
 			counter = counter + 1
 		end
 	end

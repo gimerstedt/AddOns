@@ -1,7 +1,7 @@
 function GenerateCthunRunInOrder()
 	-- return if you're not targeting the melee
 	if UnitInParty("target") == nil then
-		BL.m("You must target the melee in your group.", BL_PREP)
+		BC.m("You must target the melee in your group.", BC_PREP)
 		return
 	end
 
@@ -74,12 +74,12 @@ function GenerateCthunRunInOrder()
 	local groupNumber = getSubGroupNumber()
 
 	-- send to chat
-	BL.p("--------------- (1) "..UnitName(ordered[1]).." ---------------")
+	BC.p("--------------- (1) "..UnitName(ordered[1]).." ---------------")
 	if mod(groupNumber, 2) == 0 then
-		BL.p("(3) "..orderedWithNames[3].." ----- (2) "..orderedWithNames[2])
-		BL.p("(5) "..orderedWithNames[5].." ----- (4) "..orderedWithNames[4])
+		BC.p("(3) "..orderedWithNames[3].." ----- (2) "..orderedWithNames[2])
+		BC.p("(5) "..orderedWithNames[5].." ----- (4) "..orderedWithNames[4])
 	else
-		BL.p("(2) "..orderedWithNames[2].." ----- (3) "..orderedWithNames[3])
-		BL.p("(4) "..orderedWithNames[4].." ----- (5) "..orderedWithNames[5])
+		BC.p("(2) "..orderedWithNames[2].." ----- (3) "..orderedWithNames[3])
+		BC.p("(4) "..orderedWithNames[4].." ----- (5) "..orderedWithNames[5])
 	end
 end

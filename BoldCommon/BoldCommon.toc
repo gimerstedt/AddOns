@@ -1,5 +1,5 @@
 ## Interface: 11200
-## Title: BoldLib
+## Title: |cffffaaffBold|rCommon
 ## Notes: Boldi's collection of semi useful stuff
 ## Author: Boldilocks
 ## Version: 0.3

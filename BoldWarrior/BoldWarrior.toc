@@ -1,8 +1,8 @@
 ## Interface: 11200
-## Title: BoldWarrior
+## Title: |cffffaaffBold|rWarrior
 ## Notes: Boldi's TankBuddy replacement.
 ## Author: Boldilocks
 ## Version: 0.2
-## Dependencies: BoldLib
+## Dependencies: BoldCommon
 
 BoldWarrior.lua

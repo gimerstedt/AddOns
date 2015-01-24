@@ -23,20 +23,20 @@ BW_CS_TXT = "Used Mass Taunt!"
 local function onEvent()
 	if event == "CHAT_MSG_SPELL_SELF_DAMAGE" or event == "CHAT_MSG_SPELL_DAMAGESHIELDS_ON_SELF" then
 		if string.find(arg1, BW_TAUNT_LOG) then
-			BL.y(BW_TAUNT_TXT, BW_PREP)
+			BC.y(BW_TAUNT_TXT, BW_PREP)
 		elseif string.find(arg1, BW_MB_LOG) then
 			local mbHit = string.find(arg1, BW_MB_LOG2)
 			if not mbHit then
-				BL.r(BW_MB_TXT, BW_PREP)
+				BC.r(BW_MB_TXT, BW_PREP)
 			end
 		end
 	elseif event == "CHAT_MSG_SPELL_PERIODIC_SELF_BUFFS" then
 		if string.find(arg1, BW_SW) then
-			BL.y(BW_SW_TXT, BW_PREP)
+			BC.y(BW_SW_TXT, BW_PREP)
 		elseif string.find(arg1, BW_LS) then
-			BL.y(BW_LS_TXT, BW_PREP)
+			BC.y(BW_LS_TXT, BW_PREP)
 		elseif string.find(arg1, BW_LG) then
-			BL.y(BW_LG_TXT, BW_PREP)
+			BC.y(BW_LG_TXT, BW_PREP)
 		end
 	end
 end
@@ -46,7 +46,7 @@ SLASH_CHALLSHOUT1 = '/aoetaunt'
 function SlashCmdList.CHALLSHOUT()
 	if UnitMana("player") > 9 and GetSpellCooldown(BW_GetSpellId("Challenging Shout", 1), BOOKTYPE_SPELL) == 0 then
 		CastSpellByName("Challenging Shout", 1)
-		BL.y(BW_CS_TXT, BW_PREP)
+		BC.y(BW_CS_TXT, BW_PREP)
 	end
 end
 

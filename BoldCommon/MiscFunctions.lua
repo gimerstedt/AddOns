@@ -13,15 +13,15 @@ function ReportPlayersInCombat()
 	end
 	if t ~= "" then
 		t = string.sub(t, 0,-3)
-		BL.r("Players in combat: "..t..".", BL_PREP)
+		BC.r("Players in combat: "..t..".", BC_PREP)
 	else
-		BL.m("No players within range in combat.", BL_PREP)
+		BC.m("No players within range in combat.", BC_PREP)
 	end
 end
 
 function ReportCritCap(hit)
 	if hit == "" then
-		BL.m("You must specify your current hit rate.", BL_PREP)
+		BC.m("You must specify your current hit rate.", BC_PREP)
 		return
 	end
 	local missRate = 27
@@ -30,7 +30,7 @@ function ReportCritCap(hit)
 	local glancingRate = 40
 	local critCap = 100 - (missRate - hitRate) - dodgeRate - glancingRate
 
-	BL.m("Your crit cap with "..hitRate.."% hit is "..critCap.."%.", BL_PREP)
+	BC.m("Your crit cap with "..hitRate.."% hit is "..critCap.."%.", BC_PREP)
 end
 
 function TeaBag()
@@ -47,7 +47,7 @@ function TeaBag()
 	end
 end
 
-function BL.m(msg, prepend, r, g, b)
+function BC.m(msg, prepend, r, g, b)
 	prepend = prepend or ""
 	r = r or 0.7
 	g = g or 0.6
@@ -57,28 +57,28 @@ function BL.m(msg, prepend, r, g, b)
 	end
 end
 
-function BL.s(msg, prepend)
+function BC.s(msg, prepend)
 	prepend = prepend or ""
 	if msg then
 		SendChatMessage(tostring(prepend)..tostring(msg), "SAY")
 	end
 end
 
-function BL.p(msg, prepend)
+function BC.p(msg, prepend)
 	prepend = prepend or ""
 	if msg then
 		SendChatMessage(tostring(prepend)..tostring(msg), "PARTY")
 	end
 end
 
-function BL.r(msg, prepend)
+function BC.r(msg, prepend)
 	prepend = prepend or ""
 	if msg then
 		SendChatMessage(tostring(prepend)..tostring(msg), "RAID")
 	end
 end
 
-function BL.y(msg, prepend)
+function BC.y(msg, prepend)
 	prepend = prepend or ""
 	if msg then
 		SendChatMessage(tostring(prepend)..tostring(msg), "YELL")
