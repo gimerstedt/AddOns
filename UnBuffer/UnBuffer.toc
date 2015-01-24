@@ -1,0 +1,8 @@
+## Interface: 11200
+## Title: UnBuffer
+## Notes: Boldi's remover of unwanted buffs
+## Author: Boldilocks
+## Version: 0.1
+## Dependencies: 
+
+UnBuffer.lua
