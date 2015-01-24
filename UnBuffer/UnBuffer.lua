@@ -15,7 +15,8 @@ local function onEvent()
 		"MonsterScales_13", -- juju guile
 		"BloodLust", -- bloodthirst
 		"SealOfWisdom", -- 5 min
-		"BlessingofWisdom" -- 15 min
+		"BlessingofWisdom", -- 15 min
+		"Spell_Fire_Incinerate" -- ironfoe
 	}
 	if UB_isShieldEquipped() and UnitClass("player") == "Warrior" then
 		table.insert(warrior, "SealOfSalvation")
@@ -25,7 +26,7 @@ local function onEvent()
 	end
 	-- end of warrior stuffs
 
-	if event == "PLAYER_AURAS_CHANGED" then
+	if event == "PLAYER_AURAS_CHANGED" or event == "UNIT_INVENTORY_CHANGED" then
 		UB_removeBuffs(buffs)
 	end
 end
@@ -33,6 +34,7 @@ end
 -- register event and handler
 local f = CreateFrame("frame")
 f:RegisterEvent("PLAYER_AURAS_CHANGED")
+f:RegisterEvent("UNIT_INVENTORY_CHANGED")
 f:SetScript("OnEvent", onEvent)
 
 -- check if shield is equipped
