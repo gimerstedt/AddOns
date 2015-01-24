@@ -1,0 +1,8 @@
+## Interface: 11200
+## Title: TankKompis
+## Notes: Boldi's TankBuddy replacement.
+## Author: Boldilocks
+## Version: 0.1
+## Dependencies: MiscHelper
+
+TankKompis.lua
