@@ -1,6 +1,9 @@
 -- event handler
 local function onEvent()
+	if not UnitBuff("player", 20) then return end -- do nothing unless 20 buffs
 	local buffs = {}
+
+	-- warrior buffs, just copy paste for new classes and swap names...
 	local warrior = {
 		"MagicalSentry", -- AI/int scroll
 		"ArcaneIntellect", -- AB
@@ -17,14 +20,13 @@ local function onEvent()
 	if UB_isShieldEquipped() and UnitClass("player") == "Warrior" then
 		table.insert(warrior, "SealOfSalvation")
 	end
-
 	if UnitClass("player") == "Warrior" then
 		buffs = warrior
 	end
+	-- end of warrior stuffs
+
 	if event == "PLAYER_AURAS_CHANGED" then
-		if UnitBuff("player", 20) then
-			UB_RemoveBuffs(buffs)
-		end
+		UB_removeBuffs(buffs)
 	end
 end
 
