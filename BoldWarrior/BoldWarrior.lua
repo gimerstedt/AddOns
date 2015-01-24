@@ -2,51 +2,51 @@
 if UnitClass("player") ~= "Warrior" then return end
 
 -- consts
-TK_PREP = "---> "
+BW_PREP = "---> "
 
-TK_TAUNT_LOG = "Your Taunt was resisted by (.+)"
-TK_TAUNT_TXT = "Taunt resisted!"
+BW_TAUNT_LOG = "Your Taunt was resisted by (.+)"
+BW_TAUNT_TXT = "Taunt resisted!"
 
-TK_MB_LOG = "(.*)Mocking Blow(.*)"
-TK_MB_LOG2 = "Your Mocking Blow (.+) for (.+)"
-TK_MB_TXT = "Mocking Blow resisted!"
+BW_MB_LOG = "(.*)Mocking Blow(.*)"
+BW_MB_LOG2 = "Your Mocking Blow (.+) for (.+)"
+BW_MB_TXT = "Mocking Blow resisted!"
 
-TK_SW = "You gain Shield Wall."
-TK_SW_TXT = "Used Shield Wall!"
-TK_LS = "You gain Last Stand."
-TK_LS_TXT = "Used Last Stand!"
-TK_LG = "You gain Gift of Life."
-TK_LG_TXT = "Used Lifegiving Gem!"
-TK_CS_TXT = "Used Mass Taunt!"
+BW_SW = "You gain Shield Wall."
+BW_SW_TXT = "Used Shield Wall!"
+BW_LS = "You gain Last Stand."
+BW_LS_TXT = "Used Last Stand!"
+BW_LG = "You gain Gift of Life."
+BW_LG_TXT = "Used Lifegiving Gem!"
+BW_CS_TXT = "Used Mass Taunt!"
 
 -- event handler
 local function onEvent()
 	if event == "CHAT_MSG_SPELL_SELF_DAMAGE" or event == "CHAT_MSG_SPELL_DAMAGESHIELDS_ON_SELF" then
-		if string.find(arg1, TK_TAUNT_LOG) then
-			MH.y(TK_TAUNT_TXT, TK_PREP)
-		elseif string.find(arg1, TK_MB_LOG) then
-			local mbHit = string.find(arg1, TK_MB_LOG2)
+		if string.find(arg1, BW_TAUNT_LOG) then
+			BL.y(BW_TAUNT_TXT, BW_PREP)
+		elseif string.find(arg1, BW_MB_LOG) then
+			local mbHit = string.find(arg1, BW_MB_LOG2)
 			if not mbHit then
-				MH.r(TK_MB_TXT, TK_PREP)
+				BL.r(BW_MB_TXT, BW_PREP)
 			end
 		end
 	elseif event == "CHAT_MSG_SPELL_PERIODIC_SELF_BUFFS" then
-		if string.find(arg1, TK_SW) then
-			MH.y(TK_SW_TXT, TK_PREP)
-		elseif string.find(arg1, TK_LS) then
-			MH.y(TK_LS_TXT, TK_PREP)
-		elseif string.find(arg1, TK_LG) then
-			MH.y(TK_LG_TXT, TK_PREP)
+		if string.find(arg1, BW_SW) then
+			BL.y(BW_SW_TXT, BW_PREP)
+		elseif string.find(arg1, BW_LS) then
+			BL.y(BW_LS_TXT, BW_PREP)
+		elseif string.find(arg1, BW_LG) then
+			BL.y(BW_LG_TXT, BW_PREP)
 		end
 	end
 end
 
 -- announce challenging shout with a command instead...to cut down on code
-SLASH_CHALLSHOUT1 = '/tkshout'
+SLASH_CHALLSHOUT1 = '/aoetaunt'
 function SlashCmdList.CHALLSHOUT()
-	if GetSpellCooldown(TK_GetSpellId("Challenging Shout", 1), BOOKTYPE_SPELL) == 0 then
-		MH.y(TK_CS_TXT, TK_PREP)
+	if UnitMana("player") > 9 and GetSpellCooldown(BW_GetSpellId("Challenging Shout", 1), BOOKTYPE_SPELL) == 0 then
 		CastSpellByName("Challenging Shout", 1)
+		BL.y(BW_CS_TXT, BW_PREP)
 	end
 end
 
@@ -58,7 +58,7 @@ f:RegisterEvent("CHAT_MSG_SPELL_DAMAGESHIELDS_ON_SELF")
 --f:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_CREATURE_DAMAGE")
 f:SetScript("OnEvent", onEvent)
 
-function TK_GetSpellId(SpellName, SpellRank)
+function BW_GetSpellId(SpellName, SpellRank)
 	local B = BOOKTYPE_SPELL
 	local SpellID = nil
 	if SpellName then

@@ -1,26 +1,26 @@
--- misc helper
-MH = {}
-MH_PREP = "[MiscHelper] "
+-- BoldLib
+BL = {}
+BL_PREP = "[BoldLib] "
 
 -- info command
-SLASH_MISCHELPER1, SLASH_MISCHELPER2 = '/mischelper', '/mh'
-function SlashCmdList.MISCHELPER()	
-	MH.m("/ctri - /cthunrunin", MH_PREP, 1, 1, 0.3)
-	MH.m("Generates a run in order and writes it in /party.", MH_PREP)
-	MH.m("/ri - /resetinstances", MH_PREP, 1,1,0,3)
-	MH.m("Resets instances.", MH_PREP)
-	MH.m("/cdb - /checkdebuffs", MH_PREP, 1,1,0,3)
-	MH.m("Reports missing debuffs on target to /raid.", MH_PREP)
-	MH.m("/rmic - /raidmembersincombat", MH_PREP, 1,1,0,3)
-	MH.m("Reports raid members in combat in /raid.", MH_PREP)
-	MH.m("/cc (hitRate) - /critcap (hitRate)", MH_PREP, 1,1,0,3)
-	MH.m("Reports your crit cap based on the hitRate input.", MH_PREP)
-	MH.m("/cbot - /checkbuffsontarget", MH_PREP, 1,1,0,3)
-	MH.m("Reports all buffs on target.", MH_PREP)
-	MH.m("/grn - /getraidmembernames", MH_PREP, 1,1,0,3)
-	MH.m("List all raid members in a frame for copy/paste.", MH_PREP)
-	MH.m("/ss", MH_PREP, 1,1,0,3)
-	MH.m("Sit/stand up repeatedly for no good reason.", MH_PREP)
+SLASH_BOLDLIB1, SLASH_BOLDLIB2 = '/boldlib', '/bl'
+function SlashCmdList.BOLDLIB()	
+	BL.m("/ctri - /cthunrunin", BL_PREP, 1, 1, 0.3)
+	BL.m("Generates a run in order and writes it in /party.", BL_PREP)
+	BL.m("/ri - /resetinstances", BL_PREP, 1,1,0,3)
+	BL.m("Resets instances.", BL_PREP)
+	BL.m("/cdb - /checkdebuffs", BL_PREP, 1,1,0,3)
+	BL.m("Reports missing debuffs on target to /raid.", BL_PREP)
+	BL.m("/rmic - /raidmembersincombat", BL_PREP, 1,1,0,3)
+	BL.m("Reports raid members in combat in /raid.", BL_PREP)
+	BL.m("/cc (hitRate) - /critcap (hitRate)", BL_PREP, 1,1,0,3)
+	BL.m("Reports your crit cap based on the hitRate input.", BL_PREP)
+	BL.m("/cbot - /checkbuffsontarget", BL_PREP, 1,1,0,3)
+	BL.m("Reports all buffs on target.", BL_PREP)
+	BL.m("/grn - /getraidmembernames", BL_PREP, 1,1,0,3)
+	BL.m("List all raid members in a frame for copy/paste.", BL_PREP)
+	BL.m("/ss", BL_PREP, 1,1,0,3)
+	BL.m("Sit/stand up repeatedly for no good reason.", BL_PREP)
 end
 
 -- automatic cthun run in order

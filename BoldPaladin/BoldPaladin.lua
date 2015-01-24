@@ -1,17 +1,17 @@
 -- only load if paladin
-if not Zorlen_isCurrentClassPaladin then return end
+if UnitClass("player") ~= "Paladin" then return end
 
 -- prepend for chat print
-PH_PREP = "[PaladinHelper] "
+BP_PREP = "[BoldPaladin] "
 
 -- info command
-SLASH_PALADINHELPER1, SLASH_PALADINHELPER2 = '/paladinhelper', '/ph'
+SLASH_BOLDPALADIN1, SLASH_BOLDPALADIN2 = '/boldpaladin', '/bp'
 function SlashCmdList.PALADINHELPER()	
-	MH.m("Notifies you if no aura is active.", PH_PREP)
-	MH.m("/safebop", PH_PREP, 1, 1, 0.3)
-	MH.m("Casts Blessing of Protection on your target if your target is NOT a warrior and targetTarget if target is hostile and targetTarget is not a warrior.", PH_PREP)
-	MH.m("/t1", PH_PREP, 1, 1, 0.3)
-	MH.m("Targets, attacks and keeps SotC up.", PH_PREP)
+	BL.m("Notifies you if no aura is active.", BP_PREP)
+	BL.m("/safebop", BP_PREP, 1, 1, 0.3)
+	BL.m("Casts Blessing of Protection on your target if your target is NOT a warrior and targetTarget if target is hostile and targetTarget is not a warrior.", BP_PREP)
+	BL.m("/t1", BP_PREP, 1, 1, 0.3)
+	BL.m("Targets, attacks and keeps SotC up.", BP_PREP)
 end
 
 -- cast bop on target if target is not warrior or on targettarget if target is hostile and targettarget is not warrior
@@ -39,7 +39,7 @@ end
 -- notify if no aura active
 local function notifyIfAuraMissing()
 	if isPaladinAuraActive() ~= true then
-		MH.m("No aura active!", PH_PREP)
+		BL.m("No aura active!", BP_PREP)
 	end
 end
 

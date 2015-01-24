@@ -1,8 +1,0 @@
-## Interface: 11200
-## Title: PaladinHelper
-## Notes: Boldi's misc paladin stuff
-## Author: Boldilocks
-## Version: 0.1
-## Dependencies: Zorlen, MiscHelper
-
-PaladinHelper.lua

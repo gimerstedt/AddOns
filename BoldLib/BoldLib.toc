@@ -1,8 +1,8 @@
 ## Interface: 11200
-## Title: MiscHelper
-## Notes: Boldi's misc stuff
+## Title: BoldLib
+## Notes: Boldi's collection of semi useful stuff
 ## Author: Boldilocks
-## Version: 0.2
+## Version: 0.3
 ## Dependencies: Zorlen
 
 BuffFunctions.lua

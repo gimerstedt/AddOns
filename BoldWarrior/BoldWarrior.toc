@@ -1,8 +1,8 @@
 ## Interface: 11200
-## Title: TankKompis
+## Title: BoldWarrior
 ## Notes: Boldi's TankBuddy replacement.
 ## Author: Boldilocks
-## Version: 0.1
-## Dependencies: MiscHelper
+## Version: 0.2
+## Dependencies: BoldLib
 
-TankKompis.lua
+BoldWarrior.lua

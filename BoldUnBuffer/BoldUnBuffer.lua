@@ -18,7 +18,7 @@ local function onEvent()
 		"BlessingofWisdom", -- 15 min
 		"Spell_Fire_Incinerate" -- ironfoe
 	}
-	if UB_isShieldEquipped() and UnitClass("player") == "Warrior" then
+	if BUB_isShieldEquipped() and UnitClass("player") == "Warrior" then
 		table.insert(warrior, "SealOfSalvation")
 	end
 	if UnitClass("player") == "Warrior" then
@@ -27,7 +27,7 @@ local function onEvent()
 	-- end of warrior stuffs
 
 	if event == "PLAYER_AURAS_CHANGED" or event == "UNIT_INVENTORY_CHANGED" then
-		UB_removeBuffs(buffs)
+		BUB_removeBuffs(buffs)
 	end
 end
 
@@ -38,7 +38,7 @@ f:RegisterEvent("UNIT_INVENTORY_CHANGED")
 f:SetScript("OnEvent", onEvent)
 
 -- check if shield is equipped
-function UB_isShieldEquipped()
+function BUB_isShieldEquipped()
 	local slot = GetInventorySlotInfo("SecondaryHandSlot")
 	local link = GetInventoryItemLink("player", slot)
 	if(link) then
@@ -53,7 +53,7 @@ function UB_isShieldEquipped()
 	return false
 end
 
-function UB_removeBuffs(buffs)
+function BUB_removeBuffs(buffs)
 	local i = 0
 	while (GetPlayerBuffTexture(i)) do
 		for n, buff in pairs(buffs) do
