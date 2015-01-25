@@ -213,20 +213,113 @@ function lazyWarriorLoad.LoadParseWarrior()
 
    lazyWarrior.defaultForms = {}
 
-   lazyWarrior.defaultForms.tank = {
+   lazyWarrior.defaultForms.prot_tank = {
       "berserkerRage-ifPlayerIs=Feared",
-      "use=Major Healing Potion-ifInCombat-ifPlayer<10%hp",
-      "battleShout-ifNotInCombat-ifNotHistory<5=battleShout",
       "stopAll-ifTargetIs=CCd",
-      "taunt-ifNotTargetOfTarget-ifTargetHasTarget",
-      "mockingBlow-ifNotTargetOfTarget-ifTargetHasTarget",
-      "battleShout-ifNotPlayerHasBuff=battleShout",
-      "demoShout-ifNotTargetHasDebuff=demoShout",
-      "sunder-ifTargetHasDebuff<5=sunder",
-      "heroicStrike",
+      "useFreeEquippedItem=Glyph of Deflection-ifTargetInMediumRange-ifTargetHostile", -- only on bosses?
+      "--useFreeEquippedItem=Lifegiving Gem-ifPlayer<20%hp", -- clearly not very useful
+      "--lastStand-ifPlayer<20%hp", -- clearly not very useful
+      "defensive",
+      "--shieldBash-ifTargetIsCasting", -- maybe add exceptions for when you want to time it (KT)?
+      "concussionBlow-ifTargetIsCasting",
+      "taunt-ifNotTargetOfTargetClass=Warrior-ifTargetHasTarget",
+      "shieldSlam",
+      "revenge",
+      "sunder-ifTargetHasDebuff<5=sunder-ifPlayer>18rage-ifNotLastUsed>5s=shieldSlam",
+      "--battleShout-ifNotPlayerHasBuff=battleShout-ifPlayer>25rage", -- battle shout if target below x% hp ?
+      "shieldBlock-ifPlayer>35rage-ifPlayerInCombat-ifTargetOfTarget-ifNotPlayerHasBuff=shieldBlock",
+      "heroicStrike-ifPlayer>35rage",
+      "sunder-ifplayer>60rage-ifNotLastUsed>5s=shieldSlam"
    }
 
+   lazyWarrior.defaultForms.fury_tank = {
+      "berserkerRage-ifPlayerIs=Feared",
+      "stopAll-ifTargetIs=CCd",
+      "useFreeEquippedItem=Glyph of Deflection-ifTargetInMediumRange-ifTargetHostile", -- only on bosses?
+      "--useFreeEquippedItem=Lifegiving Gem-ifPlayer<20%hp", -- clearly not very useful
+      "--lastStand-ifPlayer<20%hp", -- clearly not very useful
+      "defensive",
+      "--shieldBash-ifTargetIsCasting", -- maybe add exceptions for when you want to time it (KT)?
+      "concussionBlow-ifTargetIsCasting",
+      "taunt-ifNotTargetOfTargetClass=Warrior-ifTargetHasTarget",
+      "revenge",
+      "bloodthirst",
+      "sunder-ifTargetHasDebuff<5=sunder-ifPlayer>28rage-ifNotLastUsed>5s=bloodthirst",
+      "--battleShout-ifNotPlayerHasBuff=battleShout-ifPlayer>25rage", -- battle shout if target below x% hp ?
+      "shieldBlock-ifPlayer>40rage-ifPlayerInCombat-ifTargetOfTarget-ifNotPlayerHasBuff=shieldBlock",
+      "heroicStrike-ifPlayer>45rage",
+      "sunder-ifplayer>60rage-ifNotLastUsed>5s=bloodthirst"
+   }
 
+   lazyWarrior.defaultForms.nightfall = {
+      "berserk-ifNotTargetDodged",
+      "berserkerRage-ifPlayerIs=Feared",
+      "stopAll-ifTargetIs=CCd",
+      "pummel-ifTargetIsCasting-ifCtrlDown",
+      "pummel-ifTargetIsCasting-ifTargetNamed=Eye%sTentacle",
+      "battleShout-ifNotPlayerHasBuff=battleShout",
+      "berserk-ifInCooldown=overpower-ifPlayer<26rage",
+      "battle-ifTargetDodged-ifNotInCooldown=overpower-ifPlayer<55rage-ifPlayer>13rage",
+      "overpower",
+      "berserk-ifInCooldown=overpower",
+      "berserk-ifLastUsed>6s=battle",
+      "whirlwind-ifPlayer>65rage-ifPlayerInCombat",
+      "hamstring"
+   }
+
+   lazyWarrior.defaultForms.fury_hs = {
+      "berserk-ifNotTargetDodged",
+      "berserkerRage-ifPlayerIs=Feared",
+      "stopAll-ifTargetIs=CCd",
+      "pummel-ifTargetIsCasting-ifCtrlDown",
+      "pummel-ifTargetIsCasting-ifTargetNamed=Eye%sTentacle",
+      "battleShout-ifNotPlayerHasBuff=battleShout",
+      "berserk-ifInCooldown=overpower-ifPlayer<26rage",
+      "execute-ifUsable=execute",
+      "bloodthirst",
+      "whirlwind-ifTargetDodged-ifNotInCooldown=overpower-ifPlayer>30rage-ifNotLastUsed>5s=bloodthirst",
+      "battle-ifTargetDodged-ifNotUsable=execute-ifNotInCooldown=overpower-ifPlayer<55rage-ifPlayer>13rage-ifNotLastUsed>4.5s=bloodthirst",
+      "overpower",
+      "berserk-ifInCooldown=overpower",
+      "berserk-ifLastUsed>5s=battle",
+      "whirlwind-ifPlayer>55rage-ifPlayerInCombat-ifNotLastUsed>5s=bloodthirst",
+      "heroicStrike-ifPlayer>60rage",
+      "hamstring-ifPlayer>55rage-ifNotLastUsed>4.5s=bloodthirst-ifNotLastUsed>9.5s=whirlwind"
+   }
+
+   lazyWarrior.defaultForms.fury_no_ww = {
+      "berserk-ifNotTargetDodged",
+      "berserkerRage-ifPlayerIs=Feared",
+      "stopAll-ifTargetIs=CCd",
+      "pummel-ifTargetIsCasting-ifCtrlDown",
+      "battleShout-ifNotPlayerHasBuff=battleShout",
+      "berserk-ifInCooldown=overpower-ifPlayer<26rage",
+      "execute-ifUsable=execute",
+      "bloodthirst",
+      "battle-ifTargetDodged-ifNotUsable=execute-ifNotInCooldown=overpower-ifPlayer<55rage-ifPlayer>13rage-ifNotLastUsed>4.5s=bloodthirst",
+      "overpower",
+      "berserk-ifInCooldown=overpower",
+      "berserk-ifLastUsed>5s=battle",
+      "heroicStrike-ifPlayer>60rage",
+      "hamstring-ifPlayer>55rage-ifNotLastUsed>4.5s=bloodthirst-ifNotLastUsed>9.5s=whirlwind"
+   }
+
+   lazyWarrior.defaultForms.fury_cleave = {
+      "berserk",
+      "berserkerRage-ifPlayerIs=Feared",
+      "stopAll-ifTargetIs=CCd",
+      "pummel-ifTargetIsCasting-ifCtrlDown",
+      "pummel-ifTargetIsCasting-ifTargetNamed=Eye%sTentacle",
+      "battleShout-ifNotPlayerHasBuff=battleShout",
+      "execute-ifUsable=execute",
+      "bloodthirst",
+      "whirlwind-ifTargetDodged-ifNotInCooldown=overpower-ifPlayer>30rage-ifNotLastUsed>5s=bloodthirst",
+      "berserk-ifInCooldown=overpower",
+      "berserk-ifLastUsed>5s=battle",
+      "whirlwind-ifPlayer>55rage-ifPlayerInCombat-ifNotLastUsed>5s=bloodthirst",
+      "cleave-ifPlayer>60rage",
+      "--hamstring-ifPlayer>55rage-ifNotLastUsed>4.5s=bloodthirst-ifNotLastUsed>9.5s=whirlwind"
+   }
    -- Custom data
    ---------------
    -- Place any other tables of data unique to the class here.

@@ -18,17 +18,19 @@ local function onEvent()
 		"BlessingofWisdom", -- 15 min
 		"Spell_Fire_Incinerate" -- ironfoe
 	}
-	if BUB_isShieldEquipped() and UnitClass("player") == "Warrior" then
-		table.insert(warrior, "SealOfSalvation")
-	end
 	if UnitClass("player") == "Warrior" then
+		if BUB_isShieldEquipped() then
+			table.insert(warrior, "SealOfSalvation")
+		else
+			-- fury warrior specific things? remove inspiration etc?
+		end
 		buffs = warrior
 	end
 	-- end of warrior stuffs
 
-	if event == "PLAYER_AURAS_CHANGED" or event == "UNIT_INVENTORY_CHANGED" then
+	-- if event == "PLAYER_AURAS_CHANGED" or event == "UNIT_INVENTORY_CHANGED" then
 		BUB_removeBuffs(buffs)
-	end
+	-- end
 end
 
 -- register event and handler

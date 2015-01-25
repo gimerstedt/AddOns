@@ -659,7 +659,7 @@ function lazyScript.CheckDodgeParryBlockResist(unitId, event, arg1)
    if dodged and dodgedSpell and parried and parriedSpell and blocked and blockedSpell and resistedSpell then
       local now = GetTime()
       if string.find(arg1, dodged) or string.find(arg1, dodgedSpell) then
-         lazyScript.lastDodgeTime[unitId] = now
+         lazyScript.lastDodgeTime[unitId] = now - 1.5 -- for gcd on overpower
          lazyScript.d(unitId.." dodge detected at "..now)
       elseif string.find(arg1, parried) or string.find(arg1, parriedSpell) then
          lazyScript.lastParryTime[unitId] = now
