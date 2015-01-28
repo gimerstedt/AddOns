@@ -20,7 +20,7 @@ local function onEvent()
 	}
 	if UnitClass("player") == "Warrior" then
 		if BUB_isShieldEquipped() then
-			table.insert(warrior, "SealOfSalvation")
+			table.insert(warrior, "fSalvation")
 		else
 			-- fury warrior specific things? remove inspiration etc?
 		end
