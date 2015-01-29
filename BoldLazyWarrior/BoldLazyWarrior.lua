@@ -12,12 +12,10 @@ end
 SLASH_FURY_BATTLE_ROTATION1 = '/fbr'
 function SlashCmdList.FURY_BATTLE_ROTATION()
 	if not UnitExists("target") then
-		return
+		TargetNearestEnemy()
 	end
 
-	-- if not IsCurrentAction(61) then -- TODO need to enable auto attack
-	-- 	UseAction(61)
-	-- end
+	BLW_EnableAttack()
 
 	_,_,battle,_ = GetShapeshiftFormInfo(1)
 	_,_,berserk, _ = GetShapeshiftFormInfo(3)
@@ -58,6 +56,23 @@ function SlashCmdList.FURY_BATTLE_ROTATION()
 		end
 	else
 		CastSpellByName("Battle Stance")
+	end
+end
+
+function BLW_EnableAttack()
+	if not BLW_AttackAction then
+		for i = 1, 120 do
+			if IsAttackAction(i) then
+				BLW_AttackAction = i
+			end
+		end
+	end
+	if BLW_AttackAction then
+		if not IsCurrentAction(BLW_AttackAction)
+			then UseAction(BLW_AttackAction)
+		end
+	else
+		BC.m("You need to put your attack ability on one of your action bars!")
 	end
 end
 
