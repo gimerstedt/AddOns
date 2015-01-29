@@ -9,12 +9,15 @@ local function onEvent()
 	-- future use
 end
 
--- announce challenging shout with a command instead...to cut down on code
 SLASH_FURY_BATTLE_ROTATION1 = '/fbr'
 function SlashCmdList.FURY_BATTLE_ROTATION()
 	if not UnitExists("target") then
 		return
 	end
+
+	-- if not IsCurrentAction(61) then -- TODO need to enable auto attack
+	-- 	UseAction(61)
+	-- end
 
 	_,_,battle,_ = GetShapeshiftFormInfo(1)
 	_,_,berserk, _ = GetShapeshiftFormInfo(3)
@@ -24,8 +27,8 @@ function SlashCmdList.FURY_BATTLE_ROTATION()
 	end
 
 	if battle then
-		if UnitHealth("target") < 20 then
-			if UnitMana("player") > 10 and not UnitIsDead("target") then
+		if BLW_HP() < 20 then
+			if UnitMana("player") > 10 and UnitIsDead("target") ~= 1 then
 				CastSpellByName("Berserker Stance")
 			else
 				CastSpellByName("Execute")
@@ -42,13 +45,13 @@ function SlashCmdList.FURY_BATTLE_ROTATION()
 			CastSpellByName("Heroic Strike")
 		end
 		if UnitMana("player") > 42 then
-			CastSpellByName("Heroic Strike") -- need timer here to use HS when BT is early on in CD
+			CastSpellByName("Heroic Strike")
 			if UnitMana("player") > 52 and BLW_TimeSinceBT() < 5 then
 				CastSpellByName("Hamstring")
 			end
 		end
 	elseif berserk then
-		if UnitHealth("target") < 20 then
+		if BLW_HP() < 20 then
 			CastSpellByName("Execute")
 		else
 			CastSpellByName("Battle Stance")
@@ -56,6 +59,12 @@ function SlashCmdList.FURY_BATTLE_ROTATION()
 	else
 		CastSpellByName("Battle Stance")
 	end
+end
+
+function BLW_HP(unit)
+	local unit = unit or "target"
+	local percent = (UnitHealth(unit) / UnitHealthMax(unit)) * 100
+	return percent
 end
 
 function BLW_HasBuff(textureName)
