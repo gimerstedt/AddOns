@@ -1,13 +1,10 @@
 -- only load for warriors
 if UnitClass("player") ~= "Warrior" then return end
 
--- timers
-lastBT = 0
-
--- event handler
-local function onEvent()
-	-- future use
-end
+-- vars
+BLW = {}
+BLW.lastBT = 0
+BLW.BTId = BLW_GetSpellId("Bloodthirst", 4)
 
 SLASH_FURY_BATTLE_ROTATION1 = '/fbr'
 function SlashCmdList.FURY_BATTLE_ROTATION()
@@ -32,8 +29,8 @@ function SlashCmdList.FURY_BATTLE_ROTATION()
 				CastSpellByName("Execute")
 			end
 		end
-		if UnitMana("player") > 30 and not BLW_BloodthirstCD() then
-			lastBT = GetTime()
+		if UnitMana("player") > 30 and not BLW_OnCD(BLW.BTId) then
+			BLW.lastBT = GetTime()
 			CastSpellByName("Bloodthirst")
 		end
 		if UnitMana("player") < 30 or BLW_TimeSinceBT() < 5 then
@@ -59,52 +56,10 @@ function SlashCmdList.FURY_BATTLE_ROTATION()
 	end
 end
 
-function BLW_EnableAttack()
-	if not BLW_AttackAction then
-		for i = 1, 120 do
-			if IsAttackAction(i) then
-				BLW_AttackAction = i
-			end
-		end
-	end
-	if BLW_AttackAction then
-		if not IsCurrentAction(BLW_AttackAction)
-			then UseAction(BLW_AttackAction)
-		end
-	else
-		BC.m("You need to put your attack ability on one of your action bars!")
-	end
-end
-
-function BLW_HP(unit)
-	local unit = unit or "target"
-	local percent = (UnitHealth(unit) / UnitHealthMax(unit)) * 100
-	return percent
-end
-
-function BLW_HasBuff(textureName)
-	local i = 1
-	local hasBuff = false;
-	while UnitBuff("player", i) do
-		local texture = UnitBuff("player", i)
-		if string.find(texture, textureName) then
-			hasBuff = true
-		end
-		i = i + 1
-	end
-	return hasBuff
-end
-
-function BLW_TimeSinceBT()
-	return GetTime() - lastBT
-end
-
-function BLW_BloodthirstCD()
-	if GetSpellCooldown(BLW_GetSpellId("Bloodthirst", 1), "spell") == 0 then
-		return false
-	end
-	return true
-end
+-- event handler
+-- local function onEvent()
+	-- future use
+-- end
 
 -- register event and handler
 -- local f = CreateFrame("frame")
@@ -113,45 +68,3 @@ end
 -- f:RegisterEvent("CHAT_MSG_SPELL_DAMAGESHIELDS_ON_SELF")
 -- --f:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_CREATURE_DAMAGE")
 -- f:SetScript("OnEvent", onEvent)
-
--- future use
-function BLW_GetSpellId(SpellName, SpellRank)
-	local B = "spell"
-	local SpellID = nil
-	if SpellName then
-		local SpellCount = 0
-		local ReturnName = nil
-		local ReturnRank = nil
-		while SpellName ~= ReturnName do
-			SpellCount = SpellCount + 1
-			ReturnName, ReturnRank = GetSpellName(SpellCount, B)
-			if not ReturnName then
-				break
-			end
-		end
-		while SpellName == ReturnName do
-			if SpellRank then
-				if SpellRank == 0 then
-					return SpellCount
-				elseif ReturnRank and ReturnRank ~= "" then
-					local found, _, Rank = string.find(ReturnRank, "(%d+)")
-					if found then
-						ReturnRank = tonumber(Rank)
-					else
-						ReturnRank = 1
-					end
-				else
-					ReturnRank = 1
-				end
-				if SpellRank == ReturnRank then
-					return SpellCount
-				end
-			else
-				SpellID = SpellCount
-			end
-			SpellCount = SpellCount + 1
-			ReturnName, ReturnRank = GetSpellName(SpellCount, B)
-		end
-	end
-	return SpellID
-end
