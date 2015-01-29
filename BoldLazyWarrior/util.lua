@@ -24,22 +24,61 @@ function BLW_HP(unit)
 end
 
 -- boolean if has buff
-function BLW_HasBuff(textureName)
+function BLW_HasBuff(unit, textureName)
 	local i = 1
-	local hasBuff = false;
-	while UnitBuff("player", i) do
-		local texture = UnitBuff("player", i)
+	while UnitBuff(unit, i) do
+		local texture = UnitBuff(unit, i)
 		if string.find(texture, textureName) then
-			hasBuff = true
+			return true
 		end
 		i = i + 1
 	end
-	return hasBuff
+	return false
 end
+
+-- boolean if has buff
+function BLW_HasDebuff(unit, textureName)
+	local i = 1
+	while UnitDebuff(unit, i) do
+		local texture, applications = UnitDebuff(unit, i)
+		if string.find(texture, textureName) then
+			return applications
+		end
+		i = i + 1
+	end
+	return 0
+end
+
+-- 	local i = 1
+-- 	local hasDebuff = false;
+-- 	while UnitDebuff(unit, i) do
+-- 		local texture = UnitDebuff(unit, i)
+-- 		if string.find(texture, textureName) then
+-- 			hasDebuff = true
+-- 		end
+-- 		i = i + 1
+-- 	end
+-- 	return hasDebuff
+-- /run local a, b = UnitDebuff("player", 1) BC.m("a: "..a.."b: "..b)
+-- function Zorlen_GetDebuffStack(debuff, unit, dispelable, SpellName, SpellToolTipLineTwo)
+-- 	local u = unit or "target"
+-- 	local index = Zorlen_GiveDebuffIndex(debuff, u, dispelable, SpellName, SpellToolTipLineTwo)
+-- 	if index then
+-- 		local texture, applications = UnitDebuff(u, index)
+-- 		return applications
+-- 	end
+-- 	return 0
+-- end
+-- end
 
 -- return time since last BT
 function BLW_TimeSinceBT()
 	return GetTime() - BLW.lastBT
+end
+
+-- return time since last BT
+function BLW_TimeSinceSS()
+	return GetTime() - BLW.lastSS
 end
 
 -- is BT on CD?
