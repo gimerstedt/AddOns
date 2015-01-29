@@ -91,3 +91,11 @@ function BLW_GetSpellId(SpellName, SpellRank)
 	end
 	return SpellID
 end
+
+-- get bools for stances
+function BLW_GetStances()
+	local _,_,battle,_ = GetShapeshiftFormInfo(1)
+	local _,_,defensive, _ = GetShapeshiftFormInfo(2)
+	local _,_,berserk, _ = GetShapeshiftFormInfo(3)
+	return battle, defensive, berserk
+end

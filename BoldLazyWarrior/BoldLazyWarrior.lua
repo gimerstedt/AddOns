@@ -8,19 +8,22 @@ BLW.BTId = BLW_GetSpellId("Bloodthirst", 4)
 
 SLASH_FURY_BATTLE_ROTATION1 = '/fbr'
 function SlashCmdList.FURY_BATTLE_ROTATION()
+	-- target something if nothing is targeted.
 	if not UnitExists("target") then
 		TargetNearestEnemy()
 	end
 
+	-- attack!
 	BLW_EnableAttack()
+	-- bools for stances.
+	local battle, _, berserk = BLW_GetStances()
 
-	_,_,battle,_ = GetShapeshiftFormInfo(1)
-	_,_,berserk, _ = GetShapeshiftFormInfo(3)
-
+	-- keep battle shout up.
 	if not BLW_HasBuff("BattleShout") then
 		CastSpellByName("Battle Shout")
 	end
 
+	-- main if
 	if battle then
 		if BLW_HP() < 20 then
 			if UnitMana("player") > 10 and UnitIsDead("target") ~= 1 then
