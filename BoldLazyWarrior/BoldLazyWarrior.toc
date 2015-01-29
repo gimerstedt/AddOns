@@ -1,0 +1,8 @@
+## Interface: 11200
+## Title: |cffffaaffBold|rLazyWarrior
+## Notes: Warrior rotations
+## Author: Boldilocks
+## Version: 0.2
+## Dependencies: BoldCommon
+
+BoldLazyWarrior.lua
