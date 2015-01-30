@@ -2,6 +2,7 @@
 if UnitClass("player") ~= "Warrior" then return end
 
 -- vars
+BLW.debug = true
 BLW.prep = "[BLW] "
 BLW.lastBT = 0
 BLW.lastSS = 0
@@ -22,7 +23,9 @@ function SlashCmdList.BLW_ROTATION(rotation)
 	elseif rotation == "nf" then
 		BLW.NightfallRotation()
 	elseif rotation == "pd" then
-		BLW.ProtDPSRotation()
+		BLW.ProtDPSRotation(true)
+	elseif rotation == "pdhs" then
+		BLW.ProtDPSRotation(false)
 	else
 		BC.m("BoldLazyWarrior", BLW.prep)
 		BC.m("/blw fbr", BLW.prep, 1, 1, 0.3)
@@ -36,7 +39,9 @@ function SlashCmdList.BLW_ROTATION(rotation)
 		BC.m("/blw nf", BLW.prep, 1, 1, 0.3)
 		BC.m("A Nightfall rotation.", BLW.prep)
 		BC.m("/blw pd", BLW.prep, 1, 1, 0.3)
-		BC.m("A protection dps rotation.", BLW.prep)
+		BC.m("A protection dps rotation (prio hamstring).", BLW.prep)
+		BC.m("/blw pdhs", BLW.prep, 1, 1, 0.3)
+		BC.m("A protection dps rotation (prio heroic strike).", BLW.prep)
 	end
 end
 
@@ -58,7 +63,7 @@ function BLW.BattleRotation(battleOnly)
 	-- main if
 	if battle then
 		if BLW.HP() < 20 then
-			if not battleOnly and UnitMana("player") > 10 and UnitIsDead("target") ~= 1 then
+			if not battleOnly and UnitMana("player") < 10 and UnitIsDead("target") ~= 1 then
 				CastSpellByName("Berserker Stance")
 			else
 				if battleOnly then
@@ -189,7 +194,7 @@ function BLW.NightfallRotation()
 end
 
 -- prot DEEEPS.
-function BLW.ProtDPSRotation()
+function BLW.ProtDPSRotation(prioHamstring)
 	if not UnitExists("target") then
 		TargetNearestEnemy()
 	end
@@ -199,27 +204,44 @@ function BLW.ProtDPSRotation()
 	-- keep battle shout up.
 	BLW.BattleShout(99)
 
+	-- main if
 	if battle then
-		CastSpellByName("OverPower")
-	else
+		if BLW.HP() < 20 and not UnitIsDead("target") then
+			if UnitMana("player") < 10 then
+				CastSpellByName("Berserker Stance")
+			else
+				CastSpellByName("Execute")
+			end
+		end
+		CastSpellByName("overpower")
+		if BLW.OnCD(BLW.OPId) or (GetTime() - BLW.targetDodgedAt) > 5 then
+			CastSpellByName("Berserker Stance")
+		end
+	elseif berserk then
+		if BLW.HP() < 20 then
+			CastSpellByName("Execute")
+		end
+		-- TODO: not sure it's working all that well.
+		if UnitClassification("target") ~= "worldboss" and (GetTime() - BLW.targetCastedAt) < 3 then
+			CastSpellByName("Pummel")
+		end
 		CastSpellByName("Whirlwind")
-	end
-
-	if GetTime() - BLW.targetDodgedAt > 5 or BLW.OnCD(BLW.OPId) then
+		if (BLW.OnCD(BLW.WWId) or UnitMana("player") < 25) and (GetTime() - BLW.targetDodgedAt) < 4 and not BLW.OnCD(BLW.OPId) then
+			CastSpellByName("Battle Stance")
+		end
+		local hamstringRage, HSRage = 52, 42
+		if prioHamstring then
+			hamstringRage, HSRage = 42, 52
+		end
+		if UnitMana("player") > hamstringRage then
+			CastSpellByName("Hamstring")
+		end
+		if UnitMana("player") > HSRage then
+			CastSpellByName("Heroic Strike")
+		end
+	else
 		CastSpellByName("Berserker Stance")
 	end
-
-	if (GetTime() - BLW.targetDodgedAt) < 3.5 and not BLW.OnCD(BLW.OPId) then
-		CastSpellByName("Battle Stance")
-	end
-
-	-- interrupt, needs work.
-	if berserk and UnitClassification("target") ~= "worldboss" and (GetTime() - BLW.targetCastedAt) < 3 then
-		CastSpellByName("Pummel")
-	end
-
-	CastSpellByName("Hamstring")
-
 end
 
 -- event handler.
@@ -228,13 +250,13 @@ local function onEvent()
 		BLW.BTId = BLW.GetSpellId("Bloodthirst", 1)
 		BLW.SSId = BLW.GetSpellId("Shield Slam", 1)
 		BLW.OPId = BLW.GetSpellId("Overpower", 4)
+		BLW.WWId = BLW.GetSpellId("Whirlwind", 1)
 	elseif (event == "CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE" or
 		event == "CHAT_MSG_SPELL_CREATURE_VS_CREATURE_BUFF" or
 		event == "CHAT_MSG_SPELL_HOSTILEPLAYER_DAMAGE" or
 		event == "CHAT_MSG_SPELL_HOSTILEPLAYER_BUFF") then
 		BLW.CheckCasting(arg1)
 	elseif event == "CHAT_MSG_COMBAT_SELF_MISSES" or event == "CHAT_MSG_SPELL_SELF_DAMAGE" then
-		BC.m("Event triggered")
 		BLW.CheckDodge(arg1)
 	end
 end
@@ -260,4 +282,5 @@ BINDING_NAME_BLW_FURYTANK = "Default Tank rotation (fury)"
 BINDING_NAME_BLW_NIGHTFALL = "Nightfall Rotation"
 BINDING_NAME_BLW_BATTLENOZERK = "Fury Battle Stance rotation (OP during execute)"
 BINDING_NAME_BLW_BATTLEZERK = "Fury Battle Stance rotation"
-BINDING_NAME_BLW_PROTDPS = "Protection DPS rotation"
+BINDING_NAME_BLW_PROTDPS = "Protection DPS rotation (hamstring)"
+BINDING_NAME_BLW_PROTDPSHS = "Protection DPS rotation (heroic strike)"

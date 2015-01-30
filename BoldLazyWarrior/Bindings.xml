@@ -15,6 +15,9 @@
     BLW.BattleRotation(false)
   </Binding>
   <Binding name="BLW_PROTDPS">
+    BLW.ProtDPSRotation(true)
+  </Binding>
+  <Binding name="BLW_PROTDPSHS">
     BLW.ProtDPSRotation(false)
   </Binding>
 </Bindings>

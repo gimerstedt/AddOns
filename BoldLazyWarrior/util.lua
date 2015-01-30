@@ -93,6 +93,9 @@ function BLW.CheckCasting(arg1)
 		for idx, pat in ipairs({ spellCastOtherStart, spellPerformOtherStart }) do
 			for mob, spell in string.gfind(arg1, pat) do
 				if (mob == tName) then
+					if BLW.debug then
+						BC.m("Target started casting!")
+					end
 					BLW.targetCastedAt = GetTime()
 				end
 			end
@@ -113,6 +116,9 @@ function BLW.CheckDodge(arg1)
 		local _,_,dodgeTarget = string.find(arg1, targetDodgedString)
 		local _,_,dodgeTarget2 = string.find(arg1, targetDodgedString2)
 		if dodgeTarget == tName or dodgeTarget2 == tName then
+			if BLW.debug then
+				BC.m("Target dodged!")
+			end
 			BLW.targetDodgedAt = GetTime()
 		end
 	end
