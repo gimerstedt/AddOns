@@ -5,5 +5,5 @@
 ## Version: 0.2
 ## Dependencies: BoldCommon
 
-util.lua
+Util.lua
 BoldLazyWarrior.lua

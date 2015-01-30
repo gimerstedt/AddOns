@@ -1,15 +1,17 @@
+BLW = {}
+
 -- enable auto attack
-function BLW_EnableAttack()
-	if not BLW_AttackAction then
+function BLW.EnableAttack()
+	if not BLW.AttackAction then
 		for i = 1, 120 do
 			if IsAttackAction(i) then
-				BLW_AttackAction = i
+				BLW.AttackAction = i
 			end
 		end
 	end
-	if BLW_AttackAction then
-		if not IsCurrentAction(BLW_AttackAction)
-			then UseAction(BLW_AttackAction)
+	if BLW.AttackAction then
+		if not IsCurrentAction(BLW.AttackAction)
+			then UseAction(BLW.AttackAction)
 		end
 	else
 		BC.m("You need to put your attack ability on one of your action bars!")
@@ -17,14 +19,14 @@ function BLW_EnableAttack()
 end
 
 -- hp of target in percent
-function BLW_HP(unit)
+function BLW.HP(unit)
 	local unit = unit or "target"
 	local percent = (UnitHealth(unit) / UnitHealthMax(unit)) * 100
 	return percent
 end
 
 -- boolean if has buff
-function BLW_HasBuff(unit, textureName)
+function BLW.HasBuff(unit, textureName)
 	local i = 1
 	while UnitBuff(unit, i) do
 		local texture = UnitBuff(unit, i)
@@ -37,7 +39,7 @@ function BLW_HasBuff(unit, textureName)
 end
 
 -- boolean if has buff
-function BLW_HasDebuff(unit, textureName)
+function BLW.HasDebuff(unit, textureName)
 	local i = 1
 	while UnitDebuff(unit, i) do
 		local texture, applications = UnitDebuff(unit, i)
@@ -49,48 +51,71 @@ function BLW_HasDebuff(unit, textureName)
 	return 0
 end
 
--- 	local i = 1
--- 	local hasDebuff = false;
--- 	while UnitDebuff(unit, i) do
--- 		local texture = UnitDebuff(unit, i)
--- 		if string.find(texture, textureName) then
--- 			hasDebuff = true
--- 		end
--- 		i = i + 1
--- 	end
--- 	return hasDebuff
--- /run local a, b = UnitDebuff("player", 1) BC.m("a: "..a.."b: "..b)
--- function Zorlen_GetDebuffStack(debuff, unit, dispelable, SpellName, SpellToolTipLineTwo)
--- 	local u = unit or "target"
--- 	local index = Zorlen_GiveDebuffIndex(debuff, u, dispelable, SpellName, SpellToolTipLineTwo)
--- 	if index then
--- 		local texture, applications = UnitDebuff(u, index)
--- 		return applications
--- 	end
--- 	return 0
--- end
--- end
-
 -- return time since last BT
-function BLW_TimeSinceBT()
+function BLW.TimeSinceBT()
 	return GetTime() - BLW.lastBT
 end
 
 -- return time since last BT
-function BLW_TimeSinceSS()
+function BLW.TimeSinceSS()
 	return GetTime() - BLW.lastSS
 end
 
+-- return time since last SS or BT
+function BLW.TimeSinceSS()
+	return GetTime() - BLW.lastSSBT
+end
+
 -- is BT on CD?
-function BLW_OnCD(spellId)
+function BLW.OnCD(spellId)
 	if GetSpellCooldown(spellId, "spell") == 0 then
 		return false
 	end
 	return true
 end
 
+-- cast battle shout
+function BLW.BattleShout(hp)
+	if hp == nil then
+		hp = 80
+	end
+	if BLW.HP() < hp and not BLW.HasBuff("player", "BattleShout") then
+		CastSpellByName("Battle Shout")
+	end
+end
+
+-- parse log for spells cast by target
+function BLW.CheckCasting(arg1)
+	local tName = UnitName("target")
+	local spellCastOtherStart = "(.+) begins to cast (.+)."
+	local spellPerformOtherStart = "(.+) begins to perform (.+)."
+	if (tName) then
+		for idx, pat in ipairs({ spellCastOtherStart, spellPerformOtherStart }) do
+			for mob, spell in string.gfind(arg1, pat) do
+				if (mob == tName) then
+					BLW.targetCastedAt = GetTime()
+				end
+			end
+		end
+	end
+end
+
+-- "You attack%. .+ dodges%."
+function BLW.CheckDodge(arg1)
+	local tName = UnitName("target")
+	local targetDodgedString = "You attack%. .+ dodges%."
+	if (tName) then
+		for mob, spell in string.gfind(arg1, targetDodgedString) do
+			if (mob == tName) then
+				BC.m("DODGE!!!")
+				BLW.targetDodgedAt = GetTime()
+			end
+		end
+	end
+end
+
 -- get spell id from spell book
-function BLW_GetSpellId(SpellName, SpellRank)
+function BLW.GetSpellId(SpellName, SpellRank)
 	local B = "spell"
 	local SpellID = nil
 	if SpellName then
@@ -132,7 +157,7 @@ function BLW_GetSpellId(SpellName, SpellRank)
 end
 
 -- get bools for stances
-function BLW_GetStances()
+function BLW.GetStances()
 	local _,_,battle,_ = GetShapeshiftFormInfo(1)
 	local _,_,defensive, _ = GetShapeshiftFormInfo(2)
 	local _,_,berserk, _ = GetShapeshiftFormInfo(3)
