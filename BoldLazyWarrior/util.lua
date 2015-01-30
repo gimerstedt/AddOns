@@ -100,16 +100,20 @@ function BLW.CheckCasting(arg1)
 	end
 end
 
--- "You attack%. .+ dodges%."
+-- /run a, b, c = string.find("You attack. Black Dragonspawn dodges.", "You attack%. (.+) dodges%.") BC.m(c)
+-- /run a, b, c = string.find("Your Hamstring was dodged by Firegut Ogre Mage.", "Your .+ was dodged by (.+)%.") BC.m(c)
+-- /run if string.find("You attack. Black Dragonspawn dodges.", "You attack%. .+ dodges%.") then BC.m(s) end
+
+-- "You attack%. .+ dodges%." 
 function BLW.CheckDodge(arg1)
 	local tName = UnitName("target")
-	local targetDodgedString = "You attack%. .+ dodges%."
+	local targetDodgedString = "You attack%. (.+) dodges%."
+	local targetDodgedString2 = "Your .+ was dodged by (.+)%."
 	if (tName) then
-		for mob, spell in string.gfind(arg1, targetDodgedString) do
-			if (mob == tName) then
-				BC.m("DODGE!!!")
-				BLW.targetDodgedAt = GetTime()
-			end
+		local _,_,dodgeTarget = string.find(arg1, targetDodgedString)
+		local _,_,dodgeTarget2 = string.find(arg1, targetDodgedString2)
+		if dodgeTarget == tName or dodgeTarget2 == tName then
+			BLW.targetDodgedAt = GetTime()
 		end
 	end
 end
