@@ -1,6 +1,6 @@
 -- event handler
 local function onEvent()
-	if not UnitBuff("player", 20) then return end -- do nothing unless 20 buffs
+	if not UnitBuff("player", 1) then return end -- do nothing unless 20 buffs
 	local buffs = {}
 
 	-- warrior buffs, just copy paste for new classes and swap names...

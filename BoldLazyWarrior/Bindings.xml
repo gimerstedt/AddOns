@@ -1,0 +1,17 @@
+<Bindings>
+  <Binding name="BLW_PROTTANK" header="BLW">
+    BLW.DefaultTankRotation("prot");
+  </Binding>
+  <Binding name="BLW_FURYTANK">
+    BLW.DefaultTankRotation("fury");
+  </Binding>
+  <Binding name="BLW_NIGHTFALL">
+    BLW.NightfallRotation()
+  </Binding>
+  <Binding name="BLW_BATTLENOZERK">
+    BLW.BattleRotation(true)
+  </Binding>
+  <Binding name="BLW_BATTLEZERK">
+    BLW.BattleRotation(false)
+  </Binding>
+</Bindings>

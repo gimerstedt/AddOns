@@ -6,8 +6,6 @@ BLW.prep = "[BLW] "
 BLW.lastBT = 0
 BLW.lastSS = 0
 BLW.lastSSBT = 0
-BLW.BTId = BLW.GetSpellId("Bloodthirst", 4)
-BLW.SSId = BLW.GetSpellId("Shield Slam", 4)
 BLW.targetCastedAt = 0
 BLW.targetDodgedAt = 0
 
@@ -105,7 +103,6 @@ function BLW.DefaultTankRotation(spec)
 		SSBTCost = 20
 		SSBTId = BLW.SSId
 		SSBT = "Shield Slam"
-		BC.m(SSBTId.." "..BLW.SSId)
 	end
 
 	-- target something if nothing is targeted.
@@ -202,7 +199,10 @@ end
 
 -- event handler.
 local function onEvent()
-	if (event == "CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE" or
+	if event == "PLAYER_LOGIN" then
+		BLW.BTId = BLW.GetSpellId("Bloodthirst", 1)
+		BLW.SSId = BLW.GetSpellId("Shield Slam", 1)
+	elseif (event == "CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE" or
 		event == "CHAT_MSG_SPELL_CREATURE_VS_CREATURE_BUFF" or
 		event == "CHAT_MSG_SPELL_HOSTILEPLAYER_DAMAGE" or
 		event == "CHAT_MSG_SPELL_HOSTILEPLAYER_BUFF") then
@@ -218,4 +218,12 @@ f:RegisterEvent("CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE")
 f:RegisterEvent("CHAT_MSG_SPELL_CREATURE_VS_CREATURE_BUFF")
 f:RegisterEvent("CHAT_MSG_SPELL_HOSTILEPLAYER_DAMAGE")
 f:RegisterEvent("CHAT_MSG_SPELL_HOSTILEPLAYER_BUFF")
+f:RegisterEvent("PLAYER_LOGIN")
 f:SetScript("OnEvent", onEvent)
+
+BINDING_HEADER_BLW = "BoldLazyWarrior"
+BINDING_NAME_BLW_PROTTANK = "Default Tank Rotation (prot)"
+BINDING_NAME_BLW_FURYTANK = "Default Tank Rotation (fury)"
+BINDING_NAME_BLW_NIGHTFALL = "Nightfall Rotation"
+BINDING_NAME_BLW_BATTLENOZERK = "Fury rotation in Battle Stance (OP during execute)"
+BINDING_NAME_BLW_BATTLEZERK = "Fury rotation in Battle Stance"
