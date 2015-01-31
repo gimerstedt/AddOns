@@ -26,6 +26,12 @@ function SlashCmdList.BLW_ROTATION(rotation)
 		BLW.ProtDPSRotation(true)
 	elseif rotation == "pdhs" then
 		BLW.ProtDPSRotation(false)
+	elseif rotation == "fnhs" then
+		BLW.FuryNormal(false)
+	elseif rotation == "fnham" then
+		BLW.FuryNormal(true)
+	elseif rotation == "faoe" then
+		BLW.FuryAoE()
 	else
 		BC.c("/blw fbr", BLW.prep)
 		BC.m("A fury rotation in battle stance.", BLW.prep)
@@ -41,8 +47,12 @@ function SlashCmdList.BLW_ROTATION(rotation)
 		BC.m("A protection dps rotation (prio hamstring).", BLW.prep)
 		BC.c("/blw pdhs", BLW.prep)
 		BC.m("A protection dps rotation (prio heroic strike).", BLW.prep)
-		BC.c("/blw fn", BLW.prep)
-		BC.m("A normal fury rotation.", BLW.prep)
+		BC.c("/blw fnhs", BLW.prep)
+		BC.m("A normal fury rotation (prio hamstring).", BLW.prep)
+		BC.c("/blw fnham", BLW.prep)
+		BC.m("A normal fury rotation (prio heroic strike).", BLW.prep)
+		BC.c("/blw faoe", BLW.prep)
+		BC.m("A fury multi-target rotation.", BLW.prep)
 	end
 end
 
@@ -285,10 +295,13 @@ function BLW.FuryNormal(prioHamstring)
 			BLW.lastBT = GetTime()
 			CastSpellByName("Bloodthirst")
 		end
-		if rage > 40 and CheckInteractDistance("target", 3) and BLW.TimeSinceBT() < 3 then
+		if rage > 29 and CheckInteractDistance("target", 3) and BLW.TimeSinceBT() < 2 then
 			CastSpellByName("Whirlwind")
 		end
-		if rage > 55 and CheckInteractDistance("target", 3) and BLW.TimeSinceBT() < 4 then
+		if rage > 39 and CheckInteractDistance("target", 3) and BLW.TimeSinceBT() < 3 then
+			CastSpellByName("Whirlwind")
+		end
+		if rage > 54 and CheckInteractDistance("target", 3) and BLW.TimeSinceBT() < 4 then
 			CastSpellByName("Whirlwind")
 		end
 		if BLW.OnCD(BLW.BTId) or rage < 25 then
@@ -313,6 +326,31 @@ function BLW.FuryNormal(prioHamstring)
 		end
 		if rage > HSRage then
 			CastSpellByName("Heroic Strike")
+		end
+	else
+		CastSpellByName("Berserker Stance")
+	end
+end
+
+-- fury normal.
+function BLW.FuryAoE()
+	if not UnitExists("target") then
+		TargetNearestEnemy()
+	end
+	BC.EnableAttack()
+	local _, _, berserk = BLW.GetStances()
+	local rage = UnitMana("player")
+
+	-- keep battle shout up.
+	BLW.BattleShout(99)
+
+	-- main if
+	if berserk then
+		if CheckInteractDistance("target", 3) then
+			CastSpellByName("Whirlwind")
+		end
+		if rage > 45 then
+			CastSpellByName("Cleave")
 		end
 	else
 		CastSpellByName("Berserker Stance")
@@ -359,4 +397,6 @@ BINDING_NAME_BLW_BATTLENOZERK = "Fury Battle Stance rotation (OP during execute)
 BINDING_NAME_BLW_BATTLEZERK = "Fury Battle Stance rotation"
 BINDING_NAME_BLW_PROTDPS = "Protection DPS rotation (hamstring)"
 BINDING_NAME_BLW_PROTDPSHS = "Protection DPS rotation (heroic strike)"
-BINDING_NAME_BLW_FURYNORMAL = "Normal fury rotation"
+BINDING_NAME_BLW_FURYNORMAL = "Normal fury rotation (heroic strike)"
+BINDING_NAME_BLW_FURYNORMALHAMSTRING = "Normal fury rotation (hamstring)"
+BINDING_NAME_BLW_FURYAOE = "Fury Multi-target"

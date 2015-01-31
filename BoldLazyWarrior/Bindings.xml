@@ -23,4 +23,10 @@
   <Binding name="BLW_FURYNORMAL">
     BLW.FuryNormal(false)
   </Binding>
+  <Binding name="BLW_FURYNORMALHAMSTRING">
+    BLW.FuryNormal(true)
+  </Binding>
+  <Binding name="BLW_FURYAOE">
+    BLW.FuryAoE()
+  </Binding>
 </Bindings>
