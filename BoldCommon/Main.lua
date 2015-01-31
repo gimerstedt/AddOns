@@ -24,6 +24,8 @@ function SlashCmdList.BOLDCOMMON()
 	BC.m("Sit/stand up repeatedly for no good reason.", BC.prep)
 	BC.c("/meep", BC.prep)
 	BC.m("MasterLootBug helper, README for deets.", BC.prep)
+	BC.c("/home", BC.prep)
+	BC.m("Unstuck.", BC.prep)
 end
 
 -- automatic cthun run in order.
@@ -84,4 +86,10 @@ end
 SLASH_MLBUG1 = '/meep'
 function SlashCmdList.MLBUG()
 	MasterLootBug()
+end
+
+-- unstuck>
+SLASH_UNSTUCK1 = '/home'
+function SlashCmdList.UNSTUCK()
+	Stuck()
 end

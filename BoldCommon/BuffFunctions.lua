@@ -54,9 +54,35 @@ function ReportBuffsOnTarget(showTextureNames)
 			local name = BC_Buff_TooltipTextLeft1:GetText()
 			BC.m(counter..": "..name, BC.prep)
 			if showTextureNames then
-				BC.m(counter..": ("..UnitBuff(u, counter)..")", BC.prep)
+				BC.c(counter..": ("..UnitBuff(u, counter)..")", BC.prep)
 			end
 			counter = counter + 1
 		end
 	end
+end
+
+-- boolean if has buff
+function BC.HasBuff(unit, textureName)
+	local i = 1
+	while UnitBuff(unit, i) do
+		local texture = UnitBuff(unit, i)
+		if string.find(texture, textureName) then
+			return true
+		end
+		i = i + 1
+	end
+	return false
+end
+
+-- boolean if has buff
+function BC.HasDebuff(unit, textureName)
+	local i = 1
+	while UnitDebuff(unit, i) do
+		local texture, applications = UnitDebuff(unit, i)
+		if string.find(texture, textureName) then
+			return applications
+		end
+		i = i + 1
+	end
+	return 0
 end

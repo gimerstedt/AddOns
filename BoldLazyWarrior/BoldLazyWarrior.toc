@@ -1,6 +1,6 @@
 ## Interface: 11200
 ## Title: |cffffaaffBold|rLazyWarrior
-## Notes: Warrior rotations
+## Notes: Boldi's warrior rotations
 ## Author: Boldilocks
 ## Version: 0.2
 ## Dependencies: BoldCommon

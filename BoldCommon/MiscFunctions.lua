@@ -19,6 +19,7 @@ function ReportPlayersInCombat()
 	end
 end
 
+-- math lel.
 function ReportCritCap(hit)
 	if hit == "" then
 		BC.m("You must specify your current hit rate.", BC.prep)
@@ -33,6 +34,7 @@ function ReportCritCap(hit)
 	BC.m("Your crit cap with "..hitRate.."% hit is "..critCap.."%.", BC.prep)
 end
 
+-- bag it!
 function TeaBag()
 	if sitFrame == nil then
 		sitFrame = CreateFrame("frame")
@@ -47,7 +49,7 @@ function TeaBag()
 	end
 end
 
--- get spell id from spell book
+-- get spell id from spell book.
 function BC.GetSpellId(SpellName, SpellRank)
 	local B = "spell"
 	local SpellID = nil
@@ -89,6 +91,25 @@ function BC.GetSpellId(SpellName, SpellRank)
 	return SpellID
 end
 
+-- enable auto attack.
+function BC.EnableAttack()
+	if not BC.AttackAction then
+		for i = 1, 120 do
+			if IsAttackAction(i) then
+				BC.AttackAction = i
+			end
+		end
+	end
+	if BC.AttackAction then
+		if not IsCurrentAction(BC.AttackAction)
+			then UseAction(BC.AttackAction)
+		end
+	else
+		BC.m("You need to put your attack ability on one of your action bars!")
+	end
+end
+
+-- printers.
 function BC.m(msg, prepend, r, g, b)
 	prepend = prepend or ""
 	r = r or 1

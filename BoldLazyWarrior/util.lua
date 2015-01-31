@@ -1,54 +1,10 @@
 BLW = {}
 
--- enable auto attack
-function BLW.EnableAttack()
-	if not BLW.AttackAction then
-		for i = 1, 120 do
-			if IsAttackAction(i) then
-				BLW.AttackAction = i
-			end
-		end
-	end
-	if BLW.AttackAction then
-		if not IsCurrentAction(BLW.AttackAction)
-			then UseAction(BLW.AttackAction)
-		end
-	else
-		BC.m("You need to put your attack ability on one of your action bars!")
-	end
-end
-
 -- hp of target in percent
 function BLW.HP(unit)
 	local unit = unit or "target"
 	local percent = (UnitHealth(unit) / UnitHealthMax(unit)) * 100
 	return percent
-end
-
--- boolean if has buff
-function BLW.HasBuff(unit, textureName)
-	local i = 1
-	while UnitBuff(unit, i) do
-		local texture = UnitBuff(unit, i)
-		if string.find(texture, textureName) then
-			return true
-		end
-		i = i + 1
-	end
-	return false
-end
-
--- boolean if has buff
-function BLW.HasDebuff(unit, textureName)
-	local i = 1
-	while UnitDebuff(unit, i) do
-		local texture, applications = UnitDebuff(unit, i)
-		if string.find(texture, textureName) then
-			return applications
-		end
-		i = i + 1
-	end
-	return 0
 end
 
 -- return time since last BT
@@ -79,7 +35,7 @@ function BLW.BattleShout(hp)
 	if hp == nil then
 		hp = 80
 	end
-	if BLW.HP() < hp and not BLW.HasBuff("player", "BattleShout") then
+	if BLW.HP() < hp and not BC.HasBuff("player", "BattleShout") then
 		CastSpellByName("Battle Shout")
 	end
 end

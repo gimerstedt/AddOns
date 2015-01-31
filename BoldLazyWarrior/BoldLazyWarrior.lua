@@ -27,19 +27,19 @@ function SlashCmdList.BLW_ROTATION(rotation)
 	elseif rotation == "pdhs" then
 		BLW.ProtDPSRotation(false)
 	else
-		BC.m("/blw fbr", BLW.prep, 1, 1, 0.3)
+		BC.c("/blw fbr", BLW.prep)
 		BC.m("A fury rotation in battle stance.", BLW.prep)
-		BC.m("/blw fbro", BLW.prep, 1, 1, 0.3)
+		BC.c("/blw fbro", BLW.prep)
 		BC.m("A fury rotation in battle stance only.", BLW.prep)
-		BC.m("/blw pt", BLW.prep, 1, 1, 0.3)
+		BC.c("/blw pt", BLW.prep)
 		BC.m("A protection tanking rotation.", BLW.prep)
-		BC.m("/blw ft", BLW.prep, 1, 1, 0.3)
+		BC.c("/blw ft", BLW.prep)
 		BC.m("A fury tanking rotation.", BLW.prep)
-		BC.m("/blw nf", BLW.prep, 1, 1, 0.3)
+		BC.c("/blw nf", BLW.prep)
 		BC.m("A Nightfall rotation.", BLW.prep)
-		BC.m("/blw pd", BLW.prep, 1, 1, 0.3)
+		BC.c("/blw pd", BLW.prep)
 		BC.m("A protection dps rotation (prio hamstring).", BLW.prep)
-		BC.m("/blw pdhs", BLW.prep, 1, 1, 0.3)
+		BC.c("/blw pdhs", BLW.prep)
 		BC.m("A protection dps rotation (prio heroic strike).", BLW.prep)
 	end
 end
@@ -52,7 +52,7 @@ function BLW.BattleRotation(battleOnly)
 	end
 
 	-- attack!
-	BLW.EnableAttack()
+	BC.EnableAttack()
 	-- bools for stances.
 	local battle, _, berserk = BLW.GetStances()
 
@@ -119,7 +119,7 @@ function BLW.DefaultTankRotation(spec)
 	end
 
 	-- attack!
-	BLW.EnableAttack()
+	BC.EnableAttack()
 	-- bools for stances.
 	local _, defensive, _ = BLW.GetStances()
 
@@ -150,11 +150,11 @@ function BLW.DefaultTankRotation(spec)
 			CastSpellByName(SSBT)
 		end
 		-- sunder if not fully sundered and not interrupting SS or BT CD, leaving enough rage for revenge.
-		if BLW.HasDebuff("target", "Sunder") < 5 and UnitMana("player") > 19 and timeSinceSSBT < 4.5 then
+		if BC.HasDebuff("target", "Sunder") < 5 and UnitMana("player") > 19 and timeSinceSSBT < 4.5 then
 			CastSpellByName("Sunder Armor")
 		end
 		-- targeting self, has rage, in combat, in ~melee range, no sb up.
-		if UnitIsUnit("player", "targettarget") and UnitMana("player") > (SSBTCost + 15) and UnitAffectingCombat("player") and CheckInteractDistance("target", 3) and not BLW.HasBuff("player", "Ability_Defend") then
+		if UnitIsUnit("player", "targettarget") and UnitMana("player") > (SSBTCost + 15) and UnitAffectingCombat("player") and CheckInteractDistance("target", 3) and not BC.HasBuff("player", "Ability_Defend") then
 			CastSpellByName("Shield Block")
 		end
 		-- hs leaving enough rage to SS or BT.
@@ -175,14 +175,14 @@ function BLW.NightfallRotation()
 	if not UnitExists("target") then
 		TargetNearestEnemy()
 	end
-	BLW.EnableAttack()
+	BC.EnableAttack()
 	local battle, _, _ = BLW.GetStances()
 
 	-- keep battle shout up.
 	BLW.BattleShout()
 
 	if battle then
-		if BLW.HasDebuff("target", "Sunder") < 5 then
+		if BC.HasDebuff("target", "Sunder") < 5 then
 			CastSpellByName("Sunder Armor")
 		end
 		CastSpellByName("Overpower")
@@ -197,7 +197,7 @@ function BLW.ProtDPSRotation(prioHamstring)
 	if not UnitExists("target") then
 		TargetNearestEnemy()
 	end
-	BLW.EnableAttack()
+	BC.EnableAttack()
 	local battle, _, berserk = BLW.GetStances()
 
 	-- keep battle shout up.
