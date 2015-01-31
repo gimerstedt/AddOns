@@ -2,7 +2,7 @@
 ## Title: |cffffaaffBold|rWarrior
 ## Notes: Boldi's TankBuddy replacement.
 ## Author: Boldilocks
-## Version: 0.2
+## Version: 0.4
 ## Dependencies: BoldCommon
 
 BoldWarrior.lua

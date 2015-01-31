@@ -2,11 +2,13 @@
 ## Title: |cffffaaffBold|rCommon
 ## Notes: Boldi's collection of semi useful stuff.
 ## Author: Boldilocks
-## Version: 0.3
-## Dependencies: Zorlen
+## Version: 0.4
+## Dependencies:
 
+Main.lua
+BoldCommon.xml
 BuffFunctions.lua
 CthunRunIn.lua
-Main.lua
 MiscFunctions.lua
 RaidNames.lua
+MasterLootBug.lua

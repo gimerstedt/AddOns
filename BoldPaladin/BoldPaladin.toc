@@ -2,7 +2,7 @@
 ## Title: |cffffaaffBold|rPaladin
 ## Notes: Boldi's misc paladin stuff.
 ## Author: Boldilocks
-## Version: 0.2
-## Dependencies: Zorlen, BoldCommon
+## Version: 0.3
+## Dependencies: BoldCommon
 
 BoldPaladin.lua

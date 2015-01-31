@@ -1,11 +1,12 @@
+-- useful in gdkp, copy/paste raid names
 function ReportRaidMemberNames()
-	if UnitInRaid("player") ~= 1 then
+	if not UnitInRaid("player") then
 		return
 	end
-	local m = GetNumRaidMembers();
+	local m = GetNumRaidMembers()
 	local names = {}
 	for i = 1, m do
-		local name = GetRaidRosterInfo(i);
+		local name = GetRaidRosterInfo(i)
 		table.insert(names, name)
 	end
 

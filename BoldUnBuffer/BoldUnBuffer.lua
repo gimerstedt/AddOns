@@ -1,6 +1,6 @@
--- event handler
+-- event handler.
 local function onEvent()
-	if not UnitBuff("player", 1) then return end -- do nothing unless 20 buffs
+	if not UnitBuff("player", 1) then return end -- do nothing unless buffs.
 	local buffs = {}
 
 	-- warrior buffs, just copy paste for new classes and swap names...
@@ -26,20 +26,18 @@ local function onEvent()
 		end
 		buffs = warrior
 	end
-	-- end of warrior stuffs
+	-- end of warrior stuffs.
 
-	-- if event == "PLAYER_AURAS_CHANGED" or event == "UNIT_INVENTORY_CHANGED" then
-		BUB_removeBuffs(buffs)
-	-- end
+	BUB_removeBuffs(buffs)
 end
 
--- register event and handler
+-- register event and handler.
 local f = CreateFrame("frame")
 f:RegisterEvent("PLAYER_AURAS_CHANGED")
 f:RegisterEvent("UNIT_INVENTORY_CHANGED")
 f:SetScript("OnEvent", onEvent)
 
--- check if shield is equipped
+-- check if shield is equipped.
 function BUB_isShieldEquipped()
 	local slot = GetInventorySlotInfo("SecondaryHandSlot")
 	local link = GetInventoryItemLink("player", slot)
@@ -55,6 +53,7 @@ function BUB_isShieldEquipped()
 	return false
 end
 
+-- remove the buffs.
 function BUB_removeBuffs(buffs)
 	local i = 0
 	while (GetPlayerBuffTexture(i)) do
@@ -64,6 +63,6 @@ function BUB_removeBuffs(buffs)
 				return
 			end
 		end
-		i = i + 1;
+		i = i + 1
 	end
 end

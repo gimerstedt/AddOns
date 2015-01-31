@@ -2,7 +2,7 @@
 ## Title: |cffffaaffBold|rUnBuffer
 ## Notes: Boldi's remover of unwanted buffs.
 ## Author: Boldilocks
-## Version: 0.2
+## Version: 0.3
 ## Dependencies: 
 
 BoldUnBuffer.lua

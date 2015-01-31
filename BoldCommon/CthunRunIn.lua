@@ -1,7 +1,8 @@
+-- generate a cthun run in order based on weight
 function GenerateCthunRunInOrder()
 	-- return if you're not targeting the melee
-	if UnitInParty("target") == nil then
-		BC.m("You must target the melee in your group.", BC_PREP)
+	if not UnitInParty("target") then
+		BC.m("You must target the melee in your group.", BC.prep)
 		return
 	end
 
@@ -18,7 +19,7 @@ function GenerateCthunRunInOrder()
 	local orderedWithNames = {}
 
 	-- put target first, sort rest according to class
-	for k,v in pairs(party) do
+	for k, v in pairs(party) do
 		if UnitName(k) == UnitName("target") then
 			table.insert(orderedWithGaps, 1, k)
 		elseif v == "Priest" then
@@ -45,14 +46,14 @@ function GenerateCthunRunInOrder()
 	end
 
 	-- put names into new table, ready for use
-	for i=1, table.getn(orderedWithGaps) do
+	for i = 1, table.getn(orderedWithGaps) do
 		if orderedWithGaps[i] ~= nil then
 			table.insert(ordered, orderedWithGaps[i])
 		end
 	end
 
 	-- fill empty spots
-	for i=1, 5 do
+	for i = 1, 5 do
 		if ordered[i] ~= nil then
 			local name = UnitName(ordered[i])
 			table.insert(orderedWithNames, name)

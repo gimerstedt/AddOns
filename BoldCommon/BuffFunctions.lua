@@ -1,11 +1,11 @@
--- pretty sure this one isn't working, need to test
+-- seems to be working.
 function ReportMissingDebuffsOnTarget()
-	if not UnitInRaid("player") or not isEnemy("target") then
-		BC.m("You are either in not in a raid or your target is not an enemy or you do not have a target.", BC_PREP)
+	if not UnitInRaid("player") or not UnitIsEnemy("player", "target") then
+		BC.m("You are either in not in a raid or your target is not an enemy or you do not have a target.", BC.prep)
 		return
 	end
 	if not UnitDebuff("target", 1) then
-		BC.r(UnitName("target").." has no debuffs!", BC_PREP)
+		BC.r(UnitName("target").." has no debuffs!", BC.prep)
 		return
 	end
 
@@ -32,10 +32,12 @@ function ReportMissingDebuffsOnTarget()
 	if not sw then out = out.."Shadow Weaving! " end
 	if sa < 5 then out = out.."Sunders! " end
 
-	BC.r(out, BC_PREP)
+	BC.r(out, BC.prep)
 end
 
-function ReportBuffsOnTarget()
+-- buuuuuuuuuffffffffs.
+function ReportBuffsOnTarget(showTextureNames)
+	if showTextureNames ~= "true" then showTextureNames = false else showTextureNames = true end
 	if not UnitExists("target") then
 		u = "player"
 	else
@@ -43,15 +45,17 @@ function ReportBuffsOnTarget()
 	end
 	if UnitName(u) then
 		if not UnitBuff(u, 1) then
-			BC.m("Target has no visible buffs.", BC_PREP)
+			BC.m("Target has no visible buffs.", BC.prep)
 			return
 		end
 		local counter = 1
 		while (UnitBuff(u, counter)) do
-			ZORLEN_Buff_Tooltip:SetUnitBuff(u, counter)
-			local name = ZORLEN_Buff_TooltipTextLeft1:GetText()
-			BC.m(counter..": "..name, BC_PREP)
-			BC.m(counter..": ("..UnitBuff(u, counter)..")", BC_PREP)
+			BC_Buff_Tooltip:SetUnitBuff(u, counter)
+			local name = BC_Buff_TooltipTextLeft1:GetText()
+			BC.m(counter..": "..name, BC.prep)
+			if showTextureNames then
+				BC.m(counter..": ("..UnitBuff(u, counter)..")", BC.prep)
+			end
 			counter = counter + 1
 		end
 	end

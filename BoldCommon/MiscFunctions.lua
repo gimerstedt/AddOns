@@ -1,27 +1,27 @@
+-- not that useful..
 function ReportPlayersInCombat()
-	if UnitInRaid("player") ~= true then
+	if not UnitInRaid("player") then
 		return
 	end
-	local t = ""
-	for i = 1, 40 do
-		if GetRaidRosterInfo(i) ~= nil then
-			local n = GetRaidRosterInfo(i)
-			if UnitAffectingCombat("raid"..i) then
-				t = t..n..", "
-			end
+	local i, t = 1, ""
+	while GetRaidRosterInfo(i) do
+		local n = GetRaidRosterInfo(i)
+		if UnitAffectingCombat("raid"..i) then
+			t = t..n..", "
 		end
+		i = i + 1
 	end
 	if t ~= "" then
 		t = string.sub(t, 0,-3)
-		BC.r("Players in combat: "..t..".", BC_PREP)
+		BC.r("Players in combat: "..t..".", BC.prep)
 	else
-		BC.m("No players within range in combat.", BC_PREP)
+		BC.m("No players within range in combat.", BC.prep)
 	end
 end
 
 function ReportCritCap(hit)
 	if hit == "" then
-		BC.m("You must specify your current hit rate.", BC_PREP)
+		BC.m("You must specify your current hit rate.", BC.prep)
 		return
 	end
 	local missRate = 27
@@ -30,7 +30,7 @@ function ReportCritCap(hit)
 	local glancingRate = 40
 	local critCap = 100 - (missRate - hitRate) - dodgeRate - glancingRate
 
-	BC.m("Your crit cap with "..hitRate.."% hit is "..critCap.."%.", BC_PREP)
+	BC.m("Your crit cap with "..hitRate.."% hit is "..critCap.."%.", BC.prep)
 end
 
 function TeaBag()
@@ -47,21 +47,61 @@ function TeaBag()
 	end
 end
 
+-- get spell id from spell book
+function BC.GetSpellId(SpellName, SpellRank)
+	local B = "spell"
+	local SpellID = nil
+	if SpellName then
+		local SpellCount = 0
+		local ReturnName = nil
+		local ReturnRank = nil
+		while SpellName ~= ReturnName do
+			SpellCount = SpellCount + 1
+			ReturnName, ReturnRank = GetSpellName(SpellCount, B)
+			if not ReturnName then
+				break
+			end
+		end
+		while SpellName == ReturnName do
+			if SpellRank then
+				if SpellRank == 0 then
+					return SpellCount
+				elseif ReturnRank and ReturnRank ~= "" then
+					local found, _, Rank = string.find(ReturnRank, "(%d+)")
+					if found then
+						ReturnRank = tonumber(Rank)
+					else
+						ReturnRank = 1
+					end
+				else
+					ReturnRank = 1
+				end
+				if SpellRank == ReturnRank then
+					return SpellCount
+				end
+			else
+				SpellID = SpellCount
+			end
+			SpellCount = SpellCount + 1
+			ReturnName, ReturnRank = GetSpellName(SpellCount, B)
+		end
+	end
+	return SpellID
+end
+
 function BC.m(msg, prepend, r, g, b)
 	prepend = prepend or ""
-	r = r or 0.7
+	r = r or 1
 	g = g or 0.6
-	b = b or 1
+	b = b or 0.9
 	if msg then
 		DEFAULT_CHAT_FRAME:AddMessage(tostring(prepend)..tostring(msg), r, g, b)		
 	end
 end
 
-function BC.s(msg, prepend)
+function BC.c(msg, prepend)
 	prepend = prepend or ""
-	if msg then
-		SendChatMessage(tostring(prepend)..tostring(msg), "SAY")
-	end
+	BC.m(msg, prepend, 0.7, 0.7, 1)
 end
 
 function BC.p(msg, prepend)
@@ -82,5 +122,12 @@ function BC.y(msg, prepend)
 	prepend = prepend or ""
 	if msg then
 		SendChatMessage(tostring(prepend)..tostring(msg), "YELL")
+	end
+end
+
+function BC.s(msg, prepend)
+	prepend = prepend or ""
+	if msg then
+		SendChatMessage(tostring(prepend)..tostring(msg), "SAY")
 	end
 end

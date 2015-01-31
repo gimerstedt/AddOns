@@ -27,7 +27,6 @@ function SlashCmdList.BLW_ROTATION(rotation)
 	elseif rotation == "pdhs" then
 		BLW.ProtDPSRotation(false)
 	else
-		BC.m("BoldLazyWarrior", BLW.prep)
 		BC.m("/blw fbr", BLW.prep, 1, 1, 0.3)
 		BC.m("A fury rotation in battle stance.", BLW.prep)
 		BC.m("/blw fbro", BLW.prep, 1, 1, 0.3)
@@ -247,10 +246,10 @@ end
 -- event handler.
 local function onEvent()
 	if event == "PLAYER_LOGIN" then
-		BLW.BTId = BLW.GetSpellId("Bloodthirst", 1)
-		BLW.SSId = BLW.GetSpellId("Shield Slam", 1)
-		BLW.OPId = BLW.GetSpellId("Overpower", 4)
-		BLW.WWId = BLW.GetSpellId("Whirlwind", 1)
+		BLW.BTId = BC.GetSpellId("Bloodthirst", 1)
+		BLW.SSId = BC.GetSpellId("Shield Slam", 1)
+		BLW.OPId = BC.GetSpellId("Overpower", 4)
+		BLW.WWId = BC.GetSpellId("Whirlwind", 1)
 	elseif (event == "CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE" or
 		event == "CHAT_MSG_SPELL_CREATURE_VS_CREATURE_BUFF" or
 		event == "CHAT_MSG_SPELL_HOSTILEPLAYER_DAMAGE" or

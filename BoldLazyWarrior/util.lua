@@ -124,48 +124,6 @@ function BLW.CheckDodge(arg1)
 	end
 end
 
--- get spell id from spell book
-function BLW.GetSpellId(SpellName, SpellRank)
-	local B = "spell"
-	local SpellID = nil
-	if SpellName then
-		local SpellCount = 0
-		local ReturnName = nil
-		local ReturnRank = nil
-		while SpellName ~= ReturnName do
-			SpellCount = SpellCount + 1
-			ReturnName, ReturnRank = GetSpellName(SpellCount, B)
-			if not ReturnName then
-				break
-			end
-		end
-		while SpellName == ReturnName do
-			if SpellRank then
-				if SpellRank == 0 then
-					return SpellCount
-				elseif ReturnRank and ReturnRank ~= "" then
-					local found, _, Rank = string.find(ReturnRank, "(%d+)")
-					if found then
-						ReturnRank = tonumber(Rank)
-					else
-						ReturnRank = 1
-					end
-				else
-					ReturnRank = 1
-				end
-				if SpellRank == ReturnRank then
-					return SpellCount
-				end
-			else
-				SpellID = SpellCount
-			end
-			SpellCount = SpellCount + 1
-			ReturnName, ReturnRank = GetSpellName(SpellCount, B)
-		end
-	end
-	return SpellID
-end
-
 -- get bools for stances
 function BLW.GetStances()
 	local _,_,battle,_ = GetShapeshiftFormInfo(1)
