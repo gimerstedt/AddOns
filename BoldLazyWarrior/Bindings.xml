@@ -20,4 +20,7 @@
   <Binding name="BLW_PROTDPSHS">
     BLW.ProtDPSRotation(false)
   </Binding>
+  <Binding name="BLW_FURYNORMAL">
+    BLW.FuryNormal(false)
+  </Binding>
 </Bindings>
