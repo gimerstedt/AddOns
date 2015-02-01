@@ -341,6 +341,10 @@ function BLW.FuryAoE()
 	local _, _, berserk = BLW.GetStances()
 	local rage = UnitMana("player")
 
+	-- BC.m(BLW.GCD(BLW.BSId))
+
+	-- local a, b, c = GetActionCooldown(34) BC.m(a.." - "..b.." - "..c)
+
 	-- keep battle shout up.
 	BLW.BattleShout(99)
 
@@ -364,6 +368,7 @@ local function onEvent()
 		BLW.SSId = BC.GetSpellId("Shield Slam", 1)
 		BLW.OPId = BC.GetSpellId("Overpower", 4)
 		BLW.WWId = BC.GetSpellId("Whirlwind", 1)
+		BLW.BSId = BC.GetSpellId("Battle Shout", 7)
 	elseif (event == "CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE" or
 		event == "CHAT_MSG_SPELL_CREATURE_VS_CREATURE_BUFF" or
 		event == "CHAT_MSG_SPELL_HOSTILEPLAYER_DAMAGE" or

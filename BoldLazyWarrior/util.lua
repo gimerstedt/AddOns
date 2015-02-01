@@ -40,6 +40,15 @@ function BLW.BattleShout(hp)
 	end
 end
 
+-- gcd
+-- function BLW.GCD(slot)
+	-- if GetActionCooldown(slot) > 0 then
+	-- 	BC.m("cd over 0")
+	-- else
+	-- 	BC.m("cd under 0")
+	-- end
+-- end
+
 -- parse log for spells cast by target
 function BLW.CheckCasting(arg1)
 	local tName = UnitName("target")
