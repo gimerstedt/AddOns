@@ -3,6 +3,6 @@
 ## Notes: Boldi's remover of unwanted buffs.
 ## Author: Boldilocks
 ## Version: 0.3
-## Dependencies: 
+## Dependencies: BoldCommon
 
 BoldUnBuffer.lua

@@ -1,34 +1,38 @@
+-- bub.
+BUB = {}
+BUB.debug = true
+BUB.buffs = {}
+BUB.warrior = {
+	"Spell_Fire_Fire",
+	"MagicalSentry", -- AI/int scroll
+	"ArcaneIntellect", -- AB
+	"PrayerofSpirit",
+	"DivineSpirit",
+	"DetectLesserInvisibility",
+	"DetectInvisibility", 
+	"BurningSpirit", -- spi scroll
+	"MonsterScales_13", -- juju guile
+	"BloodLust", -- bloodthirst
+	"SealOfWisdom", -- 5 min
+	"BlessingofWisdom", -- 15 min
+	"Spell_Fire_Incinerate" -- ironfoe
+}
+
 -- event handler.
 local function onEvent()
 	if not UnitBuff("player", 1) then return end -- do nothing unless buffs.
-	local buffs = {}
 
-	-- warrior buffs, just copy paste for new classes and swap names...
-	local warrior = {
-		"MagicalSentry", -- AI/int scroll
-		"ArcaneIntellect", -- AB
-		"PrayerofSpirit",
-		"DivineSpirit",
-		"DetectLesserInvisibility",
-		"DetectInvisibility", 
-		"BurningSpirit", -- spi scroll
-		"MonsterScales_13", -- juju guile
-		"BloodLust", -- bloodthirst
-		"SealOfWisdom", -- 5 min
-		"BlessingofWisdom", -- 15 min
-		"Spell_Fire_Incinerate" -- ironfoe
-	}
 	if UnitClass("player") == "Warrior" then
-		if BUB_isShieldEquipped() then
+		if BUB.IsShieldEquipped() then
 			table.insert(warrior, "fSalvation")
 		else
 			-- fury warrior specific things? remove inspiration etc?
 		end
-		buffs = warrior
+		BUB.buffs = BUB.warrior
 	end
 	-- end of warrior stuffs.
 
-	BUB_removeBuffs(buffs)
+	BUB.RemoveBuffs(BUB.buffs)
 end
 
 -- register event and handler.
@@ -38,7 +42,7 @@ f:RegisterEvent("UNIT_INVENTORY_CHANGED")
 f:SetScript("OnEvent", onEvent)
 
 -- check if shield is equipped.
-function BUB_isShieldEquipped()
+function BUB.IsShieldEquipped()
 	local slot = GetInventorySlotInfo("SecondaryHandSlot")
 	local link = GetInventoryItemLink("player", slot)
 	if(link) then
@@ -54,11 +58,14 @@ function BUB_isShieldEquipped()
 end
 
 -- remove the buffs.
-function BUB_removeBuffs(buffs)
+function BUB.RemoveBuffs(buffs)
 	local i = 0
 	while (GetPlayerBuffTexture(i)) do
 		for n, buff in pairs(buffs) do
 			if (string.find(GetPlayerBuffTexture(i), buff)) then
+				if BUB.debug then
+					BC.m("Removed "..buff..".")
+				end
 				CancelPlayerBuff(i)
 				return
 			end
