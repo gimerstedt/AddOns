@@ -22,8 +22,6 @@ function SlashCmdList.BOLDCOMMON()
 	BC.m("List all raid members in a frame for copy/paste.", BC.prep)
 	BC.c("/ss", BC.prep)
 	BC.m("Sit/stand up repeatedly for no good reason.", BC.prep)
-	BC.c("/meep", BC.prep)
-	BC.m("MasterLootBug helper, README for deets.", BC.prep)
 	BC.c("/home", BC.prep)
 	BC.m("Unstuck.", BC.prep)
 end
@@ -80,12 +78,6 @@ end
 SLASH_SITSTAND1 = '/ss'
 function SlashCmdList.SITSTAND()
 	TeaBag()
-end
-
--- ml bug.
-SLASH_MLBUG1 = '/meep'
-function SlashCmdList.MLBUG()
-	MasterLootBug()
 end
 
 -- unstuck>
