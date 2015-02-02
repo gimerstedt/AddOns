@@ -19,6 +19,16 @@ function ReportPlayersInCombat()
 	end
 end
 
+-- repair
+function BC.Repair()
+	if not CanMerchantRepair() then return end
+	local cost = GetRepairAllCost()
+	cost = floor(cost / 10000)
+	if cost > 100 then BC.m("You're poor, i'm not going to repair your gear.", BC.prep) return end
+	RepairAllItems()
+	BC.m("Repair costs: ~"..cost.." gold.", BC.prep)
+end
+
 -- math lel.
 function ReportCritCap(hit)
 	if hit == "" then

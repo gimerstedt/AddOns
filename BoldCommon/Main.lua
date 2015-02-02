@@ -7,6 +7,18 @@ BINDING_HEADER_BC = "BoldCommon"
 BINDING_NAME_BC_MOUNT = "Mount up"
 BINDING_NAME_BC_TEABAG = "Teabag"
 
+-- on load.
+function BC.OnLoad()
+	this:RegisterEvent("MERCHANT_SHOW")
+end
+
+-- event handler.
+function BC.OnEvent()
+	if event == "MERCHANT_SHOW" then
+		BC.Repair()
+	end
+end
+
 -- info command.
 SLASH_BOLDCOMMON1, SLASH_BOLDCOMMON2 = '/boldcommon', '/bc'
 function SlashCmdList.BOLDCOMMON()	

@@ -3,9 +3,9 @@
 	xsi:schemaLocation="http://www.blizzard.com/wow/ui/">
 	<Frame name="BCFrame" hidden="true">
 		<Scripts>
-			<OnLoad></OnLoad>
+			<OnLoad>BC.OnLoad()</OnLoad>
 			<OnUpdate></OnUpdate>
-			<OnEvent></OnEvent>
+			<OnEvent>BC.OnEvent(event)</OnEvent>
 		</Scripts>
 	</Frame>
 	<GameTooltip name="BC_Buff_Tooltip" hidden="true" inherits="GameTooltipTemplate">
