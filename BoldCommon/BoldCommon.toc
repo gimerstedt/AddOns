@@ -11,3 +11,5 @@ BuffFunctions.lua
 CthunRunIn.lua
 MiscFunctions.lua
 RaidNames.lua
+Mount.lua
+Bindings.xml

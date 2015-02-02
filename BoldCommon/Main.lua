@@ -3,6 +3,10 @@ BC = {}
 BC.debug = true
 BC.prep = "[BoldCommon] "
 
+BINDING_HEADER_BC = "BoldCommon"
+BINDING_NAME_BC_MOUNT = "Mount up"
+BINDING_NAME_BC_TEABAG = "Teabag"
+
 -- info command.
 SLASH_BOLDCOMMON1, SLASH_BOLDCOMMON2 = '/boldcommon', '/bc'
 function SlashCmdList.BOLDCOMMON()	
@@ -24,6 +28,10 @@ function SlashCmdList.BOLDCOMMON()
 	BC.m("Sit/stand up repeatedly for no good reason.", BC.prep)
 	BC.c("/home", BC.prep)
 	BC.m("Unstuck.", BC.prep)
+	BC.c("/use", BC.prep)
+	BC.m("Use item by name.", BC.prep)
+	BC.c("/mount", BC.prep)
+	BC.m("Mount up.", BC.prep)
 end
 
 -- automatic cthun run in order.
@@ -77,11 +85,23 @@ end
 -- sitstand.
 SLASH_SITSTAND1 = '/ss'
 function SlashCmdList.SITSTAND()
-	TeaBag()
+	BC.TeaBag()
 end
 
--- unstuck>
+-- unstuck.
 SLASH_UNSTUCK1 = '/home'
 function SlashCmdList.UNSTUCK()
 	Stuck()
+end
+
+-- use item by name.
+SLASH_BCUSE1 = '/use'
+function SlashCmdList.BCUSE(msg)
+	BC.UseItemByName(unpack(BC.ListToTable(msg)))
+end
+
+-- mount up.
+SLASH_BCMOUNT1 = '/mount'
+function SlashCmdList.BCMOUNT()
+	BC.Mount()
 end

@@ -1,0 +1,8 @@
+<Bindings>
+	<Binding name="BC_MOUNT" header="BC">
+		BC.Mount()
+	</Binding>
+	<Binding name="BC_TEABAG" header="BC">
+		BC.TeaBag()
+	</Binding>
+</Bindings>
