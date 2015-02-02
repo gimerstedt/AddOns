@@ -6,3 +6,4 @@
 ## Dependencies: BoldCommon
 
 BoldWarrior.lua
+BoldWarrior.xml

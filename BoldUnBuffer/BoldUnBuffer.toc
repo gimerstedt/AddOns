@@ -6,3 +6,4 @@
 ## Dependencies: BoldCommon
 
 BoldUnBuffer.lua
+BoldUnBuffer.xml

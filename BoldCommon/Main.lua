@@ -22,6 +22,7 @@ end
 -- info command.
 SLASH_BOLDCOMMON1, SLASH_BOLDCOMMON2 = '/boldcommon', '/bc'
 function SlashCmdList.BOLDCOMMON()	
+	BC.m("Automatically repairs your equipment at vendor.", BC.prep)
 	BC.c("/ctri - /cthunrunin", BC.prep)
 	BC.m("Generates a run in order and writes it in /party.", BC.prep)
 	BC.c("/ri - /resetinstances", BC.prep)

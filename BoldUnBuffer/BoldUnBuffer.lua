@@ -1,9 +1,8 @@
 -- bub.
 BUB = {}
 BUB.debug = true
-BUB.buffs = {}
 BUB.warrior = {
-	"Spell_Fire_Fire",
+	"Spell_Fire_Fire", -- cozy fire
 	"MagicalSentry", -- AI/int scroll
 	"ArcaneIntellect", -- AB
 	"PrayerofSpirit",
@@ -18,13 +17,21 @@ BUB.warrior = {
 	"Spell_Fire_Incinerate" -- ironfoe
 }
 
+-- on load.
+function BUB.OnLoad()
+	this:RegisterEvent("PLAYER_AURAS_CHANGED")
+	this:RegisterEvent("UNIT_INVENTORY_CHANGED")
+end
+
 -- event handler.
-local function onEvent()
+function BUB.OnEvent(event)
+	if UnitName("target") == "Garr" then return end -- keep buffs for garr in case of dispel :(
 	if not UnitBuff("player", 1) then return end -- do nothing unless buffs.
 
+	-- warrior stuffs. add another section like this with corresponding buff table for your class.
 	if UnitClass("player") == "Warrior" then
 		if BUB.IsShieldEquipped() then
-			table.insert(warrior, "fSalvation")
+			table.insert(BUB.warrior, "fSalvation")
 		else
 			-- fury warrior specific things? remove inspiration etc?
 		end
@@ -34,12 +41,6 @@ local function onEvent()
 
 	BUB.RemoveBuffs(BUB.buffs)
 end
-
--- register event and handler.
-local f = CreateFrame("frame")
-f:RegisterEvent("PLAYER_AURAS_CHANGED")
-f:RegisterEvent("UNIT_INVENTORY_CHANGED")
-f:SetScript("OnEvent", onEvent)
 
 -- check if shield is equipped.
 function BUB.IsShieldEquipped()
@@ -73,3 +74,8 @@ function BUB.RemoveBuffs(buffs)
 		i = i + 1
 	end
 end
+
+-- for future safe LS/SW/LGG stuffs
+-- Rejuvenation - Spell_Nature_Rejuvenation
+-- Regrowth - Spell_Nature_ResistNature
+-- Blessing of the Claw - Spell_Holy_BlessingOfAgility (same as agi scroll :()
