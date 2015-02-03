@@ -58,13 +58,9 @@ end
 
 -- TODO: test bool arg.
 function BLW.BattleRotation(battleOnly)
-	-- target something if nothing is targeted.
-	if not UnitExists("target") then
-		TargetNearestEnemy()
-	end
+	-- target/attack something if nothing is targeted.
+	if not BLW.TargetAndAttack() then return end
 
-	-- attack!
-	BC.EnableAttack()
 	-- bools for stances.
 	local battle, _, berserk = BLW.GetStances()
 	local rage = UnitMana("player")
@@ -126,13 +122,9 @@ function BLW.DefaultTankRotation(spec)
 		SSBT = "Shield Slam"
 	end
 
-	-- target something if nothing is targeted.
-	if not UnitExists("target") then
-		TargetNearestEnemy()
-	end
+	-- target/attack something if nothing is targeted.
+	if not BLW.TargetAndAttack() then return end
 
-	-- attack!
-	BC.EnableAttack()
 	-- bools for stances.
 	local _, defensive, _ = BLW.GetStances()
 	local rage = UnitMana("player")
@@ -186,10 +178,7 @@ end
 
 -- nightfall.
 function BLW.NightfallRotation()
-	if not UnitExists("target") then
-		TargetNearestEnemy()
-	end
-	BC.EnableAttack()
+	if not BLW.TargetAndAttack() then return end
 	local battle, _, _ = BLW.GetStances()
 
 	-- keep battle shout up.
@@ -208,10 +197,7 @@ end
 
 -- prot DEEEPS.
 function BLW.ProtDPSRotation(prioHamstring)
-	if not UnitExists("target") then
-		TargetNearestEnemy()
-	end
-	BC.EnableAttack()
+	if not BLW.TargetAndAttack() then return end
 	local battle, _, berserk = BLW.GetStances()
 	local rage = UnitMana("player")
 
@@ -260,10 +246,7 @@ end
 
 -- fury normal.
 function BLW.FuryNormal(prioHamstring)
-	if not UnitExists("target") then
-		TargetNearestEnemy()
-	end
-	BC.EnableAttack()
+	if not BLW.TargetAndAttack() then return end
 	local battle, _, berserk = BLW.GetStances()
 	local rage = UnitMana("player")
 
@@ -334,10 +317,7 @@ end
 
 -- fury normal.
 function BLW.FuryAoE()
-	if not UnitExists("target") then
-		TargetNearestEnemy()
-	end
-	BC.EnableAttack()
+	if not BLW.TargetAndAttack() then return end
 	local _, _, berserk = BLW.GetStances()
 	local rage = UnitMana("player")
 

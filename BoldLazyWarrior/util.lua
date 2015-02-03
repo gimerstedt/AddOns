@@ -1,4 +1,8 @@
 BLW = {}
+BLW.doNotTarget = {
+	"Qiraji Scorpion",
+	"Qiraji Scarab",
+}
 
 -- hp of target in percent
 function BLW.HP(unit)
@@ -28,6 +32,35 @@ function BLW.OnCD(spellId)
 		return false
 	end
 	return true
+end
+
+function BLW.TargetAndAttack()
+	if UnitExists("target") then
+		BC.EnableAttack()
+		return true
+	end
+	TargetNearestEnemy()
+	local counter = 0
+	while counter < 10 and BLW.unwantedTarget() do
+		TargetNearestEnemy()
+		counter = counter + 1
+	end
+	if BLW.unwantedTarget() then
+		ClearTarget()
+		return false
+	else
+		BC.EnableAttack()
+		return true
+	end
+end
+
+function BLW.unwantedTarget()
+	for k,v in pairs(BLW.doNotTarget) do
+		if UnitName("target") == v then
+			return true
+		end
+	end
+	return false
 end
 
 -- cast battle shout
