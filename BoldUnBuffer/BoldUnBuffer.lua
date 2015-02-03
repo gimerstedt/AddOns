@@ -1,6 +1,7 @@
 -- bub.
 BUB = {}
 BUB.debug = true
+BUB.buffs = {}
 BUB.warrior = {
 	"Spell_Fire_Fire", -- cozy fire
 	"MagicalSentry", -- AI/int scroll
@@ -42,20 +43,15 @@ function BUB.OnEvent(event)
 	BUB.RemoveBuffs(BUB.buffs)
 end
 
--- check if shield is equipped.
 function BUB.IsShieldEquipped()
-	local slot = GetInventorySlotInfo("SecondaryHandSlot")
-	local link = GetInventoryItemLink("player", slot)
-	if(link) then
-		local found, _, id, name = string.find(link, "item:(%d+):.*%[(.*)%]")
-		if found then
-			local _,_,_,_,_,itemType = GetItemInfo(tonumber(id))
-			if(itemType == "Shields") then
-				return true
-			end
+	if (GetInventoryItemLink("player", 17)) then
+		local _, _, itemCode = strfind(GetInventoryItemLink("player", 17), "(%d+):")
+		local _, _, _, _, _, itemType = GetItemInfo(itemCode)
+		if (itemType == "Shields" and not GetInventoryItemBroken("player", 17)) then
+			return true;
 		end
 	end
-	return false
+	return nil;
 end
 
 -- remove the buffs.
@@ -74,8 +70,3 @@ function BUB.RemoveBuffs(buffs)
 		i = i + 1
 	end
 end
-
--- for future safe LS/SW/LGG stuffs
--- Rejuvenation - Spell_Nature_Rejuvenation
--- Regrowth - Spell_Nature_ResistNature
--- Blessing of the Claw - Spell_Holy_BlessingOfAgility (same as agi scroll :()

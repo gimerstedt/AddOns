@@ -344,11 +344,11 @@ end
 -- event handler.
 local function onEvent()
 	if event == "PLAYER_LOGIN" then
-		BLW.BTId = BC.GetSpellId("Bloodthirst", 1)
-		BLW.SSId = BC.GetSpellId("Shield Slam", 1)
-		BLW.OPId = BC.GetSpellId("Overpower", 4)
-		BLW.WWId = BC.GetSpellId("Whirlwind", 1)
-		BLW.BSId = BC.GetSpellId("Battle Shout", 7)
+		BLW.BTId = BC.GetSpellId("Bloodthirst")
+		BLW.SSId = BC.GetSpellId("Shield Slam")
+		BLW.OPId = BC.GetSpellId("Overpower")
+		BLW.WWId = BC.GetSpellId("Whirlwind")
+		BLW.BSId = BC.GetSpellId("Battle Shout")
 	elseif (event == "CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE" or
 		event == "CHAT_MSG_SPELL_CREATURE_VS_CREATURE_BUFF" or
 		event == "CHAT_MSG_SPELL_HOSTILEPLAYER_DAMAGE" or

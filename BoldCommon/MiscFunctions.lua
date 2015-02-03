@@ -59,46 +59,20 @@ function BC.TeaBag()
 	end
 end
 
--- get spell id from spell book.
-function BC.GetSpellId(SpellName, SpellRank)
-	local B = "spell"
-	local SpellID = nil
-	if SpellName then
-		local SpellCount = 0
-		local ReturnName = nil
-		local ReturnRank = nil
-		while SpellName ~= ReturnName do
-			SpellCount = SpellCount + 1
-			ReturnName, ReturnRank = GetSpellName(SpellCount, B)
-			if not ReturnName then
-				break
+-- get spell id from spell book?
+function BC.GetSpellId(spellname)
+	local id = 1;
+	for i = 1, GetNumSpellTabs() do
+		local _, _, _, numSpells = GetSpellTabInfo(i);
+		for j = 1, numSpells do
+			local spellName = GetSpellName(id, BOOKTYPE_SPELL);
+			if (spellName == spellname) then
+				return id;
 			end
-		end
-		while SpellName == ReturnName do
-			if SpellRank then
-				if SpellRank == 0 then
-					return SpellCount
-				elseif ReturnRank and ReturnRank ~= "" then
-					local found, _, Rank = string.find(ReturnRank, "(%d+)")
-					if found then
-						ReturnRank = tonumber(Rank)
-					else
-						ReturnRank = 1
-					end
-				else
-					ReturnRank = 1
-				end
-				if SpellRank == ReturnRank then
-					return SpellCount
-				end
-			else
-				SpellID = SpellCount
-			end
-			SpellCount = SpellCount + 1
-			ReturnName, ReturnRank = GetSpellName(SpellCount, B)
+			id = id + 1;
 		end
 	end
-	return SpellID
+	return nil;
 end
 
 -- enable auto attack.

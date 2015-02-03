@@ -1,11 +1,18 @@
--- only load for warriors.
-if UnitClass("player") ~= "Warrior" then return end
+BW = {}
+-- on load.
+function BW.OnLoad()
+	-- only load for warriors.
+	if UnitClass("player") ~= "Warrior" then return end
+	this:RegisterEvent("CHAT_MSG_SPELL_SELF_DAMAGE")
+	this:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_SELF_BUFFS")
+	this:RegisterEvent("CHAT_MSG_SPELL_DAMAGESHIELDS_ON_SELF")
+end
 
 -- consts.
-BW = {}
 BW.announce = "---> "
 BW.prep = "[BoldWarrior] "
 BW.removableBuffs = {
+	"Ability_Racial_BloodRage",
 	"Spell_Nature_Thorns", -- thorns
 	"Spell_Nature_AbolishMagic", -- dampen magic
 	"Spell_Holy_FlashHeal", -- amplify magic
@@ -41,13 +48,6 @@ BW_LS_TXT = "Used Last Stand!"
 BW_LG = "You gain Gift of Life."
 BW_LG_TXT = "Used Lifegiving Gem!"
 BW_CS_TXT = "Used Mass Taunt!"
-
--- on load.
-function BW.OnLoad()
-	this:RegisterEvent("CHAT_MSG_SPELL_SELF_DAMAGE")
-	this:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_SELF_BUFFS")
-	this:RegisterEvent("CHAT_MSG_SPELL_DAMAGESHIELDS_ON_SELF")
-end
 
 -- event handler
 function BW.OnEvent()
@@ -87,7 +87,7 @@ end
 -- announce challenging shout with a command instead...to cut down on code
 SLASH_CHALLSHOUT1 = '/aoetaunt'
 function SlashCmdList.CHALLSHOUT()
-	if UnitMana("player") > 9 and GetSpellCooldown(BC.GetSpellId("Challenging Shout", 1), BOOKTYPE_SPELL) == 0 then
+	if UnitMana("player") > 9 and GetSpellCooldown(BC.GetSpellId("Challenging Shout"), BOOKTYPE_SPELL) == 0 then
 		CastSpellByName("Challenging Shout", 1)
 		BC.y(BW_CS_TXT, BW.announce)
 	end
@@ -97,7 +97,7 @@ end
 SLASH_SHIELDWALL1 = '/safesw'
 function SlashCmdList.SHIELDWALL()
 	-- do nothing if on cd.
-	if GetSpellCooldown(BC.GetSpellId("Shield Wall"), 1, BOOKTYPE_SPELL) > 0 then
+	if GetSpellCooldown(BC.GetSpellId("Shield Wall"), BOOKTYPE_SPELL) > 0 then
 		BC.m("Shield Wall is on cooldown.", BW.prep)
 		return
 	end
