@@ -7,3 +7,4 @@
 
 BoldWarrior.lua
 BoldWarrior.xml
+Bindings.xml

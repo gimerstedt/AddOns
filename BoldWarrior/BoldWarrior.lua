@@ -8,6 +8,13 @@ function BW.OnLoad()
 	this:RegisterEvent("CHAT_MSG_SPELL_DAMAGESHIELDS_ON_SELF")
 end
 
+-- keybinds
+BINDING_HEADER_BW = "BoldWarrior"
+BINDING_NAME_BW_CHALLSHOUT = "Challenging Shout"
+BINDING_NAME_BW_SAFESW = "Safe Shield Wall"
+BINDING_NAME_BW_SAFELS = "Safe Last Stand"
+BINDING_NAME_BW_SAFELGG = "Safe Lifegiving Gem"
+
 -- consts.
 BW.announce = "---> "
 BW.prep = "[BoldWarrior] "
@@ -87,15 +94,37 @@ end
 -- announce challenging shout with a command instead...to cut down on code
 SLASH_CHALLSHOUT1 = '/aoetaunt'
 function SlashCmdList.CHALLSHOUT()
+	BW.ChallengingShout()
+end
+
+-- safely sw.
+SLASH_SHIELDWALL1 = '/safesw'
+function SlashCmdList.SHIELDWALL()
+	BW.SafeSW()
+end
+
+-- safely ls.
+SLASH_LASTSTAND1 = '/safels'
+function SlashCmdList.LASTSTAND()
+	BW.SafeLS()
+end
+
+-- safely ls.
+SLASH_LIFEGIVING1 = '/safelgg'
+function SlashCmdList.LIFEGIVING()
+	BW.SafeLGG()
+end
+
+-- chall shout.
+function BW.ChallengingShout()
 	if UnitMana("player") > 9 and GetSpellCooldown(BC.GetSpellId("Challenging Shout"), BOOKTYPE_SPELL) == 0 then
 		CastSpellByName("Challenging Shout", 1)
 		BC.y(BW_CS_TXT, BW.announce)
 	end
 end
 
--- safely sw.
-SLASH_SHIELDWALL1 = '/safesw'
-function SlashCmdList.SHIELDWALL()
+-- sw.
+function BW.SafeSW()
 	-- do nothing if on cd.
 	if GetSpellCooldown(BC.GetSpellId("Shield Wall"), BOOKTYPE_SPELL) > 0 then
 		BC.m("Shield Wall is on cooldown.", BW.prep)
@@ -119,9 +148,8 @@ function SlashCmdList.SHIELDWALL()
 	CastSpellByName("Shield Wall")
 end
 
--- safely ls.
-SLASH_LASTSTAND1 = '/safels'
-function SlashCmdList.LASTSTAND()
+-- ls.
+function BW.SafeLS()
 	-- do nothing if on cd.
 	local LSId = BC.GetSpellId("Last Stand")
 	if LSId then	
@@ -144,9 +172,8 @@ function SlashCmdList.LASTSTAND()
 	CastSpellByName("Last Stand")
 end
 
--- safely ls.
-SLASH_LIFEGIVING1 = '/safelgg'
-function SlashCmdList.LIFEGIVING()
+-- lgg.
+function BW.SafeLGG()
 	local trink1 = GetInventoryItemTexture("player", 13)
 	local trink2 = GetInventoryItemTexture("player", 14)
 	trink1 = string.find(trink1, "Misc_Gem_Pearl_05")
@@ -177,6 +204,7 @@ function SlashCmdList.LIFEGIVING()
 	BC.UseItemByName("Lifegiving Gem")
 end
 
+-- remove buff.
 function BW.RemoveABuff()
 	for k,buff in pairs(BW.removableBuffs) do
 		local i = 0

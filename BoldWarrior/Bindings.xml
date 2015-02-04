@@ -1,0 +1,14 @@
+<Bindings>
+	<Binding name="BW_CHALLSHOUT" header="BW">
+		BW.ChallengingShout()
+	</Binding>
+	<Binding name="BW_SAFESW">
+		BW.SafeSW()
+	</Binding>
+	<Binding name="BW_SAFELS">
+		BW.SafeLS()
+	</Binding>
+	<Binding name="BW_SAFELGG">
+		BW.SafeLGG()
+	</Binding>
+</Bindings>
