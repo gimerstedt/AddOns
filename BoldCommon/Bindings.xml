@@ -2,7 +2,25 @@
 	<Binding name="BC_MOUNT" header="BC">
 		BC.Mount()
 	</Binding>
-	<Binding name="BC_TEABAG" header="BC">
+	<Binding name="BC_TEABAG">
 		BC.TeaBag()
+	</Binding>
+	<Binding name="BC_CTRI">
+		BC.GenerateCthunRunInOrder()
+	</Binding>
+	<Binding name="BC_CDB">
+		BC.ReportMissingDebuffsOnTarget()
+	</Binding>
+	<Binding name="BC_RMIC">
+		BC.ReportPlayersInCombat()
+	</Binding>
+	<Binding name="BC_GRN">
+		BC.ReportRaidMemberNames()
+	</Binding>
+	<Binding name="BC_UNSTUCK">
+		Stuck()
+	</Binding>
+	<Binding name="BC_RELOADUI">
+		ReloadUI()
 	</Binding>
 </Bindings>

@@ -1,5 +1,5 @@
 -- useful in gdkp, copy/paste raid names
-function ReportRaidMemberNames()
+function BC.ReportRaidMemberNames()
 	if not UnitInRaid("player") then
 		return
 	end

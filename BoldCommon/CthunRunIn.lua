@@ -1,5 +1,5 @@
 -- generate a cthun run in order based on weight
-function GenerateCthunRunInOrder()
+function BC.GenerateCthunRunInOrder()
 	-- return if you're not targeting the melee
 	if not UnitInParty("target") then
 		BC.m("You must target the melee in your group.", BC.prep)

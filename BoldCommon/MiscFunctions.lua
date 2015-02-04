@@ -1,5 +1,5 @@
 -- not that useful..
-function ReportPlayersInCombat()
+function BC.ReportPlayersInCombat()
 	if not UnitInRaid("player") then
 		return
 	end
@@ -30,7 +30,7 @@ function BC.Repair()
 end
 
 -- math lel.
-function ReportCritCap(hit)
+function BC.ReportCritCap(hit)
 	if hit == "" then
 		BC.m("You must specify your current hit rate.", BC.prep)
 		return

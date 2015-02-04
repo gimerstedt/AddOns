@@ -2,7 +2,7 @@
 ## Title: |cffffaaffBold|rCommon
 ## Notes: Boldi's collection of semi useful stuff.
 ## Author: Boldilocks
-## Version: 0.4
+## Version: 0.4.1
 ## Dependencies:
 
 Main.lua

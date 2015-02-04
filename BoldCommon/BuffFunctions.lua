@@ -1,7 +1,7 @@
 -- seems to be working.
-function ReportMissingDebuffsOnTarget()
+function BC.ReportMissingDebuffsOnTarget()
 	if not UnitInRaid("player") or not UnitIsEnemy("player", "target") then
-		BC.m("You are either in not in a raid or your target is not an enemy or you do not have a target.", BC.prep)
+		BC.m("You are either not in a raid or your target is not an enemy or you do not have a target.", BC.prep)
 		return
 	end
 	if not UnitDebuff("target", 1) then
@@ -36,7 +36,7 @@ function ReportMissingDebuffsOnTarget()
 end
 
 -- buuuuuuuuuffffffffs.
-function ReportBuffsOnTarget(showTextureNames)
+function BC.ReportBuffsOnTarget(showTextureNames)
 	if showTextureNames ~= "true" then showTextureNames = false else showTextureNames = true end
 	if not UnitExists("target") then
 		u = "player"

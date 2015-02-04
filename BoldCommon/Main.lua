@@ -6,6 +6,12 @@ BC.prep = "[BoldCommon] "
 BINDING_HEADER_BC = "BoldCommon"
 BINDING_NAME_BC_MOUNT = "Mount up"
 BINDING_NAME_BC_TEABAG = "Teabag"
+BINDING_NAME_BC_CTRI = "Generate C'Thun run in order"
+BINDING_NAME_BC_CDB = "Report missing debuffs on target"
+BINDING_NAME_BC_RMIC = "Report raid members in combat"
+BINDING_NAME_BC_GRN = "Get a list of raid member names to copy/paste"
+BINDING_NAME_BC_UNSTUCK = "Unstuck"
+BINDING_NAME_BC_RELOADUI = "Reload UI"
 
 -- on load.
 function BC.OnLoad()
@@ -50,7 +56,7 @@ end
 -- automatic cthun run in order.
 SLASH_CTHUNRUNIN1, SLASH_CTHUNRUNIN2 = '/ctri', '/cthunrunin'
 function SlashCmdList.CTHUNRUNIN()
-	GenerateCthunRunInOrder()
+	BC.GenerateCthunRunInOrder()
 end
 
 -- reload ui.
@@ -68,31 +74,31 @@ end
 -- report missing debuffs on target.
 SLASH_CHECKDEBUFFS1, SLASH_CHECKDEBUFFS2 = '/cdb', '/checkdebuffs'
 function SlashCmdList.CHECKDEBUFFS()
-	ReportMissingDebuffsOnTarget()
+	BC.ReportMissingDebuffsOnTarget()
 end
 
 -- check raid for members in combat.
 SLASH_RAIDMEMBERSINCOMBAT1, SLASH_RAIDMEMBERSINCOMBAT2 = '/rmic', '/raidmembersincombat'
 function SlashCmdList.RAIDMEMBERSINCOMBAT()
-	ReportPlayersInCombat()
+	BC.ReportPlayersInCombat()
 end
 
 -- only relevant for DW melee.
 SLASH_CRITCAP1, SLASH_CRITCAP2 = '/cc', '/critcap'
 function SlashCmdList.CRITCAP(msg)
-	ReportCritCap(msg)
+	BC.ReportCritCap(msg)
 end
 
 -- check buffs on target.
 SLASH_CHECKBUFFSONTARGET1, SLASH_CHECKBUFFSONTARGET2 = '/cbot', '/checkbuffsontarget'
 function SlashCmdList.CHECKBUFFSONTARGET(showTextureNames)
-	ReportBuffsOnTarget(showTextureNames)
+	BC.ReportBuffsOnTarget(showTextureNames)
 end
 
 -- put raid members in a list for copy/paste.
 SLASH_GETRAIDMEMBERNAMES1, SLASH_GETRAIDMEMBERNAMES2 = '/grn', '/getraidmembernames'
 function SlashCmdList.GETRAIDMEMBERNAMES()
-	ReportRaidMemberNames()
+	BC.ReportRaidMemberNames()
 end
 
 -- sitstand.
