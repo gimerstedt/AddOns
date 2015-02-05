@@ -91,6 +91,8 @@ function SlashCmdList.BWHELP()
 	BC.m("Safely uses Last Stand.", BW.prep)
 	BC.c("/safelgg", BW.prep)
 	BC.m("Safely uses Lifegiving Gem.", BW.prep)
+	BC.c("/mocking", BW.prep)
+	BC.m("Use Mocking Blow from any stance and swap back to defensive stance.", BW.prep)
 end
 
 -- announce challenging shout with a command instead...to cut down on code
