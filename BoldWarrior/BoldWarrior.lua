@@ -16,6 +16,7 @@ BINDING_NAME_BW_SAFELS = "Safe Last Stand"
 BINDING_NAME_BW_SAFELGG = "Safe Lifegiving Gem"
 
 -- consts.
+BW.buffCap = 24
 BW.announce = "---> "
 BW.prep = "[BoldWarrior] "
 BW.removableBuffs = {
@@ -116,6 +117,11 @@ function SlashCmdList.LIFEGIVING()
 	BW.SafeLGG()
 end
 
+SLASH_MOCKING1 = '/mocking'
+function SlashCmdList.MOCKING()
+	BW.MockingBlow()
+end
+
 -- chall shout.
 function BW.ChallengingShout()
 	if UnitMana("player") > 9 and GetSpellCooldown(BC.GetSpellId("Challenging Shout"), BOOKTYPE_SPELL) == 0 then
@@ -138,7 +144,7 @@ function BW.SafeSW()
 		return
 	end
 	-- if below 24 buffs, sw.
-	if not UnitBuff("player", 24) then
+	if not UnitBuff("player", BW.buffCap) then
 		CastSpellByName("Shield Wall")
 		return
 	end
@@ -162,7 +168,7 @@ function BW.SafeLS()
 		BC.m("You do not have Last Stand.", BW.prep)
 	end
 	-- if below 24 buffs, ls.
-	if not UnitBuff("player", 24) then
+	if not UnitBuff("player", BW.buffCap) then
 		CastSpellByName("Last Stand")
 		return
 	end
@@ -194,7 +200,7 @@ function BW.SafeLGG()
 		return
 	end
 	-- if 24 buffs, remove one.
-	if not UnitBuff("player", 24) then
+	if not UnitBuff("player", BW.buffCap) then
 		BC.UseItemByName("Lifegiving Gem", BW.prep)
 		return
 	end
@@ -216,4 +222,24 @@ function BW.RemoveABuff()
 		end
 	end
 	return false
+end
+
+-- mocking from any stance.
+function BW.MockingBlow()
+	if UnitMana("player") < 10 then
+		return
+	end
+	local mockingId = BC.GetSpellId("Mocking Blow")
+	local _,_,battle, _ = GetShapeshiftFormInfo(1)
+	local _,_,defensive, _ = GetShapeshiftFormInfo(2)
+	if GetSpellCooldown(mockingId, 1, BOOKTYPE_SPELL) > 0 then
+		if not defensive then 
+			CastSpellByName("Defensive Stance")
+		end
+		return
+	end
+	if not battle then
+		CastSpellByName("Battle Stance")
+	end
+	CastSpellByName("Mocking Blow")
 end

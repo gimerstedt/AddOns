@@ -106,5 +106,7 @@ function BC.RemoveBuffByName(buffName)
 	local i = BC.BuffIndexByName(buffName)
 	if i then
 		CancelPlayerBuff(i)
+		return true
 	end
+	return false
 end
