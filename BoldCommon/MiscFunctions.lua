@@ -209,3 +209,15 @@ function BC.TrimSpaces(str)
 		return gsub(str,"^%s*(.-)%s*$","%1")
 	end
 end
+
+-- check if shield is equipped.
+function BC.IsShieldEquipped()
+	if (GetInventoryItemLink("player", 17)) then
+		local _, _, itemCode = strfind(GetInventoryItemLink("player", 17), "(%d+):")
+		local _, _, _, _, _, itemType = GetItemInfo(itemCode)
+		if (itemType == "Shields" and not GetInventoryItemBroken("player", 17)) then
+			return true;
+		end
+	end
+	return nil;
+end

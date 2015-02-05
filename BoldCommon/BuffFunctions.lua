@@ -86,3 +86,25 @@ function BC.HasDebuff(unit, textureName)
 	end
 	return 0
 end
+
+-- return index of buff by name.
+function BC.BuffIndexByName(buffName)
+	local i = 0
+	while GetPlayerBuff(i) >= 0 do
+		BC_Buff_Tooltip:SetPlayerBuff(i)
+		local name = BC_Buff_TooltipTextLeft1:GetText()
+		if buffName == name then
+			return i
+		end
+		i = i + 1
+	end
+	return nil
+end
+
+-- remove buff by name.
+function BC.RemoveBuffByName(buffName)
+	local i = BC.BuffIndexByName(buffName)
+	if i then
+		CancelPlayerBuff(i)
+	end
+end

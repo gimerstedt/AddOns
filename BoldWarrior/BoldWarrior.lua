@@ -19,26 +19,27 @@ BINDING_NAME_BW_SAFELGG = "Safe Lifegiving Gem"
 BW.announce = "---> "
 BW.prep = "[BoldWarrior] "
 BW.removableBuffs = {
-	"Ability_Racial_BloodRage",
-	"Spell_Nature_Thorns", -- thorns
-	"Spell_Nature_AbolishMagic", -- dampen magic
-	"Spell_Holy_FlashHeal", -- amplify magic
-	"Spell_Nature_NullifyDisease", -- abolish disease
-	"GreaterBlessingofSanctuary", -- sanct
-	"Spell_Shadow_AntiShadow", -- shadow prot
-	"PrayerOfHealing02", -- bol 5m
-	"Spell_Fire_FireArmor", -- gfpp/fire shield
-	"Spell_Magic_MageArmor", -- 5m kings/priest t3 4pc
-	"Spell_Nature_ResistNature", -- regrowth
-	"Spell_Nature_Rejuvenation", -- rejuv
-	"Spell_Holy_Renew", -- renew
-	"GreaterBlessingofLight", -- bol
-	"Spell_Holy_PowerWordShield", -- pws
-	"INV_Drink_03", -- gordok green grog
-	"INV_Potion_44", -- elixir of fortitude
-	"INV_Potion_86", -- elixir of defense
-	"Spell_Misc_Food", -- food buff
-	"INV_Shield_06", -- inspiration/prot scroll
+	"Bloodrage",
+	"Thorns",
+	"Dampen Magic",
+	"Amplify Magic",
+	"Abolish Disease",
+	"Greater Blessing of Sanctuary",
+	"Blessing of Sanctuary",
+	"Prayer of Shadow Protection",
+	"Blessing of Light",
+	"Greater Blessing of Light",
+	"Fire Shield",
+	"Armor of Faith", -- priest t3
+	"Regrowth",
+	"Rejuvenation",
+	"Renew",
+	"Power Word: Shield",
+	"Gordok Green Grog",
+	"Health II",
+	"Armor",
+	"Well Fed",
+	"Inspiration",
 }
 
 BW_TAUNT_LOG = "Your Taunt was resisted by (.+)"
@@ -207,15 +208,11 @@ end
 -- remove buff.
 function BW.RemoveABuff()
 	for k,buff in pairs(BW.removableBuffs) do
-		local i = 0
-		while GetPlayerBuffTexture(i) do
-			if string.find(GetPlayerBuffTexture(i), buff) then
-				BC.m("removing: "..buff)
-				BC.m(i)
-				CancelPlayerBuff(i)
-				return true
-			end
-			i = i + 1
+		local i = BC.BuffIndexByName(buff)
+		if i then
+			CancelPlayerBuff(i)
+			BC.m("Removed "..buff..".", BW.prep)
+			return true
 		end
 	end
 	return false

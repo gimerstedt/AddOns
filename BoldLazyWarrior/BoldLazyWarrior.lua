@@ -134,10 +134,10 @@ function BLW.DefaultTankRotation(spec)
 
 	if defensive then
 		-- pop trinkets if target is boss and targeting you and you are in combat and in range of boss and SS/BT is not on CD.
-		if UnitClassification("target") == "worldboss" and UnitIsUnit("player", "targettarget") and UnitAffectingCombat("player") and CheckInteractDistance("target", 3) and timeSinceSSBT > 6 then
-			UseInventoryItem(13)
-			UseInventoryItem(14)
-		end
+		-- if UnitClassification("target") == "worldboss" and UnitIsUnit("player", "targettarget") and UnitAffectingCombat("player") and CheckInteractDistance("target", 3) and timeSinceSSBT > 6 then
+		-- 	UseInventoryItem(13)
+		-- 	UseInventoryItem(14)
+		-- end
 		-- TODO: not sure it's working all that well.
 		if UnitClassification("target") ~= "worldboss" and (GetTime() - BLW.targetCastedAt) < 3 then
 			CastSpellByName("Shield Bash")

@@ -51,6 +51,8 @@ function SlashCmdList.BOLDCOMMON()
 	BC.m("Use item by name.", BC.prep)
 	BC.c("/mount", BC.prep)
 	BC.m("Mount up.", BC.prep)
+	BC.c("/unbuff (name of buff)", BC.prep)
+	BC.m("Removes buff.", BC.prep)
 end
 
 -- automatic cthun run in order.
@@ -123,4 +125,10 @@ end
 SLASH_BCMOUNT1 = '/mount'
 function SlashCmdList.BCMOUNT()
 	BC.Mount()
+end
+
+-- removes buff.
+SLASH_BCUNBUFF1 = '/unbuff'
+function SlashCmdList.BCUNBUFF(buffName)
+	BC.RemoveBuffByName(buffName)
 end
