@@ -41,7 +41,7 @@ function BUB.OnEvent(event)
 		else
 			-- fury warrior specific things? remove inspiration etc?
 		end
-		for k, buff in pairs(BUB.warrior) do BUB.buffs[k] = buff end
+		for k, buff in pairs(BUB.warrior) do table.insert(BUB.buffs, 1, buff) end
 	end
 	-- end of warrior stuffs.
 
