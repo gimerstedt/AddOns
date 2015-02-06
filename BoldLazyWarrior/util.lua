@@ -4,24 +4,24 @@ BLW.doNotTarget = {
 	"Qiraji Scarab",
 }
 
--- hp of target in percent
+-- hp of target in percent.
 function BLW.HP(unit)
 	local unit = unit or "target"
 	local percent = (UnitHealth(unit) / UnitHealthMax(unit)) * 100
 	return percent
 end
 
--- return time since last BT
+-- return time since last BT.
 function BLW.TimeSinceBT()
 	return GetTime() - BLW.lastBT
 end
 
--- return time since last BT
+-- return time since last BT.
 function BLW.TimeSinceSS()
 	return GetTime() - BLW.lastSS
 end
 
--- return time since last SS or BT
+-- return time since last SS or BT.
 function BLW.TimeSinceSS()
 	return GetTime() - BLW.lastSSBT
 end
@@ -34,6 +34,7 @@ function BLW.OnCD(spellId)
 	return true
 end
 
+-- target and attack.
 function BLW.TargetAndAttack()
 	if UnitExists("target") then
 		BC.EnableAttack()
@@ -54,6 +55,7 @@ function BLW.TargetAndAttack()
 	end
 end
 
+-- check if the target is in the unwanted list.
 function BLW.unwantedTarget()
 	for k,v in pairs(BLW.doNotTarget) do
 		if UnitName("target") == v then
@@ -63,7 +65,7 @@ function BLW.unwantedTarget()
 	return false
 end
 
--- cast battle shout
+-- cast battle shout.
 function BLW.BattleShout(hp)
 	if hp == nil then
 		hp = 80
@@ -73,16 +75,7 @@ function BLW.BattleShout(hp)
 	end
 end
 
--- gcd
--- function BLW.GCD(slot)
-	-- if GetActionCooldown(slot) > 0 then
-	-- 	BC.m("cd over 0")
-	-- else
-	-- 	BC.m("cd under 0")
-	-- end
--- end
-
--- parse log for spells cast by target
+-- parse log for spells cast by target.
 function BLW.CheckCasting(arg1)
 	local tName = UnitName("target")
 	local spellCastOtherStart = "(.+) begins to cast (.+)."
@@ -101,10 +94,6 @@ function BLW.CheckCasting(arg1)
 	end
 end
 
--- /run a, b, c = string.find("You attack. Black Dragonspawn dodges.", "You attack%. (.+) dodges%.") BC.m(c)
--- /run a, b, c = string.find("Your Hamstring was dodged by Firegut Ogre Mage.", "Your .+ was dodged by (.+)%.") BC.m(c)
--- /run if string.find("You attack. Black Dragonspawn dodges.", "You attack%. .+ dodges%.") then BC.m(s) end
-
 -- "You attack%. .+ dodges%." 
 function BLW.CheckDodge(arg1)
 	local tName = UnitName("target")
@@ -122,7 +111,7 @@ function BLW.CheckDodge(arg1)
 	end
 end
 
--- get bools for stances
+-- get bools for stances.
 function BLW.GetStances()
 	local _,_,battle,_ = GetShapeshiftFormInfo(1)
 	local _,_,defensive, _ = GetShapeshiftFormInfo(2)

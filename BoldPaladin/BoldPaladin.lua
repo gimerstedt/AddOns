@@ -67,6 +67,7 @@ local function onEvent()
 	end
 end
 
+-- TODO: change to xml frame with onload/onevent.
 -- register event and handler.
 local f = CreateFrame("frame")
 f:RegisterEvent("PLAYER_AURAS_CHANGED")
