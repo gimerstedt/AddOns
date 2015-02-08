@@ -4,6 +4,7 @@
 ## Author: Boldilocks
 ## Version: 0.4
 ## Dependencies: BoldCommon
+## SavedVariables: BWConfig
 
 BoldWarrior.lua
 BoldWarrior.xml

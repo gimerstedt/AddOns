@@ -1,4 +1,8 @@
 BW = {}
+BWConfig = {
+	BUFFCAP = 24
+}
+
 -- on load.
 function BW.OnLoad()
 	-- only load for warriors.
@@ -16,7 +20,6 @@ BINDING_NAME_BW_SAFELS = "Safe Last Stand"
 BINDING_NAME_BW_SAFELGG = "Safe Lifegiving Gem"
 
 -- consts.
-BW.buffCap = 24
 BW.announce = "---> "
 BW.prep = "[BoldWarrior] "
 BW.removableBuffs = {
@@ -93,6 +96,19 @@ function SlashCmdList.BWHELP()
 	BC.m("Safely uses Lifegiving Gem.", BW.prep)
 	BC.c("/mocking", BW.prep)
 	BC.m("Use Mocking Blow from any stance and swap back to defensive stance.", BW.prep)
+	BC.c("/bwbc (1-32)", BW.prep)
+	BC.m("Set your current buff cap (used to determine if /safe(sw/ls/lgg) removes a buff or not", BW.prep)
+end
+
+-- change buffcap.
+SLASH_BWBUFFCAP1 = '/bwbuffcap'
+function SlashCmdList.BWBUFFCAP(buffCap)
+	if buffCap then
+		BWConfig.BUFFCAP = buffCap
+		BC.m("Buff cap set to "..buffCap)
+	else
+		BC.m("Specify the number of buffs eg. /bwbuffcap 24")
+	end
 end
 
 -- announce challenging shout with a command instead...to cut down on code
@@ -146,7 +162,7 @@ function BW.SafeSW()
 		return
 	end
 	-- if below 24 buffs, sw.
-	if not UnitBuff("player", BW.buffCap) then
+	if not UnitBuff("player", BWConfig.BUFFCAP) then
 		CastSpellByName("Shield Wall")
 		return
 	end
@@ -170,7 +186,7 @@ function BW.SafeLS()
 		BC.m("You do not have Last Stand.", BW.prep)
 	end
 	-- if below 24 buffs, ls.
-	if not UnitBuff("player", BW.buffCap) then
+	if not UnitBuff("player", BWConfig.BUFFCAP) then
 		CastSpellByName("Last Stand")
 		return
 	end
@@ -202,7 +218,7 @@ function BW.SafeLGG()
 		return
 	end
 	-- if 24 buffs, remove one.
-	if not UnitBuff("player", BW.buffCap) then
+	if not UnitBuff("player", BWConfig.BUFFCAP) then
 		BC.UseItemByName("Lifegiving Gem", BW.prep)
 		return
 	end
