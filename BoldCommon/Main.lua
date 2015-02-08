@@ -9,7 +9,6 @@ BINDING_NAME_BC_TEABAG = "Teabag"
 BINDING_NAME_BC_CTRI = "Generate C'Thun run in order"
 BINDING_NAME_BC_CDB = "Report missing debuffs on target"
 BINDING_NAME_BC_RMIC = "Report raid members in combat"
-BINDING_NAME_BC_GRN = "Get a list of raid member names to copy/paste"
 BINDING_NAME_BC_UNSTUCK = "Unstuck"
 BINDING_NAME_BC_RELOADUI = "Reload UI"
 
@@ -41,8 +40,6 @@ function SlashCmdList.BOLDCOMMON()
 	BC.m("Reports your crit cap based on the hitRate input.", BC.prep)
 	BC.c("/cbot (textures, true/false) - /checkbuffsontarget", BC.prep)
 	BC.m("Reports all buffs on target.", BC.prep)
-	BC.c("/grn - /getraidmembernames", BC.prep)
-	BC.m("List all raid members in a frame for copy/paste.", BC.prep)
 	BC.c("/ss", BC.prep)
 	BC.m("Sit/stand up repeatedly for no good reason.", BC.prep)
 	BC.c("/home", BC.prep)
@@ -95,12 +92,6 @@ end
 SLASH_CHECKBUFFSONTARGET1, SLASH_CHECKBUFFSONTARGET2 = '/cbot', '/checkbuffsontarget'
 function SlashCmdList.CHECKBUFFSONTARGET(showTextureNames)
 	BC.ReportBuffsOnTarget(showTextureNames)
-end
-
--- put raid members in a list for copy/paste.
-SLASH_GETRAIDMEMBERNAMES1, SLASH_GETRAIDMEMBERNAMES2 = '/grn', '/getraidmembernames'
-function SlashCmdList.GETRAIDMEMBERNAMES()
-	BC.ReportRaidMemberNames()
 end
 
 -- sitstand.

@@ -1,8 +1,0 @@
-## Interface: 11200
-## Title: |cffffaaffBold|rMLBug
-## Notes: Boldi's master loot bug helper.
-## Author: Boldilocks
-## Version: 0.4
-## Dependencies: BoldCommon
-
-BoldMLBug.lua

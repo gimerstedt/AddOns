@@ -2,7 +2,7 @@
 ## Title: |cffffaaffBold|rCommon
 ## Notes: Boldi's collection of semi useful stuff.
 ## Author: Boldilocks
-## Version: 0.4.1
+## Version: 0.4.2
 ## Dependencies:
 
 Main.lua
@@ -10,6 +10,5 @@ BoldCommon.xml
 BuffFunctions.lua
 CthunRunIn.lua
 MiscFunctions.lua
-RaidNames.lua
 Mount.lua
 Bindings.xml

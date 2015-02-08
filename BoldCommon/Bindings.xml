@@ -14,9 +14,6 @@
 	<Binding name="BC_RMIC">
 		BC.ReportPlayersInCombat()
 	</Binding>
-	<Binding name="BC_GRN">
-		BC.ReportRaidMemberNames()
-	</Binding>
 	<Binding name="BC_UNSTUCK">
 		Stuck()
 	</Binding>
