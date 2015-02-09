@@ -5,10 +5,5 @@
 ## Version: 0.4.2
 ## Dependencies:
 
-Main.lua
 BoldCommon.xml
-BuffFunctions.lua
-CthunRunIn.lua
-MiscFunctions.lua
-Mount.lua
 Bindings.xml

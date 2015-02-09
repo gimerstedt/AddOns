@@ -15,6 +15,41 @@ BINDING_NAME_BC_RELOADUI = "Reload UI"
 -- on load.
 function BC.OnLoad()
 	this:RegisterEvent("MERCHANT_SHOW")
+
+	SlashCmdList["BOLDCOMMON"] = BC.Help
+	SLASH_BOLDCOMMON1 = "/bc"
+	SLASH_BOLDCOMMON2 = "/boldcommon"
+
+	SlashCmdList["BPRELOADUI"] = ReloadUI
+	SLASH_BPRELOADUI = "/rl"
+	SlashCmdList["RESETINSTANCES"] = ResetInstances
+	SLASH_RESETINSTANCES1 = "/ri"
+	SLASH_RESETINSTANCES2 = "/resetinstances"
+	SlashCmdList["BCHOME"] = Stuck
+	SLASH_BCHOME1 = "/home"
+
+	SlashCmdList["CTHUNRUNIN"] = BC.GenerateCthunRunInOrder
+	SLASH_CTHUNRUNIN1 = "/ctri"
+	SLASH_CTHUNRUNIN2 = "/cthunrunin"
+	SlashCmdList["MISSINGDEBUFFS"] = BC.ReportMissingDebuffsOnTarget
+	SLASH_MISSINGDEBUFFS1 =  "/cdb"
+	SlashCmdList["RAIDMEMBERSINCOMBAT"] = BC.ReportPlayersInCombat
+	SLASH_RAIDMEMBERSINCOMBAT1 = "/rmic"
+	SLASH_RAIDMEMBERSINCOMBAT2 = "/raidmembersincombat"
+	SlashCmdList["CRITCAP"] = BC.ReportCritCap
+	SLASH_CRITCAP1 = "/cc"
+	SLASH_CRITCAP2 = "/critcap"
+	SlashCmdList["BUFFSONTARGET"] = BC.ReportBuffsOnTarget
+	SLASH_BUFFSONTARGET1 = "/cbot"
+	SLASH_BUFFSONTARGET2 = "/checkbuffsontarget"
+	SlashCmdList["TEABAG"] = BC.TeaBag
+	SLASH_TEABAG1 = "/ss"
+	SlashCmdList["BCUSE"] = BC.UseItemByName
+	SLASH_BCUSE1 = "/use"
+	SlashCmdList["BCMOUNT"] = BC.Mount
+	SLASH_BCMOUNT1 = "/mount"
+	SlashCmdList["BCUNBUFF"] = BC.RemoveBuffByName
+	SLASH_BCUNBUFF1 = "/unbuff"
 end
 
 -- event handler.
@@ -25,8 +60,7 @@ function BC.OnEvent()
 end
 
 -- info command.
-SLASH_BOLDCOMMON1, SLASH_BOLDCOMMON2 = '/boldcommon', '/bc'
-function SlashCmdList.BOLDCOMMON()	
+function BC.Help()
 	BC.m("Automatically repairs your equipment at vendor.", BC.prep)
 	BC.c("/ctri - /cthunrunin", BC.prep)
 	BC.m("Generates a run in order and writes it in /party.", BC.prep)
@@ -50,76 +84,4 @@ function SlashCmdList.BOLDCOMMON()
 	BC.m("Mount up.", BC.prep)
 	BC.c("/unbuff (name of buff)", BC.prep)
 	BC.m("Removes buff.", BC.prep)
-end
-
--- automatic cthun run in order.
-SLASH_CTHUNRUNIN1, SLASH_CTHUNRUNIN2 = '/ctri', '/cthunrunin'
-function SlashCmdList.CTHUNRUNIN()
-	BC.GenerateCthunRunInOrder()
-end
-
--- reload ui.
-SLASH_RLUI1 = '/rl'
-function SlashCmdList.RLUI()
-	ReloadUI()
-end
-
--- reset instances.
-SLASH_RESETINSTANCES1, SLASH_RESETINSTANCES2 = '/ri', '/resetinstances'
-function SlashCmdList.RESETINSTANCES()
-	ResetInstances()
-end
-
--- report missing debuffs on target.
-SLASH_CHECKDEBUFFS1, SLASH_CHECKDEBUFFS2 = '/cdb', '/checkdebuffs'
-function SlashCmdList.CHECKDEBUFFS()
-	BC.ReportMissingDebuffsOnTarget()
-end
-
--- check raid for members in combat.
-SLASH_RAIDMEMBERSINCOMBAT1, SLASH_RAIDMEMBERSINCOMBAT2 = '/rmic', '/raidmembersincombat'
-function SlashCmdList.RAIDMEMBERSINCOMBAT()
-	BC.ReportPlayersInCombat()
-end
-
--- only relevant for DW melee.
-SLASH_CRITCAP1, SLASH_CRITCAP2 = '/cc', '/critcap'
-function SlashCmdList.CRITCAP(msg)
-	BC.ReportCritCap(msg)
-end
-
--- check buffs on target.
-SLASH_CHECKBUFFSONTARGET1, SLASH_CHECKBUFFSONTARGET2 = '/cbot', '/checkbuffsontarget'
-function SlashCmdList.CHECKBUFFSONTARGET(showTextureNames)
-	BC.ReportBuffsOnTarget(showTextureNames)
-end
-
--- sitstand.
-SLASH_SITSTAND1 = '/ss'
-function SlashCmdList.SITSTAND()
-	BC.TeaBag()
-end
-
--- unstuck.
-SLASH_UNSTUCK1 = '/home'
-function SlashCmdList.UNSTUCK()
-	Stuck()
-end
-
--- use item by name.
-SLASH_BCUSE1 = '/use'
-function SlashCmdList.BCUSE(msg)
-	BC.UseItemByName(unpack(BC.ListToTable(msg)))
-end
-
--- mount up.
-SLASH_BCMOUNT1 = '/mount'
-function SlashCmdList.BCMOUNT()
-	BC.Mount()
-end
-
--- removes buff.
-SLASH_BCUNBUFF1 = '/unbuff'
-function SlashCmdList.BCUNBUFF(buffName)
-	BC.RemoveBuffByName(buffName)
 end

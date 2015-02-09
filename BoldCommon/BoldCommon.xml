@@ -1,6 +1,11 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/" 
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
 	xsi:schemaLocation="http://www.blizzard.com/wow/ui/">
+	<Script file="Main.lua"/>
+	<Script file="BuffFunctions.lua"/>
+	<Script file="CthunRunIn.lua"/>
+	<Script file="MiscFunctions.lua"/>
+	<Script file="Mount.lua"/>
 	<Frame name="BCFrame" hidden="true">
 		<Scripts>
 			<OnLoad>BC.OnLoad()</OnLoad>
