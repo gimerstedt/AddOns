@@ -48,8 +48,8 @@ BW_SW = "You gain Shield Wall."
 BW_SW_TXT = "Used Shield Wall!"
 BW_LS = "You gain Last Stand."
 BW_LS_TXT = "Used Last Stand!"
-BW_LG = "You gain Gift of Life."
-BW_LG_TXT = "Used Lifegiving Gem!"
+BW_LGG = "You gain Gift of Life."
+BW_LGG_TXT = "Used Lifegiving Gem!"
 BW_CS_TXT = "Used Mass Taunt!"
 
 -- on load.
@@ -57,7 +57,7 @@ function BW.OnLoad()
 	-- only load for warriors.
 	if UnitClass("player") ~= "Warrior" then return end
 	this:RegisterEvent("CHAT_MSG_SPELL_SELF_DAMAGE")
-	this:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_SELF_BUFFS")
+	-- this:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_SELF_BUFFS")
 	this:RegisterEvent("CHAT_MSG_SPELL_DAMAGESHIELDS_ON_SELF")
 
 	SlashCmdList["BWHELP"] = BW.Help
@@ -76,7 +76,7 @@ function BW.OnLoad()
 	SLASH_MOCKING1 = "/mocking"
 end
 
--- event handler
+-- event handler.
 function BW.OnEvent()
 	if event == "CHAT_MSG_SPELL_SELF_DAMAGE" or event == "CHAT_MSG_SPELL_DAMAGESHIELDS_ON_SELF" then
 		if string.find(arg1, BW_TAUNT_LOG) then
@@ -87,14 +87,14 @@ function BW.OnEvent()
 				BC.r(BW_MB_TXT, BW.announce)
 			end
 		end
-	elseif event == "CHAT_MSG_SPELL_PERIODIC_SELF_BUFFS" then
-		if string.find(arg1, BW_SW) then
-			BC.y(BW_SW_TXT, BW.announce)
-		elseif string.find(arg1, BW_LS) then
-			BC.y(BW_LS_TXT, BW.announce)
-		elseif string.find(arg1, BW_LG) then
-			BC.y(BW_LG_TXT, BW.announce)
-		end
+	-- elseif event == "CHAT_MSG_SPELL_PERIODIC_SELF_BUFFS" then
+	-- 	if string.find(arg1, BW_SW) then
+	-- 		BC.y(BW_SW_TXT, BW.announce)
+	-- 	elseif string.find(arg1, BW_LS) then
+	-- 		BC.y(BW_LS_TXT, BW.announce)
+	-- 	elseif string.find(arg1, BW_LGG) then
+	-- 		BC.y(BW_LGG_TXT, BW.announce)
+	-- 	end
 	end
 end
 
@@ -148,6 +148,7 @@ function BW.SafeSW()
 	-- if below 24 buffs, sw.
 	if not UnitBuff("player", BWConfig.BUFFCAP) then
 		CastSpellByName("Shield Wall")
+		BC.y(BW_SW_TXT, BW.announce)
 		return
 	end
 	-- meni buffs, need to remove one.
@@ -155,6 +156,7 @@ function BW.SafeSW()
 		BC.m("Could not find a buff to remove, using Shield Wall anyway.", BW.prep)
 	end
 	CastSpellByName("Shield Wall")
+	BC.y(BW_SW_TXT, BW.announce)
 end
 
 -- ls.
@@ -172,6 +174,7 @@ function BW.SafeLS()
 	-- if below 24 buffs, ls.
 	if not UnitBuff("player", BWConfig.BUFFCAP) then
 		CastSpellByName("Last Stand")
+		BC.y(BW_LS_TXT, BW.announce)
 		return
 	end
 	-- meni buffs, need to remove one.
@@ -179,6 +182,7 @@ function BW.SafeLS()
 		BC.m("Could not find a buff to remove, using Last Stand anyway.", BW.prep)
 	end
 	CastSpellByName("Last Stand")
+	BC.y(BW_LS_TXT, BW.announce)
 end
 
 -- lgg.
@@ -204,6 +208,7 @@ function BW.SafeLGG()
 	-- if 24 buffs, remove one.
 	if not UnitBuff("player", BWConfig.BUFFCAP) then
 		BC.UseItemByName("Lifegiving Gem", BW.prep)
+		BC.y(BW_LGG_TXT, BW.announce)
 		return
 	end
 	-- meni buffs, need to remove one.
@@ -211,6 +216,7 @@ function BW.SafeLGG()
 		BC.m("Could not find a buff to remove, using Lifegiving Gem anyway.", BW.prep)
 	end
 	BC.UseItemByName("Lifegiving Gem")
+	BC.y(BW_LGG_TXT, BW.announce)
 end
 
 -- remove buff.
