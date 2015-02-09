@@ -6,6 +6,5 @@
 ## Dependencies: BoldCommon
 ## SavedVariables: BWConfig
 
-BoldWarrior.lua
 BoldWarrior.xml
 Bindings.xml

@@ -3,15 +3,6 @@ BWConfig = {
 	BUFFCAP = 24
 }
 
--- on load.
-function BW.OnLoad()
-	-- only load for warriors.
-	if UnitClass("player") ~= "Warrior" then return end
-	this:RegisterEvent("CHAT_MSG_SPELL_SELF_DAMAGE")
-	this:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_SELF_BUFFS")
-	this:RegisterEvent("CHAT_MSG_SPELL_DAMAGESHIELDS_ON_SELF")
-end
-
 -- keybinds
 BINDING_HEADER_BW = "BoldWarrior"
 BINDING_NAME_BW_CHALLSHOUT = "Challenging Shout"
@@ -61,6 +52,30 @@ BW_LG = "You gain Gift of Life."
 BW_LG_TXT = "Used Lifegiving Gem!"
 BW_CS_TXT = "Used Mass Taunt!"
 
+-- on load.
+function BW.OnLoad()
+	-- only load for warriors.
+	if UnitClass("player") ~= "Warrior" then return end
+	this:RegisterEvent("CHAT_MSG_SPELL_SELF_DAMAGE")
+	this:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_SELF_BUFFS")
+	this:RegisterEvent("CHAT_MSG_SPELL_DAMAGESHIELDS_ON_SELF")
+
+	SlashCmdList["BWHELP"] = BW.Help
+	SLASH_BWHELP1 = "/bwhelp"
+	SlashCmdList["BWBUFFCAP"] = BW.SetBuffCap
+	SLASH_BWBUFFCAP1 = "/bwcap"
+	SlashCmdList["SAFESW"] = BW.SafeSW
+	SLASH_SAFESW1 = "/safesw"
+	SlashCmdList["SAFELS"] = BW.SafeLS
+	SLASH_SAFELS1 = "/safels"
+	SlashCmdList["SAFELGG"] = BW.SafeLGG
+	SLASH_SAFELGG1 = "/safelgg"
+	SlashCmdList["CHALLSHOUT"] = BW.ChallengingShout
+	SLASH_CHALLSHOUT1 = "/aoetaunt"
+	SlashCmdList["MOCKING"] = BW.MockingBlow
+	SLASH_MOCKING1 = "/mocking"
+end
+
 -- event handler
 function BW.OnEvent()
 	if event == "CHAT_MSG_SPELL_SELF_DAMAGE" or event == "CHAT_MSG_SPELL_DAMAGESHIELDS_ON_SELF" then
@@ -83,9 +98,7 @@ function BW.OnEvent()
 	end
 end
 
--- announce challenging shout with a command instead...to cut down on code
-SLASH_BWHELP1 = '/bwhelp'
-function SlashCmdList.BWHELP()
+function BW.Help()
 	BC.c("/aoetaunt", BW.prep)
 	BC.m("Uses and announces Challenging Shout if player has enough rage and it is not on cooldown.", BW.prep)
 	BC.c("/safesw", BW.prep)
@@ -96,48 +109,19 @@ function SlashCmdList.BWHELP()
 	BC.m("Safely uses Lifegiving Gem.", BW.prep)
 	BC.c("/mocking", BW.prep)
 	BC.m("Use Mocking Blow from any stance and swap back to defensive stance.", BW.prep)
-	BC.c("/bwbc (1-32)", BW.prep)
+	BC.c("/bwcap (1-32)", BW.prep)
 	BC.m("Set your current buff cap (used to determine if /safe(sw/ls/lgg) removes a buff or not", BW.prep)
 end
 
 -- change buffcap.
-SLASH_BWBUFFCAP1 = '/bwbuffcap'
-function SlashCmdList.BWBUFFCAP(buffCap)
-	if buffCap then
+function BW.SetBuffCap(buffCap)
+	if buffCap ~= "" then
 		BWConfig.BUFFCAP = buffCap
 		BC.m("Buff cap set to "..buffCap)
 	else
-		BC.m("Specify the number of buffs eg. /bwbuffcap 24")
+		BC.m("Specify the number of buffs eg. /bwcap 24")
+		BC.c("Current buff cap: "..BWConfig.BUFFCAP)
 	end
-end
-
--- announce challenging shout with a command instead...to cut down on code
-SLASH_CHALLSHOUT1 = '/aoetaunt'
-function SlashCmdList.CHALLSHOUT()
-	BW.ChallengingShout()
-end
-
--- safely sw.
-SLASH_SHIELDWALL1 = '/safesw'
-function SlashCmdList.SHIELDWALL()
-	BW.SafeSW()
-end
-
--- safely ls.
-SLASH_LASTSTAND1 = '/safels'
-function SlashCmdList.LASTSTAND()
-	BW.SafeLS()
-end
-
--- safely ls.
-SLASH_LIFEGIVING1 = '/safelgg'
-function SlashCmdList.LIFEGIVING()
-	BW.SafeLGG()
-end
-
-SLASH_MOCKING1 = '/mocking'
-function SlashCmdList.MOCKING()
-	BW.MockingBlow()
 end
 
 -- chall shout.
