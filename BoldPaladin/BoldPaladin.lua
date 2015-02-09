@@ -1,13 +1,27 @@
 -- only load if paladin.
 if UnitClass("player") ~= "Paladin" then return end
 
--- prepend for chat print.
 BP = {}
 BP.prep = "[BoldPaladin] "
 
+function BP.OnLoad()
+	BoldPaladinFrame:RegisterEvent("PLAYER_AURAS_CHANGED")
+
+	SlashCmdList["BPHELP"] = BP.Help
+	SLASH_BPHELP1 = "/bp"
+	SlashCmdList["SAFEBOP"] = BP.Safebop
+	SLASH_SAFEBOP1 = "/safebop"
+	SlashCmdList["T1"] = BP.T1
+	SLASH_T11 = "/t1"
+end
+
+-- event handler.
+function BP.OnEvent()
+	BP.NotifyIfAuraMissing()
+end
+
 -- info command.
-SLASH_BOLDPALADIN1, SLASH_BOLDPALADIN2 = '/boldpaladin', '/bp'
-function SlashCmdList.BOLDPALADIN()	
+function BP.Help()
 	BC.m("Notifies you if no aura is active.", BP.prep)
 	BC.c("/safebop", BP.prep)
 	BC.m("Casts Blessing of Protection on your target if your target is NOT a warrior and targetTarget if target is hostile and targetTarget is not a warrior.", BP.prep)
@@ -16,8 +30,7 @@ function SlashCmdList.BOLDPALADIN()
 end
 
 -- cast bop on target if target is not warrior or on targettarget if target is hostile and targettarget is not warrior.
-SLASH_BOP1 = '/safebop'
-function SlashCmdList.BOP(msg)
+function BP.Safebop()
 	if UnitIsFriend("player", "target") and UnitClass("target") ~= "Warrior" and not BC.HasBuff("target", "Holy_DivineIntervention") then
 		CastSpellByName("Blessing of Protection")
 		return
@@ -30,9 +43,8 @@ function SlashCmdList.BOP(msg)
 end
 
 -- rotation for 8/8 t1.
-SLASH_T11 = '/t1'
-function SlashCmdList.T1(msg)
-	TargetNearestEnemy()
+function BP.T1()
+	if not UnitExists("target") then TargetNearestEnemy() end
 	BC.EnableAttack()
 	if UnitExists("target") and not BC.HasBuff("player", "Holy_HolySmite") then
 		CastSpellByName("Seal of the Crusader")
@@ -54,21 +66,8 @@ function BP.IsAuraActive()
 end
 
 -- notify if no aura active.
-local function notifyIfAuraMissing()
+function BP.NotifyIfAuraMissing()
 	if not BP.IsAuraActive() then
 		BC.m("No aura active!", BP.prep)
 	end
 end
-
--- event handler.
-local function onEvent()
-	if event == "PLAYER_AURAS_CHANGED" then
-		notifyIfAuraMissing()
-	end
-end
-
--- TODO: change to xml frame with onload/onevent.
--- register event and handler.
-local f = CreateFrame("frame")
-f:RegisterEvent("PLAYER_AURAS_CHANGED")
-f:SetScript("OnEvent", onEvent)
