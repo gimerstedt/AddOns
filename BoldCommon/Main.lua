@@ -17,31 +17,25 @@ function BC.OnLoad()
 	this:RegisterEvent("MERCHANT_SHOW")
 
 	SlashCmdList["BOLDCOMMON"] = BC.Help
-	SLASH_BOLDCOMMON1 = "/bc"
-	SLASH_BOLDCOMMON2 = "/boldcommon"
+	SLASH_BOLDCOMMON1, SLASH_BOLDCOMMON2 = "/bc", "/boldcommon"
 
 	SlashCmdList["BPRELOADUI"] = ReloadUI
 	SLASH_BPRELOADUI = "/rl"
 	SlashCmdList["RESETINSTANCES"] = ResetInstances
-	SLASH_RESETINSTANCES1 = "/ri"
-	SLASH_RESETINSTANCES2 = "/resetinstances"
+	SLASH_RESETINSTANCES1, SLASH_RESETINSTANCES2 = "/ri", "/resetinstances"
 	SlashCmdList["BCHOME"] = Stuck
 	SLASH_BCHOME1 = "/home"
 
 	SlashCmdList["CTHUNRUNIN"] = BC.GenerateCthunRunInOrder
-	SLASH_CTHUNRUNIN1 = "/ctri"
-	SLASH_CTHUNRUNIN2 = "/cthunrunin"
+	SLASH_CTHUNRUNIN1, SLASH_CTHUNRUNIN2 = "/ctri", "/cthunrunin"
 	SlashCmdList["MISSINGDEBUFFS"] = BC.ReportMissingDebuffsOnTarget
 	SLASH_MISSINGDEBUFFS1 =  "/cdb"
 	SlashCmdList["RAIDMEMBERSINCOMBAT"] = BC.ReportPlayersInCombat
-	SLASH_RAIDMEMBERSINCOMBAT1 = "/rmic"
-	SLASH_RAIDMEMBERSINCOMBAT2 = "/raidmembersincombat"
+	SLASH_RAIDMEMBERSINCOMBAT1, SLASH_RAIDMEMBERSINCOMBAT2 = "/rmic", "/raidmembersincombat"
 	SlashCmdList["CRITCAP"] = BC.ReportCritCap
-	SLASH_CRITCAP1 = "/cc"
-	SLASH_CRITCAP2 = "/critcap"
+	SLASH_CRITCAP1, SLASH_CRITCAP2 = "/cc", "/critcap"
 	SlashCmdList["BUFFSONTARGET"] = BC.ReportBuffsOnTarget
-	SLASH_BUFFSONTARGET1 = "/cbot"
-	SLASH_BUFFSONTARGET2 = "/checkbuffsontarget"
+	SLASH_BUFFSONTARGET1, SLASH_BUFFSONTARGET2 = "/cbot", "/checkbuffsontarget"
 	SlashCmdList["TEABAG"] = BC.TeaBag
 	SLASH_TEABAG1 = "/ss"
 	SlashCmdList["BCUSE"] = BC.UseItemByName

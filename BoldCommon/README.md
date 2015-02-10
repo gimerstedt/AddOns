@@ -6,4 +6,4 @@ Addon for WoW 1.12.1 clients with misc functions.
 Automatically repair all items at vendor.
 
 ##Commands:
-/bc - list available commands.
+* /bc - list available commands.

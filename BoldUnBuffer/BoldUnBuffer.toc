@@ -5,5 +5,4 @@
 ## Version: 0.3
 ## Dependencies: BoldCommon
 
-BoldUnBuffer.lua
 BoldUnBuffer.xml
