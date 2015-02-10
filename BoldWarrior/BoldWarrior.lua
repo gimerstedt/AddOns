@@ -74,6 +74,10 @@ function BW.OnLoad()
 	SLASH_CHALLSHOUT1 = "/aoetaunt"
 	SlashCmdList["MOCKING"] = BW.MockingBlow
 	SLASH_MOCKING1 = "/mocking"
+	SlashCmdList["OVERPOWER"] = BW.Overpower
+	SLASH_OVERPOWER1 = "/overpower"
+	SlashCmdList["MAKEMACROS"] = BW.MakeMacros
+	SLASH_MAKEMACROS1 = "/bwmm"
 end
 
 -- event handler.
@@ -109,8 +113,21 @@ function BW.Help()
 	BC.m("Safely uses Lifegiving Gem.", BW.prep)
 	BC.c("/mocking", BW.prep)
 	BC.m("Use Mocking Blow from any stance and swap back to defensive stance.", BW.prep)
+	BC.c("/overpower", BW.prep)
+	BC.m("Use Overpower from any stance and swap back to berserker stance.", BW.prep)
 	BC.c("/bwcap (1-32)", BW.prep)
 	BC.m("Set your current buff cap (used to determine if /safe(sw/ls/lgg) removes a buff or not", BW.prep)
+	BC.c("/bwmm", BW.prep)
+	BC.m("Make macros for the commands.", BW.prep)
+end
+
+function BW.MakeMacros()
+	BC.MakeMacro("AoETaunt", "/aoetaunt", 1, "Ability_BullRush", nil, 1, 1)
+	BC.MakeMacro("Shield Wall", "/safesw", 1, "Ability_Warrior_ShieldWal", nil, 1, 1)
+	BC.MakeMacro("Last Stand", "/safels", 1, "Spell_Holy_AshesToAshe", nil, 1, 1)
+	BC.MakeMacro("Lifegiving Gem", "/safelgg", 1, "Spell_Shadow_SoulGem", nil, 1, 1)
+	BC.MakeMacro("Mocking Blow", "/mocking", 1, "Ability_Warrior_PunishingBlow", nil, 1, 1)
+	BC.MakeMacro("Overpower", "/overpower", 1, "Ability_MeleeDamage", nil, 1, 1)
 end
 
 -- change buffcap.
@@ -250,4 +267,24 @@ function BW.MockingBlow()
 		CastSpellByName("Battle Stance")
 	end
 	CastSpellByName("Mocking Blow")
+end
+
+-- mocking from any stance.
+function BW.Overpower()
+	if UnitMana("player") < 5 then
+		return
+	end
+	local OPId = BC.GetSpellId("Overpower")
+	local _,_,battle, _ = GetShapeshiftFormInfo(1)
+	local _,_,berserker, _ = GetShapeshiftFormInfo(3)
+	if GetSpellCooldown(OPId, 1, BOOKTYPE_SPELL) > 0 then
+		if not berserker then 
+			CastSpellByName("Berserker Stance")
+		end
+		return
+	end
+	if not battle then
+		CastSpellByName("Battle Stance")
+	end
+	CastSpellByName("Overpower")
 end
