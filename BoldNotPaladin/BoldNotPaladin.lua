@@ -27,6 +27,11 @@ PP_ClassID[7] = "Warlock"
 
 function BNP.OnLoad()
 	this:RegisterEvent("CHAT_MSG_ADDON")
+
+	SlashCmdList["BOLDNOTPALADIN"] = BNP.Help
+	SLASH_BOLDNOTPALADIN1, SLASH_BOLDNOTPALADIN2 = "/bnp", "/boldnotpaladin"
+	SlashCmdList["PRINTPPSETTINGS"] = BNP.PrintPPSettings
+	SLASH_PRINTPPSETTINGS1 = "/pp"
 end
 
 function BNP.OnEvent()
@@ -35,17 +40,15 @@ function BNP.OnEvent()
 	end
 end
 
--- info command.
-SLASH_BOLDNOTPALADIN1, SLASH_BOLDNOTPALADIN2 = '/boldnotpaladin', '/bnp'
-function SlashCmdList.BOLDNOTPALADIN()	
+-- help command.
+function BNP.Help()
 	BC.c("/pp", BNP.prep)
 	BC.m("Lists current Pally Power assignments.", BNP.prep)
 	BC.c("/pp u", BNP.prep)
 	BC.m("Updates assignment information.", BNP.prep)
 end
 
-SLASH_BNPPRINT1 = '/pp'
-function SlashCmdList.BNPPRINT(msg)
+function BNP.PrintPPSettings(msg)
 	if msg == "u" then
 		BNP.Refresh("REQ")
 		return
