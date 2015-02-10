@@ -1,6 +1,6 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/ C:\Projects\WoW\Bin\Interface\FrameXML\UI.xsd">
-	<Script file="OverBuffed.lua"/>
-	<Frame name="OverBuffedFrame" movable="true" toplevel="true" parent="UIParent" hidden="true">
+	<Script file="BoldBuffCounter.lua"/>
+	<Frame name="BoldBuffCounterFrame" movable="true" toplevel="true" parent="UIParent" hidden="true">
 		<Size>
 			<AbsDimension x="26" y="26" />
 		</Size>
@@ -25,20 +25,20 @@
 		</Layers>
 		<Scripts>
 			<OnLoad>
-				OverBuffed_OnLoad();
-				this:RegisterForDrag("LeftButton");
-				this:EnableMouse(1);
+				BBC.OnLoad()
+				this:RegisterForDrag("LeftButton")
+				this:EnableMouse(1)
 			</OnLoad>
 			<OnEvent>
-				OverBuffed_OnEvent(event);
+				BBC.OnEvent(event)
 			</OnEvent>
 			<OnDragStart>
-				if(OverBuffedStatus_Locked == 0) then
-					this:StartMoving();
+				if(BBCConfig.locked == 0) then
+					this:StartMoving()
 				end
 			</OnDragStart>
 			<OnDragStop>
-				this:StopMovingOrSizing();
+				this:StopMovingOrSizing()
 			</OnDragStop>
 		</Scripts>
 	</Frame>

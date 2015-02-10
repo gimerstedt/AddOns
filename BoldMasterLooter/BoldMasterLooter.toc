@@ -4,7 +4,6 @@
 ## Author: Boldilocks
 ## Version: 0.5
 ## Dependencies: BoldCommon
-
 Main.lua
 MLBug.lua
 RaidNames.lua

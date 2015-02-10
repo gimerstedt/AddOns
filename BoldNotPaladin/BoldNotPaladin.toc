@@ -2,7 +2,6 @@
 ## Title: |cffffaaffBold|rNotPaladin
 ## Notes: Boldi's checker of paladin things for non-paladins.
 ## Author: Boldilocks
-## Version: 0.1
+## Version: 0.2
 ## Dependencies: BoldCommon
-
 BoldNotPaladin.xml

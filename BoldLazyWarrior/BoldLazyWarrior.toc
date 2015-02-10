@@ -4,7 +4,6 @@
 ## Author: Boldilocks
 ## Version: 0.2
 ## Dependencies: BoldCommon
-
 Util.lua
 BoldLazyWarrior.lua
 Bindings.xml

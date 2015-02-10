@@ -1,0 +1,7 @@
+## Interface: 11200
+## Title: BoldBuffCounter
+## Version: 0.1
+## Notes: Notifies you if you are approaching buff cap
+## SavedVariablesPerCharacter: BBCConfig
+## Dependencies: BoldCommon
+BoldBuffCounter.xml
