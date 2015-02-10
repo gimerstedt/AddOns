@@ -44,6 +44,8 @@ function BC.OnLoad()
 	SLASH_BCMOUNT1 = "/mount"
 	SlashCmdList["BCUNBUFF"] = BC.RemoveBuffByName
 	SLASH_BCUNBUFF1 = "/unbuff"
+	SlashCmdList["BCMACRO"] = BC.MakeMacroTest
+	SLASH_BCMACRO1 = "/mmm"
 end
 
 -- event handler.

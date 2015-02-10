@@ -1,4 +1,3 @@
-BLW = {}
 BLW.doNotTarget = {
 	"Qiraji Scorpion",
 	"Qiraji Scarab",

@@ -6,6 +6,7 @@
 	<Script file="CthunRunIn.lua"/>
 	<Script file="MiscFunctions.lua"/>
 	<Script file="Mount.lua"/>
+	<Script file="Macros.lua"/>
 	<Frame name="BCFrame" hidden="true">
 		<Scripts>
 			<OnLoad>BC.OnLoad()</OnLoad>

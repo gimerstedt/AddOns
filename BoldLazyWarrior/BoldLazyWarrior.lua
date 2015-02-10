@@ -1,7 +1,9 @@
 -- only load for warriors
 if UnitClass("player") ~= "Warrior" then return end
 
+
 -- vars
+BLW = {}
 BLW.debug = true
 BLW.prep = "[BLW] "
 BLW.lastBT = 0
@@ -9,6 +11,56 @@ BLW.lastSS = 0
 BLW.lastSSBT = 0
 BLW.targetCastedAt = 0
 BLW.targetDodgedAt = 0
+
+BINDING_HEADER_BLW = "BoldLazyWarrior"
+BINDING_NAME_BLW_PROTTANK = "Default Tank rotation (prot)"
+BINDING_NAME_BLW_FURYTANK = "Default Tank rotation (fury)"
+BINDING_NAME_BLW_NIGHTFALL = "Nightfall Rotation"
+BINDING_NAME_BLW_BATTLENOZERK = "Fury Battle Stance rotation (OP during execute)"
+BINDING_NAME_BLW_BATTLEZERK = "Fury Battle Stance rotation"
+BINDING_NAME_BLW_PROTDPS = "Protection DPS rotation (hamstring)"
+BINDING_NAME_BLW_PROTDPSHS = "Protection DPS rotation (heroic strike)"
+BINDING_NAME_BLW_FURYNORMAL = "Normal fury rotation (heroic strike)"
+BINDING_NAME_BLW_FURYNORMALHAMSTRING = "Normal fury rotation (hamstring)"
+BINDING_NAME_BLW_FURYAOE = "Fury Multi-target"
+
+function BLW.OnLoad()
+	-- for target casting.
+	BLWFrame:RegisterEvent("CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE")
+	BLWFrame:RegisterEvent("CHAT_MSG_SPELL_CREATURE_VS_CREATURE_BUFF")
+	BLWFrame:RegisterEvent("CHAT_MSG_SPELL_HOSTILEPLAYER_DAMAGE")
+	BLWFrame:RegisterEvent("CHAT_MSG_SPELL_HOSTILEPLAYER_BUFF")
+	-- for overpower.
+	BLWFrame:RegisterEvent("CHAT_MSG_COMBAT_SELF_MISSES")
+	BLWFrame:RegisterEvent("CHAT_MSG_SPELL_SELF_DAMAGE")
+	-- for loading vars
+	BLWFrame:RegisterEvent("PLAYER_LOGIN")
+end
+
+-- event handler.
+function BLW.OnEvent()
+	if event == "PLAYER_LOGIN" then
+		BLW.BTId = BC.GetSpellId("Bloodthirst")
+		BLW.SSId = BC.GetSpellId("Shield Slam")
+		BLW.OPId = BC.GetSpellId("Overpower")
+		BLW.WWId = BC.GetSpellId("Whirlwind")
+		BLW.BSId = BC.GetSpellId("Battle Shout")
+	elseif (event == "CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE" or
+		event == "CHAT_MSG_SPELL_CREATURE_VS_CREATURE_BUFF" or
+		event == "CHAT_MSG_SPELL_HOSTILEPLAYER_DAMAGE" or
+		event == "CHAT_MSG_SPELL_HOSTILEPLAYER_BUFF") then
+		BLW.CheckCasting(arg1)
+	elseif event == "CHAT_MSG_COMBAT_SELF_MISSES" or event == "CHAT_MSG_SPELL_SELF_DAMAGE" then
+		BLW.CheckDodge(arg1)
+	end
+end
+
+-- function BC.MakeMacro(name, macro, perCharacter, macroIconTexture, iconIndex, replace, show, noCreate, replaceMacroIndex, replaceMacroName)
+function BLW.MakeMacros()
+	BC.MakeMacro("FuryBattleRotation", "/blw fbr", 0, "Ability_Warrior_OffensiveStance", nil, 1, 1)
+	BC.MakeMacro("ProtectionTank", "/blw pt", 0, "Ability_Warrior_DefensiveStance", nil, 1, 1)
+	BC.MakeMacro("FuryPrioHS", "/blw fnham", 0, "Spell_Nature_BloodLust", nil, 1, 1)
+end
 
 SLASH_BLW_ROTATION1 = '/blw'
 function SlashCmdList.BLW_ROTATION(rotation)
@@ -32,6 +84,8 @@ function SlashCmdList.BLW_ROTATION(rotation)
 		BLW.FuryNormal(true)
 	elseif rotation == "faoe" then
 		BLW.FuryAoE()
+	elseif rotation == "mm" then
+		BLW.MakeMacros()
 	else
 		BC.c("/blw fbr", BLW.prep)
 		BC.m("A fury rotation in battle stance.", BLW.prep)
@@ -55,6 +109,7 @@ function SlashCmdList.BLW_ROTATION(rotation)
 		BC.m("A fury multi-target rotation.", BLW.prep)
 	end
 end
+
 
 -- TODO: test bool arg.
 function BLW.BattleRotation(battleOnly)
@@ -341,47 +396,5 @@ function BLW.FuryAoE()
 	end
 end
 
--- event handler.
-local function onEvent()
-	if event == "PLAYER_LOGIN" then
-		BLW.BTId = BC.GetSpellId("Bloodthirst")
-		BLW.SSId = BC.GetSpellId("Shield Slam")
-		BLW.OPId = BC.GetSpellId("Overpower")
-		BLW.WWId = BC.GetSpellId("Whirlwind")
-		BLW.BSId = BC.GetSpellId("Battle Shout")
-	elseif (event == "CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE" or
-		event == "CHAT_MSG_SPELL_CREATURE_VS_CREATURE_BUFF" or
-		event == "CHAT_MSG_SPELL_HOSTILEPLAYER_DAMAGE" or
-		event == "CHAT_MSG_SPELL_HOSTILEPLAYER_BUFF") then
-		BLW.CheckCasting(arg1)
-	elseif event == "CHAT_MSG_COMBAT_SELF_MISSES" or event == "CHAT_MSG_SPELL_SELF_DAMAGE" then
-		BLW.CheckDodge(arg1)
-	end
-end
 
--- register event and handler. "CHAT_MSG_COMBAT_SELF_MISSES" or event == "CHAT_MSG_SPELL_DAMAGESHIELDS_ON_SELF" or event == "CHAT_MSG_SPELL_SELF_DAMAGE"
-local f = CreateFrame("frame")
--- for target casting.
-f:RegisterEvent("CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE")
-f:RegisterEvent("CHAT_MSG_SPELL_CREATURE_VS_CREATURE_BUFF")
-f:RegisterEvent("CHAT_MSG_SPELL_HOSTILEPLAYER_DAMAGE")
-f:RegisterEvent("CHAT_MSG_SPELL_HOSTILEPLAYER_BUFF")
--- for overpower.
-f:RegisterEvent("CHAT_MSG_COMBAT_SELF_MISSES")
-f:RegisterEvent("CHAT_MSG_SPELL_SELF_DAMAGE")
--- for loading vars
-f:RegisterEvent("PLAYER_LOGIN")
 
-f:SetScript("OnEvent", onEvent)
-
-BINDING_HEADER_BLW = "BoldLazyWarrior"
-BINDING_NAME_BLW_PROTTANK = "Default Tank rotation (prot)"
-BINDING_NAME_BLW_FURYTANK = "Default Tank rotation (fury)"
-BINDING_NAME_BLW_NIGHTFALL = "Nightfall Rotation"
-BINDING_NAME_BLW_BATTLENOZERK = "Fury Battle Stance rotation (OP during execute)"
-BINDING_NAME_BLW_BATTLEZERK = "Fury Battle Stance rotation"
-BINDING_NAME_BLW_PROTDPS = "Protection DPS rotation (hamstring)"
-BINDING_NAME_BLW_PROTDPSHS = "Protection DPS rotation (heroic strike)"
-BINDING_NAME_BLW_FURYNORMAL = "Normal fury rotation (heroic strike)"
-BINDING_NAME_BLW_FURYNORMALHAMSTRING = "Normal fury rotation (hamstring)"
-BINDING_NAME_BLW_FURYAOE = "Fury Multi-target"
