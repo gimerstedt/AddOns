@@ -134,10 +134,10 @@ end
 function BW.SetBuffCap(buffCap)
 	if buffCap ~= "" then
 		BWConfig.BUFFCAP = buffCap
-		BC.m("Buff cap set to "..buffCap)
+		BC.m("Buff cap set to "..buffCap, BW.prep)
 	else
-		BC.m("Specify the number of buffs eg. /bwcap 24")
-		BC.c("Current buff cap: "..BWConfig.BUFFCAP)
+		BC.m("Specify the number of buffs eg. /bwcap 24", BW.prep)
+		BC.c("Current buff cap: "..BWConfig.BUFFCAP, BW.prep)
 	end
 end
 
