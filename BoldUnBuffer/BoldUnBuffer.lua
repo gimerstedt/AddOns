@@ -17,7 +17,6 @@ function BUB.OnEvent(event)
 	-- if not UnitBuff("player", 1) then return end -- do nothing unless buffs.
 	local class = UnitClass("player")
 
-	BC.m("before warrior if "..GetTime())
 	-- warrior stuffs. add another section like this with corresponding buff table for your class.
 	if class == "Warrior" then
 		if BC.IsShieldEquipped() then
@@ -36,13 +35,10 @@ function BUB.OnEvent(event)
 	end
 	-- end of paladin stuffs.
 
-BC.m("before remove buffs "..GetTime())
 	-- remove buffs.
 	for k, buff in pairs(BUB.buffs) do
-BC.m("foreach "..buff.." - "..GetTime())
 		BC.RemoveBuffByName(buff)
 	end
-BC.m("after remove buffs "..GetTime())
 end
 
 function BUB.InitBuffTables()
