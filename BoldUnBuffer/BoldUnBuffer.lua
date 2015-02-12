@@ -46,11 +46,9 @@ function BUB.InitBuffTables()
 	}
 
 	local class = UnitClass("player")
-
 	-- warrior stuffs. add another section like this with corresponding buff table for your class.
 	if class == "Warrior" then
 		if BC.IsShieldEquipped() then
-			BC.m("adding salv to table")
 			table.insert(BUB.warrior, "Blessing of Salvation")
 			table.insert(BUB.warrior, "Greater Blessing of Salvation")
 		else
