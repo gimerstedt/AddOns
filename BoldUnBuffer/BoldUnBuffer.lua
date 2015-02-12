@@ -12,28 +12,12 @@ end
 
 -- event handler.
 function BUB.OnEvent(event)
-	BUB.InitBuffTables()
 	if UnitName("target") == "Garr" then return end -- keep buffs for garr in case of dispel :(
-	-- if not UnitBuff("player", 1) then return end -- do nothing unless buffs.
-	local class = UnitClass("player")
 
-	-- warrior stuffs. add another section like this with corresponding buff table for your class.
-	if class == "Warrior" then
-		if BC.IsShieldEquipped() then
-			table.insert(BUB.warrior, "Blessing of Salvation")
-			table.insert(BUB.warrior, "Greater Blessing of Salvation")
-		else
-			-- fury warrior specific things? remove inspiration etc?
-		end
-		for k, buff in pairs(BUB.warrior) do table.insert(BUB.buffs, 1, buff) end
+	-- if equip shield
+	if event == "UNIT_INVENTORY_CHANGED" then
+		BUB.InitBuffTables()
 	end
-	-- end of warrior stuffs.
-
-	-- paladin stuffs.
-	if class == "Paladin" then
-		for k, buff in pairs(BUB.paladin) do BUB.buffs[k] = buff end
-	end
-	-- end of paladin stuffs.
 
 	-- remove buffs.
 	for k, buff in pairs(BUB.buffs) do
@@ -60,4 +44,25 @@ function BUB.InitBuffTables()
 	BUB.paladin = {
 		"Battle Shout",
 	}
+
+	local class = UnitClass("player")
+
+	-- warrior stuffs. add another section like this with corresponding buff table for your class.
+	if class == "Warrior" then
+		if BC.IsShieldEquipped() then
+			BC.m("adding salv to table")
+			table.insert(BUB.warrior, "Blessing of Salvation")
+			table.insert(BUB.warrior, "Greater Blessing of Salvation")
+		else
+			-- fury warrior specific things? remove inspiration etc?
+		end
+		for k, buff in pairs(BUB.warrior) do table.insert(BUB.buffs, 1, buff) end
+	end
+	-- end of warrior stuffs.
+
+	-- paladin stuffs.
+	if class == "Paladin" then
+		for k, buff in pairs(BUB.paladin) do BUB.buffs[k] = buff end
+	end
+	-- end of paladin stuffs.
 end
