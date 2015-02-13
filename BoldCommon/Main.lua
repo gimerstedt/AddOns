@@ -1,6 +1,5 @@
--- BoldCommon
 BC = {}
-BC.debug = true
+BC.debug = false
 BC.prep = "[BoldCommon] "
 
 BINDING_HEADER_BC = "BoldCommon"
@@ -12,7 +11,6 @@ BINDING_NAME_BC_RMIC = "Report raid members in combat"
 BINDING_NAME_BC_UNSTUCK = "Unstuck"
 BINDING_NAME_BC_RELOADUI = "Reload UI"
 
--- on load.
 function BC.OnLoad()
 	this:RegisterEvent("MERCHANT_SHOW")
 
@@ -48,14 +46,12 @@ function BC.OnLoad()
 	SLASH_BCMACRO1 = "/mmm"
 end
 
--- event handler.
 function BC.OnEvent()
 	if event == "MERCHANT_SHOW" then
 		BC.Repair()
 	end
 end
 
--- info command.
 function BC.Help()
 	BC.m("Automatically repairs your equipment at vendor.", BC.prep)
 	BC.c("/ctri - /cthunrunin", BC.prep)

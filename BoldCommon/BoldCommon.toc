@@ -2,7 +2,7 @@
 ## Title: |cffffaaffBold|rCommon
 ## Notes: Boldi's collection of semi useful stuff.
 ## Author: Boldilocks
-## Version: 0.4.3
+## Version: 0.5
 ## Dependencies:
 BoldCommon.xml
 Bindings.xml

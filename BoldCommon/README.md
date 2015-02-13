@@ -7,3 +7,6 @@ Automatically repair all items at vendor.
 
 ##Commands:
 * /bc - list available commands.
+
+http://i.imgur.com/2VhTMNx.png
+![ss of /bc](http://i.imgur.com/2VhTMNx.png)

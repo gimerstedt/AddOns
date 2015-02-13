@@ -1,4 +1,3 @@
--- mount up
 function BC.Mount()
 	local isMounted = BC.IsMounted()
 	local bag, slot

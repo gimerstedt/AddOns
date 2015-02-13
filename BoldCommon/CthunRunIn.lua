@@ -1,12 +1,9 @@
--- generate a cthun run in order based on weight
 function BC.GenerateCthunRunInOrder()
-	-- return if you're not targeting the melee
 	if not UnitInParty("target") then
 		BC.m("You must target the melee in your group.", BC.prep)
 		return
 	end
 
-	-- declaring some variables
 	local party = {
 		player = UnitClass("player"),
 		party1 = UnitClass("party1"),
@@ -74,7 +71,6 @@ function BC.GenerateCthunRunInOrder()
 	end
 	local groupNumber = getSubGroupNumber()
 
-	-- send to chat
 	BC.p("--------------- (1) "..UnitName(ordered[1]).." ---------------")
 	if mod(groupNumber, 2) == 0 then
 		BC.p("(3) "..orderedWithNames[3].." ----- (2) "..orderedWithNames[2])

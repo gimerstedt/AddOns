@@ -1,4 +1,3 @@
--- not that useful..
 function BC.ReportPlayersInCombat()
 	if not UnitInRaid("player") then
 		return
@@ -19,7 +18,6 @@ function BC.ReportPlayersInCombat()
 	end
 end
 
--- repair
 function BC.Repair()
 	if not CanMerchantRepair() then return end
 	local cost = GetRepairAllCost()
@@ -29,7 +27,6 @@ function BC.Repair()
 	BC.m("Repair costs: ~"..cost.." gold.", BC.prep)
 end
 
--- math lel.
 function BC.ReportCritCap(hit)
 	if hit == "" then
 		BC.m("You must specify your current hit rate.", BC.prep)
@@ -40,11 +37,9 @@ function BC.ReportCritCap(hit)
 	local dodgeRate = 5.6
 	local glancingRate = 40
 	local critCap = 100 - (missRate - hitRate) - dodgeRate - glancingRate
-
 	BC.m("Your crit cap with "..hitRate.."% hit is "..critCap.."%.", BC.prep)
 end
 
--- bag it!
 function BC.TeaBag()
 	if sitFrame == nil then
 		sitFrame = CreateFrame("frame")
@@ -59,23 +54,21 @@ function BC.TeaBag()
 	end
 end
 
--- get spell id from spell book?
 function BC.GetSpellId(spellname)
-	local id = 1;
+	local id = 1
 	for i = 1, GetNumSpellTabs() do
-		local _, _, _, numSpells = GetSpellTabInfo(i);
+		local _, _, _, numSpells = GetSpellTabInfo(i)
 		for j = 1, numSpells do
-			local spellName = GetSpellName(id, BOOKTYPE_SPELL);
+			local spellName = GetSpellName(id, BOOKTYPE_SPELL)
 			if (spellName == spellname) then
-				return id;
+				return id
 			end
-			id = id + 1;
+			id = id + 1
 		end
 	end
-	return nil;
+	return nil
 end
 
--- enable auto attack.
 function BC.EnableAttack()
 	if not BC.AttackAction then
 		for i = 1, 120 do
@@ -93,7 +86,6 @@ function BC.EnableAttack()
 	end
 end
 
--- printers.
 function BC.m(msg, prepend, r, g, b)
 	prepend = prepend or ""
 	r = r or 1
@@ -203,21 +195,19 @@ function BC.ListToTable(text)
 	return t
 end
 
--- remove?
 function BC.TrimSpaces(str)
 	if ( str ) then
 		return gsub(str,"^%s*(.-)%s*$","%1")
 	end
 end
 
--- check if shield is equipped.
 function BC.IsShieldEquipped()
 	if (GetInventoryItemLink("player", 17)) then
 		local _, _, itemCode = strfind(GetInventoryItemLink("player", 17), "(%d+):")
 		local _, _, _, _, _, itemType = GetItemInfo(itemCode)
 		if (itemType == "Shields" and not GetInventoryItemBroken("player", 17)) then
-			return true;
+			return true
 		end
 	end
-	return nil;
+	return nil
 end

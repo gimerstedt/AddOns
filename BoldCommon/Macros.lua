@@ -1,7 +1,3 @@
-function BC.MakeMacroTest()
-	BC.MakeMacro("Test", "/ss", 0, "Spell_Misc_Drink", nil, nil, nil)
-end
-
 function BC.MakeMacro(name, macro, perCharacter, macroIconTexture, iconIndex, replace, show, noCreate, replaceMacroIndex, replaceMacroName)
 	local globalorlocal = "global"
 	local macroindex = replaceMacroIndex or GetMacroIndexByName(name) or 0

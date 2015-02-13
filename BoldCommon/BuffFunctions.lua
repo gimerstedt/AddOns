@@ -1,4 +1,3 @@
--- seems to be working.
 function BC.ReportMissingDebuffsOnTarget()
 	if not UnitInRaid("player") or not UnitIsEnemy("player", "target") then
 		BC.m("You are either not in a raid or your target is not an enemy or you do not have a target.", BC.prep)
@@ -35,7 +34,6 @@ function BC.ReportMissingDebuffsOnTarget()
 	BC.r(out, BC.prep)
 end
 
--- buuuuuuuuuffffffffs.
 function BC.ReportBuffsOnTarget(showTextureNames)
 	if showTextureNames ~= "true" then showTextureNames = false else showTextureNames = true end
 	if not UnitExists("target") then
@@ -61,7 +59,6 @@ function BC.ReportBuffsOnTarget(showTextureNames)
 	end
 end
 
--- boolean if has buff
 function BC.HasBuff(unit, textureName)
 	local i = 1
 	while UnitBuff(unit, i) do
@@ -74,7 +71,6 @@ function BC.HasBuff(unit, textureName)
 	return false
 end
 
--- boolean if has buff
 function BC.HasDebuff(unit, textureName)
 	local i = 1
 	while UnitDebuff(unit, i) do
@@ -87,7 +83,6 @@ function BC.HasDebuff(unit, textureName)
 	return 0
 end
 
--- return index of buff by name.
 function BC.BuffIndexByName(buffName)
 	local i = 0
 	while GetPlayerBuff(i) >= 0 do
@@ -101,7 +96,6 @@ function BC.BuffIndexByName(buffName)
 	return nil
 end
 
--- remove buff by name.
 function BC.RemoveBuffByName(buffName)
 	local i = BC.BuffIndexByName(buffName)
 	if i then

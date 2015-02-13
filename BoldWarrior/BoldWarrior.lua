@@ -80,7 +80,6 @@ function BW.OnLoad()
 	SLASH_MAKEMACROS1 = "/bwmm"
 end
 
--- event handler.
 function BW.OnEvent()
 	if event == "CHAT_MSG_SPELL_SELF_DAMAGE" or event == "CHAT_MSG_SPELL_DAMAGESHIELDS_ON_SELF" then
 		if string.find(arg1, BW_TAUNT_LOG) then
@@ -91,14 +90,6 @@ function BW.OnEvent()
 				BC.r(BW_MB_TXT, BW.announce)
 			end
 		end
-	-- elseif event == "CHAT_MSG_SPELL_PERIODIC_SELF_BUFFS" then
-	-- 	if string.find(arg1, BW_SW) then
-	-- 		BC.y(BW_SW_TXT, BW.announce)
-	-- 	elseif string.find(arg1, BW_LS) then
-	-- 		BC.y(BW_LS_TXT, BW.announce)
-	-- 	elseif string.find(arg1, BW_LGG) then
-	-- 		BC.y(BW_LGG_TXT, BW.announce)
-	-- 	end
 	end
 end
 
