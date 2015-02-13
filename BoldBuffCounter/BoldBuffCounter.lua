@@ -71,6 +71,7 @@ function BBC.SlashHandler(arg1)
 		BC.c("/bbc scale 1-3", BBC.prep)
 		BC.m("/bbc reset", BBC.prep)
 		BC.c("/bbc lock", BBC.prep)
+		BC.m("/bbc cap 1-32", BBC.prep)
 	elseif(command == "on") then
 		BoldBuffCounterFrame:Show()
 		BBCConfig.active = 1
