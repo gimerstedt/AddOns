@@ -1,4 +1,6 @@
 BW = {}
+BW.debug = true
+BW.announced = 0
 BWConfig = {
 	BUFFCAP = 24
 }
@@ -7,7 +9,8 @@ BINDING_HEADER_BW = "BoldWarrior"
 BINDING_NAME_BW_CHALLSHOUT = "Challenging Shout"
 BINDING_NAME_BW_SAFESW = "Safe Shield Wall"
 BINDING_NAME_BW_SAFELS = "Safe Last Stand"
-BINDING_NAME_BW_SAFELGG = "Safe Lifegiving Gem"
+BINDING_NAME_BW_SAFETRINKET = "Safe Trinket (any/all)"
+BINDING_NAME_BW_SAFETRINKETANNOUNCE = "Safe Trinket (any/all) with announcement"
 
 BW.announce = "---> "
 BW.prep = "[BoldWarrior] "
@@ -42,12 +45,8 @@ BW_MB_LOG = "(.*)Mocking Blow(.*)"
 BW_MB_LOG2 = "Your Mocking Blow (.+) for (.+)"
 BW_MB_TXT = "Mocking Blow resisted!"
 
-BW_SW = "You gain Shield Wall."
 BW_SW_TXT = "Used Shield Wall!"
-BW_LS = "You gain Last Stand."
 BW_LS_TXT = "Used Last Stand!"
-BW_LGG = "You gain Gift of Life."
-BW_LGG_TXT = "Used Lifegiving Gem!"
 BW_CS_TXT = "Used Mass Taunt!"
 
 function BW.OnLoad()
@@ -64,8 +63,8 @@ function BW.OnLoad()
 	SLASH_SAFESW1 = "/safesw"
 	SlashCmdList["SAFELS"] = BW.SafeLS
 	SLASH_SAFELS1 = "/safels"
-	SlashCmdList["SAFELGG"] = BW.SafeLGG
-	SLASH_SAFELGG1 = "/safelgg"
+	SlashCmdList["SAFETRINKET"] = BW.SafeTrinket
+	SLASH_SAFETRINKET1 = "/safetrinket"
 	SlashCmdList["CHALLSHOUT"] = BW.ChallengingShout
 	SLASH_CHALLSHOUT1 = "/aoetaunt"
 	SlashCmdList["MOCKING"] = BW.MockingBlow
@@ -96,8 +95,8 @@ function BW.Help()
 	BC.m("Safely uses Shield Wall.", BW.prep)
 	BC.c("/safels", BW.prep)
 	BC.m("Safely uses Last Stand.", BW.prep)
-	BC.c("/safelgg", BW.prep)
-	BC.m("Safely uses Lifegiving Gem.", BW.prep)
+	BC.c("/safetrinket (announce)", BW.prep)
+	BC.m("Safely uses whatever trinkets you have equipped.", BW.prep)
 	BC.c("/mocking", BW.prep)
 	BC.m("Use Mocking Blow from any stance and swap back to defensive stance.", BW.prep)
 	BC.c("/overpower", BW.prep)
@@ -112,7 +111,7 @@ function BW.MakeMacros()
 	BC.MakeMacro("AoETaunt", "/aoetaunt", 1, "Ability_BullRush", nil, 1, 1)
 	BC.MakeMacro("Shield Wall", "/safesw", 1, "Ability_Warrior_ShieldWal", nil, 1, 1)
 	BC.MakeMacro("Last Stand", "/safels", 1, "Spell_Holy_AshesToAshe", nil, 1, 1)
-	BC.MakeMacro("Lifegiving Gem", "/safelgg", 1, "Spell_Shadow_SoulGem", nil, 1, 1)
+	BC.MakeMacro("Any Trinket", "/safetrinket announce", 1, "Ability_Druid_Enrage", nil, 1, 1)
 	BC.MakeMacro("Mocking Blow", "/mocking", 1, "Ability_Warrior_PunishingBlow", nil, 1, 1)
 	BC.MakeMacro("Overpower", "/overpower", 1, "Ability_MeleeDamage", nil, 1, 1)
 end
@@ -185,37 +184,53 @@ function BW.SafeLS()
 	BC.y(BW_LS_TXT, BW.announce)
 end
 
-function BW.SafeLGG()
-	local trink1 = GetInventoryItemTexture("player", 13)
-	local trink2 = GetInventoryItemTexture("player", 14)
-	trink1 = string.find(trink1, "Misc_Gem_Pearl_05")
-	trink2 = string.find(trink2, "Misc_Gem_Pearl_05")
-	start1, _, _ = GetInventoryItemCooldown("player", 13)
-	start2, _, _ = GetInventoryItemCooldown("player", 14)
-	if not trink1 and not trink2 then
-		BC.m("Lifegiving Gem not equipped.", BW.prep)
+function BW.SafePopTrinket(announce)
+	local trink1, trink2 = {}, {}
+	trink1.link = GetInventoryItemLink("player", 13)
+	trink1.CDStart, _, trink1.hasUse = GetInventoryItemCooldown("player", 13)
+
+	if trink1.hasUse == 1 and trink1.CDStart == 0 then
+		if not UnitBuff("player", BWConfig.BUFFCAP) then
+			UseInventoryItem(13)
+		else
+			if not BW.RemoveABuff() then
+				BC.m("Could not find a buff to remove, using "..trink1.link.." anyway.", BW.prep)
+			end
+			UseInventoryItem(13)
+		end
+		if announce and (GetTime() - BW.announced) > 1 then
+			BW.announced = GetTime()
+			BC.y("Using "..trink1.link.."!", BW.announce)
+		end
 		return
 	end
-	if trink1 and start1 > 0 then
-		BC.m("Lifegiving Gem on cooldown.", BW.prep)
+
+	trink2.link = GetInventoryItemLink("player", 14)
+	trink2.CDStart, _, trink2.hasUse = GetInventoryItemCooldown("player", 14)
+
+	if trink2.hasUse == 1 and trink2.CDStart == 0 then
+		if not UnitBuff("player", BWConfig.BUFFCAP) then
+			UseInventoryItem(14)
+		else
+			if not BW.RemoveABuff() then
+				BC.m("Could not find a buff to remove, using "..trink2.link.." anyway.", BW.prep)
+			end
+			UseInventoryItem(14)
+		end
+		if announce and (GetTime() - BW.announced) > 1 then
+			BW.announced = GetTime()
+			BC.y("Using "..trink2.link.."!", BW.announce)
+		end
 		return
 	end
-	if trink2 and start2 > 0 then
-		BC.m("Lifegiving Gem on cooldown.", BW.prep)
-		return
+end
+
+function BW.SafeTrinket(msg)
+	if msg ~= "" then
+		BW.SafePopTrinket(1)
+	else
+		BW.SafePopTrinket()
 	end
-	-- if below cap, remove one.
-	if not UnitBuff("player", BWConfig.BUFFCAP) then
-		BC.UseItemByName("Lifegiving Gem", BW.prep)
-		BC.y(BW_LGG_TXT, BW.announce)
-		return
-	end
-	-- meni buffs, need to remove one.
-	if not BW.RemoveABuff() then
-		BC.m("Could not find a buff to remove, using Lifegiving Gem anyway.", BW.prep)
-	end
-	BC.UseItemByName("Lifegiving Gem")
-	BC.y(BW_LGG_TXT, BW.announce)
 end
 
 function BW.RemoveABuff()

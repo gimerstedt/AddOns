@@ -11,4 +11,13 @@
 	<Binding name="BW_SAFELGG">
 		BW.SafeLGG()
 	</Binding>
+	<Binding name="BW_SAFEGLYPH">
+		BW.SafeGlyph()
+	</Binding>
+	<Binding name="BW_SAFETRINKET">
+		BW.SafeAnyTrinket()
+	</Binding>
+	<Binding name="BW_SAFETRINKETANNOUNCE">
+		BW.SafeAnyTrinket(1)
+	</Binding>
 </Bindings>
