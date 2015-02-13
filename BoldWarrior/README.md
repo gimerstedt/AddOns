@@ -7,3 +7,5 @@ Announces last stand, shield wall, lifegiving gem and taunt/mocking resists in y
 
 ##Commands:
 * /bwhelp - lists commands.
+
+![ss of /bwhelp](http://i.imgur.com/OsSfYxh.png)

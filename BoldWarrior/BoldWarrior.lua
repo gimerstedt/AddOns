@@ -3,14 +3,12 @@ BWConfig = {
 	BUFFCAP = 24
 }
 
--- keybinds
 BINDING_HEADER_BW = "BoldWarrior"
 BINDING_NAME_BW_CHALLSHOUT = "Challenging Shout"
 BINDING_NAME_BW_SAFESW = "Safe Shield Wall"
 BINDING_NAME_BW_SAFELS = "Safe Last Stand"
 BINDING_NAME_BW_SAFELGG = "Safe Lifegiving Gem"
 
--- consts.
 BW.announce = "---> "
 BW.prep = "[BoldWarrior] "
 BW.removableBuffs = {
@@ -52,9 +50,7 @@ BW_LGG = "You gain Gift of Life."
 BW_LGG_TXT = "Used Lifegiving Gem!"
 BW_CS_TXT = "Used Mass Taunt!"
 
--- on load.
 function BW.OnLoad()
-	-- only load for warriors.
 	if UnitClass("player") ~= "Warrior" then return end
 	this:RegisterEvent("CHAT_MSG_SPELL_SELF_DAMAGE")
 	-- this:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_SELF_BUFFS")
@@ -107,7 +103,7 @@ function BW.Help()
 	BC.c("/overpower", BW.prep)
 	BC.m("Use Overpower from any stance and swap back to berserker stance.", BW.prep)
 	BC.c("/bwcap (1-32)", BW.prep)
-	BC.m("Set your current buff cap (used to determine if /safe(sw/ls/lgg) removes a buff or not", BW.prep)
+	BC.m("Set your current buff cap (used to determine if /safe(sw/ls/lgg) removes a buff or not.", BW.prep)
 	BC.c("/bwmm", BW.prep)
 	BC.m("Make macros for the commands.", BW.prep)
 end
@@ -121,7 +117,6 @@ function BW.MakeMacros()
 	BC.MakeMacro("Overpower", "/overpower", 1, "Ability_MeleeDamage", nil, 1, 1)
 end
 
--- change buffcap.
 function BW.SetBuffCap(buffCap)
 	if buffCap ~= "" then
 		BWConfig.BUFFCAP = buffCap
@@ -132,7 +127,6 @@ function BW.SetBuffCap(buffCap)
 	end
 end
 
--- chall shout.
 function BW.ChallengingShout()
 	if UnitMana("player") > 9 and GetSpellCooldown(BC.GetSpellId("Challenging Shout"), BOOKTYPE_SPELL) == 0 then
 		CastSpellByName("Challenging Shout", 1)
@@ -140,7 +134,6 @@ function BW.ChallengingShout()
 	end
 end
 
--- sw.
 function BW.SafeSW()
 	-- do nothing if on cd.
 	if GetSpellCooldown(BC.GetSpellId("Shield Wall"), BOOKTYPE_SPELL) > 0 then
@@ -153,7 +146,7 @@ function BW.SafeSW()
 		BC.m("You need to be in defensive stance to Shield Wall", BW.prep)
 		return
 	end
-	-- if below 24 buffs, sw.
+	-- if below cap, sw.
 	if not UnitBuff("player", BWConfig.BUFFCAP) then
 		CastSpellByName("Shield Wall")
 		BC.y(BW_SW_TXT, BW.announce)
@@ -167,7 +160,6 @@ function BW.SafeSW()
 	BC.y(BW_SW_TXT, BW.announce)
 end
 
--- ls.
 function BW.SafeLS()
 	-- do nothing if on cd.
 	local LSId = BC.GetSpellId("Last Stand")
@@ -179,7 +171,7 @@ function BW.SafeLS()
 	else
 		BC.m("You do not have Last Stand.", BW.prep)
 	end
-	-- if below 24 buffs, ls.
+	-- if below cap, ls.
 	if not UnitBuff("player", BWConfig.BUFFCAP) then
 		CastSpellByName("Last Stand")
 		BC.y(BW_LS_TXT, BW.announce)
@@ -193,7 +185,6 @@ function BW.SafeLS()
 	BC.y(BW_LS_TXT, BW.announce)
 end
 
--- lgg.
 function BW.SafeLGG()
 	local trink1 = GetInventoryItemTexture("player", 13)
 	local trink2 = GetInventoryItemTexture("player", 14)
@@ -213,7 +204,7 @@ function BW.SafeLGG()
 		BC.m("Lifegiving Gem on cooldown.", BW.prep)
 		return
 	end
-	-- if 24 buffs, remove one.
+	-- if below cap, remove one.
 	if not UnitBuff("player", BWConfig.BUFFCAP) then
 		BC.UseItemByName("Lifegiving Gem", BW.prep)
 		BC.y(BW_LGG_TXT, BW.announce)
@@ -227,7 +218,6 @@ function BW.SafeLGG()
 	BC.y(BW_LGG_TXT, BW.announce)
 end
 
--- remove buff.
 function BW.RemoveABuff()
 	for k,buff in pairs(BW.removableBuffs) do
 		local i = BC.BuffIndexByName(buff)
@@ -240,7 +230,6 @@ function BW.RemoveABuff()
 	return false
 end
 
--- mocking from any stance.
 function BW.MockingBlow()
 	if UnitMana("player") < 10 then
 		return
@@ -260,7 +249,6 @@ function BW.MockingBlow()
 	CastSpellByName("Mocking Blow")
 end
 
--- mocking from any stance.
 function BW.Overpower()
 	if UnitMana("player") < 5 then
 		return
