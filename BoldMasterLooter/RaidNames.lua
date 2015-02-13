@@ -1,4 +1,3 @@
--- useful in gdkp, copy/paste raid names
 function BMLB.ReportRaidMemberNames()
 	if not UnitInRaid("player") then
 		return

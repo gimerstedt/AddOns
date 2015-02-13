@@ -1,4 +1,3 @@
--- kicks n stuff.
 function MasterLootBug()
 	if not UnitInRaid("target") and UnitName("target") ~= nil then
 		return

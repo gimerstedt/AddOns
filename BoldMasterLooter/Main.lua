@@ -1,4 +1,3 @@
--- BoldMLBug
 BMLB = {}
 BMLB.debug = true
 BMLB.prep = "[BoldMasterLooter] "
@@ -12,7 +11,6 @@ BMLB.help2 = "2nd /meep kicks selected group's members and moves current target 
 BMLB.help3 = "3rd and consecutive /meep moves back old target to original group and moves current target to empty group."
 BMLB.help4 = "End ML-session with /meep without someone targeted (will move back to original positions and re-invite)."
 
--- slash handler.
 SLASH_BMLB1, SLASH_BMLB2 = '/meep', '/bmlb'
 function SlashCmdList.BMLB(msg)
 	if msg == "help" then
@@ -26,7 +24,6 @@ function SlashCmdList.BMLB(msg)
 	end
 end
 
--- slash handler.
 SLASH_BMLBRAIDNAMES1, SLASH_BMLBRAIDNAMES2 = '/grn', '/getraidnames'
 function SlashCmdList.BMLBRAIDNAMES()
 	BMLB.ReportRaidMemberNames()
