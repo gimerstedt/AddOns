@@ -1,16 +1,13 @@
--- bub.
 BUB = {}
-BUB.debug = true
+BUB.debug = false
 BUB.prep = "[BoldUnBuffer] "
 
--- on load.
 function BUB.OnLoad()
 	BUB.InitBuffTables()
 	this:RegisterEvent("PLAYER_AURAS_CHANGED")
 	this:RegisterEvent("UNIT_INVENTORY_CHANGED")
 end
 
--- event handler.
 function BUB.OnEvent(event)
 	if UnitName("target") == "Garr" then return end -- keep buffs for garr in case of dispel :(
 
@@ -19,7 +16,6 @@ function BUB.OnEvent(event)
 		BUB.InitBuffTables()
 	end
 
-	-- remove buffs.
 	for k, buff in pairs(BUB.buffs) do
 		BC.RemoveBuffByName(buff)
 	end
@@ -46,6 +42,7 @@ function BUB.InitBuffTables()
 	}
 
 	local class = UnitClass("player")
+	
 	-- warrior stuffs. add another section like this with corresponding buff table for your class.
 	if class == "Warrior" then
 		if BC.IsShieldEquipped() then

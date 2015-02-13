@@ -1,4 +1,3 @@
--- only load if paladin.
 if UnitClass("player") ~= "Paladin" then return end
 
 BP = {}
@@ -15,12 +14,10 @@ function BP.OnLoad()
 	SLASH_T11 = "/t1"
 end
 
--- event handler.
 function BP.OnEvent()
 	BP.NotifyIfAuraMissing()
 end
 
--- info command.
 function BP.Help()
 	BC.m("Notifies you if no aura is active.", BP.prep)
 	BC.c("/safebop", BP.prep)
@@ -29,7 +26,6 @@ function BP.Help()
 	BC.m("Targets, attacks and keeps SotC up.", BP.prep)
 end
 
--- cast bop on target if target is not warrior or on targettarget if target is hostile and targettarget is not warrior.
 function BP.Safebop()
 	if UnitIsFriend("player", "target") and UnitClass("target") ~= "Warrior" and not BC.HasBuff("target", "Holy_DivineIntervention") then
 		CastSpellByName("Blessing of Protection")
@@ -51,7 +47,6 @@ function BP.T1()
 	end
 end
 
--- check if aura is active.
 function BP.IsAuraActive()
 	local i, auraActive, auras = 1, false, {"DevotionAura", "Holy_AuraOfLight", "Holy_MindSooth", "Shadow_SealOfKings", "Frost_WizardMark", "Fire_SealOfFire"}
 	while UnitBuff("player", i) do
@@ -65,7 +60,6 @@ function BP.IsAuraActive()
 	return false
 end
 
--- notify if no aura active.
 function BP.NotifyIfAuraMissing()
 	if not BP.IsAuraActive() then
 		BC.m("No aura active!", BP.prep)
