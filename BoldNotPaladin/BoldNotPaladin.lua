@@ -1,12 +1,11 @@
--- only load if not paladin.
 if UnitClass("player") == "Paladin" then return end
 
 BNP = {}
-BNP.prep = "[BoldNotPaladin] "
-PP_PREFIX = "PLPWR"
-
 BNP.Assignments = {}
 BNP.Paladins = {}
+BNP.prep = "[BoldNotPaladin] "
+
+PP_PREFIX = "PLPWR"
 
 PP_BlessingID = {}
 PP_BlessingID[0] = "Wisdom"
@@ -40,7 +39,6 @@ function BNP.OnEvent()
 	end
 end
 
--- help command.
 function BNP.Help()
 	BC.c("/pp", BNP.prep)
 	BC.m("Lists current Pally Power assignments.", BNP.prep)

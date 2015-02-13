@@ -1,8 +1,5 @@
--- only load for warriors
 if UnitClass("player") ~= "Warrior" then return end
 
-
--- vars
 BLW = {}
 BLW.debug = true
 BLW.prep = "[BLW] "
@@ -37,7 +34,6 @@ function BLW.OnLoad()
 	BLWFrame:RegisterEvent("PLAYER_LOGIN")
 end
 
--- event handler.
 function BLW.OnEvent()
 	if event == "PLAYER_LOGIN" then
 		BLW.BTId = BC.GetSpellId("Bloodthirst")
@@ -110,10 +106,7 @@ function SlashCmdList.BLW_ROTATION(rotation)
 	end
 end
 
-
--- TODO: test bool arg.
 function BLW.BattleRotation(battleOnly)
-	-- target/attack something if nothing is targeted.
 	if not BLW.TargetAndAttack() then return end
 
 	-- bools for stances.
@@ -376,10 +369,6 @@ function BLW.FuryAoE()
 	local _, _, berserk = BLW.GetStances()
 	local rage = UnitMana("player")
 
-	-- BC.m(BLW.GCD(BLW.BSId))
-
-	-- local a, b, c = GetActionCooldown(34) BC.m(a.." - "..b.." - "..c)
-
 	-- keep battle shout up.
 	BLW.BattleShout(99)
 
@@ -395,6 +384,3 @@ function BLW.FuryAoE()
 		CastSpellByName("Berserker Stance")
 	end
 end
-
-
-
