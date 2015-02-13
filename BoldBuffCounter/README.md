@@ -6,8 +6,6 @@ which was a good starting point when creating this addon.
 
 ##Notes
 Provides information about the amount of buffs you have.
-Shows the amount of buffs in green text when above 20, yellow text above 28
-and red text as well as a BEEP sound when at cap.
 Here are screenshots of the four different states using lower values for 
 testing purposes: http://imgur.com/a/ZR1oH (top right)
 
