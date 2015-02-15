@@ -1,9 +1,9 @@
-if UnitClass("player") ~= "Paladin" then return end
-
 BP = {}
+
 BP.prep = "[BoldPaladin] "
 
 function BP.OnLoad()
+	if UnitClass("player") ~= "Paladin" then return end
 	BoldPaladinFrame:RegisterEvent("PLAYER_AURAS_CHANGED")
 
 	SlashCmdList["BPHELP"] = BP.Help
@@ -13,6 +13,8 @@ function BP.OnLoad()
 	SlashCmdList["T1"] = BP.T1
 	SLASH_T11 = "/t1"
 end
+
+if UnitClass("player") ~= "Paladin" then return end
 
 function BP.OnEvent()
 	BP.NotifyIfAuraMissing()
