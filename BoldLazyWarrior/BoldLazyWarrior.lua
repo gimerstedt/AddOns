@@ -34,7 +34,7 @@ function BLW.OnLoad()
 	BLWFrame:RegisterEvent("CHAT_MSG_SPELL_CREATURE_VS_CREATURE_BUFF")
 	BLWFrame:RegisterEvent("CHAT_MSG_SPELL_HOSTILEPLAYER_DAMAGE")
 	BLWFrame:RegisterEvent("CHAT_MSG_SPELL_HOSTILEPLAYER_BUFF")
-	-- for overpower.
+	-- for Overpower.
 	BLWFrame:RegisterEvent("CHAT_MSG_SPELL_SELF_DAMAGE")
 	BLWFrame:RegisterEvent("CHAT_MSG_COMBAT_SELF_MISSES")
 	-- for loading vars
@@ -75,9 +75,9 @@ end
 
 -- function BC.MakeMacro(name, macro, perCharacter, macroIconTexture, iconIndex, replace, show, noCreate, replaceMacroIndex, replaceMacroName)
 function BLW.MakeMacros()
-	-- BC.MakeMacro("FuryBattleRotation", "/blw fbr", 0, "Ability_Warrior_OffensiveStance", nil, 1, 1)
 	BC.MakeMacro("Tank", "/blw tank", 0, "Ability_Warrior_DefensiveStance", nil, 1, 1)
 	BC.MakeMacro("DPS", "/blw dps", 0, "Spell_Nature_BloodLust", nil, 1, 1)
+	BC.MakeMacro("DPS2", "/blw dps2", 0, "Ability_Warrior_OffensiveStance", nil, 1, 1)
 	BC.MakeMacro("NF", "/blw nf", 0, "Spell_Holy_ElunesGrace", nil, 1, 1)
 end
 
@@ -85,6 +85,10 @@ SLASH_BLW_ROTATION1 = '/blw'
 function SlashCmdList.BLW_ROTATION(rotation)
 	if rotation == "dps" then
 		BLW.DPS()
+	elseif rotation == "dps2" then
+		BLW.DPS2(true)
+	elseif rotation == "dps3" then
+		BLW.DPS2()
 	elseif rotation == "tank" then
 		BLW.Tank()
 	elseif rotation == "nf" then
@@ -96,57 +100,75 @@ function SlashCmdList.BLW_ROTATION(rotation)
 	else
 		BC.c("/blw dps", BLW.prep)
 		BC.m("A dps rotation.", BLW.prep)
+		BC.c("/blw dps2", BLW.prep)
+		BC.m("A dps rotation in battle stance.", BLW.prep)
+		BC.c("/blw dps3", BLW.prep)
+		BC.m("Same as dps2 but execute in berserker stance.", BLW.prep)
 		BC.c("/blw tank", BLW.prep)
 		BC.m("A tank rotation.", BLW.prep)
 		BC.c("/blw nf", BLW.prep)
 		BC.m("A Nightfall rotation.", BLW.prep)
 		BC.c("/blw aoe", BLW.prep)
 		BC.m("A multi-target rotation.", BLW.prep)
+		BC.c("/blw mm", BLW.prep)
+		BC.m("Make macros for the rotations.", BLW.prep)
 	end
 end
 
--- TODO: update it.
-function BLW.BattleRotation(battleOnly)
+function BLW.DPS2(battleOnly)
+	if BLW.prot then BC.m("This rotation requires a fury spec.", BWL.prep) return end
 	if not BLW.TargetAndAttack() then return end
-
-	-- bools for stances.
 	local battle, _, berserk = BLW.GetStances()
 	local rage = UnitMana("player")
-
-	-- keep battle shout up.
 	BLW.BattleShout()
 
-	-- main if
 	if battle then
-		if BLW.HP() < 20 then
-			if not battleOnly and rage < 10 and UnitIsDead("target") ~= 1 then
-				CastSpellByName("Berserker Stance")
-			else
-				if battleOnly then
-					CastSpellByName("Overpower")
-				end
-				CastSpellByName("Execute")
+		if BLW.HP() <= 20 then
+			if rage >= 5 and BLW.targetDodged and BLW.SpellReady("Overpower") then
+				CastSpellByName("Overpower")
+				BLW.lastAbility = GetTime()
+				BLW.targetDodged = nil
 			end
-		end
-		if rage > 30 and not BLW.OnCD(BLW.BTId) then
-			BLW.lastBT = GetTime()
-			CastSpellByName("Bloodthirst")
-		end
-		if rage < 30 or BLW.TimeSinceBT() < 5 then
-			CastSpellByName("Overpower")
-		end
-		if rage > 20 and BLW.TimeSinceBT() < 3 then
-			CastSpellByName("Heroic Strike")
-		end
-		if rage > 42 then
-			CastSpellByName("Heroic Strike")
-			if rage > 52 and BLW.TimeSinceBT() < 5 then
-				CastSpellByName("Hamstring")
+			if battleOnly then
+				if rage >= 10 and BLW.SpellReady("Execute") then
+					CastSpellByName("Execute")
+					BLW.lastAbility = GetTime()
+				end
+			else
+				if rage <= 25 then
+					CastSpellByName("Berserker Stance")
+				else
+					if rage >= 10 and BLW.SpellReady("Execute") then
+						CastSpellByName("Execute")
+						BLW.lastAbility = GetTime()
+					end
+				end
+			end
+		else
+			if rage >= 5 and BLW.SpellReady("Overpower") and BLW.targetDodged then
+				CastSpellByName("Overpower")
+				BLW.lastAbility = GetTime()
+				BLW.targetDodged = nil
+			end
+			if rage >= 30 and BLW.SpellReady("Bloodthirst") then
+				CastSpellByName("Bloodthirst")
+				BLW.lastAbility = GetTime()
+				BLW.lastMainAbility = BLW.lastAbility
+			end
+			if UnitMana("player") > 50 then
+				if not BLW.targetDodged and (GetTime() - BLW.lastMainAbility) < 4 and BLW.SpellReady("Hamstring") then
+					CastSpellByName("Hamstring")
+					BLW.lastAbility = GetTime()
+				end
+				if UnitMana("player") > 60 then
+					CastSpellByName("Heroic Strike")
+				end
 			end
 		end
 	elseif berserk then
-		if BLW.HP() < 20 then
+		if not battleOnly and BLW.HP() <= 20 and BLW.SpellReady("Execute") then
 			CastSpellByName("Execute")
+			BLW.lastAbility = GetTime()
 		else
 			CastSpellByName("Battle Stance")
 		end

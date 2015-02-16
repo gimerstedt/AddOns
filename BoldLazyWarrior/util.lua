@@ -62,42 +62,6 @@ function BLW.BattleShout(hp)
 	end
 end
 
--- parse log for spells cast by target.
-function BLW.CheckCasting(arg1)
-	local tName = UnitName("target")
-	local spellCastOtherStart = "(.+) begins to cast (.+)."
-	local spellPerformOtherStart = "(.+) begins to perform (.+)."
-	if (tName) then
-		for idx, pat in ipairs({ spellCastOtherStart, spellPerformOtherStart }) do
-			for mob, spell in string.gfind(arg1, pat) do
-				if (mob == tName) then
-					if BLW.debug then
-						BC.m("Target started casting!")
-					end
-					BLW.targetCastedAt = GetTime()
-				end
-			end
-		end
-	end
-end
-
--- "You attack%. .+ dodges%." 
-function BLW.CheckDodge(arg1)
-	local tName = UnitName("target")
-	local targetDodgedString = "You attack%. (.+) dodges%."
-	local targetDodgedString2 = "Your .+ was dodged by (.+)%."
-	if (tName) then
-		local _,_,dodgeTarget = string.find(arg1, targetDodgedString)
-		local _,_,dodgeTarget2 = string.find(arg1, targetDodgedString2)
-		if dodgeTarget == tName or dodgeTarget2 == tName then
-			if BLW.debug then
-				BC.m("Target dodged!")
-			end
-			BLW.targetDodgedAt = GetTime()
-		end
-	end
-end
-
 -- get bools for stances.
 function BLW.GetStances()
 	local _,_,battle,_ = GetShapeshiftFormInfo(1)
