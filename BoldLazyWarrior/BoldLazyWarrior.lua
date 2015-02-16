@@ -1,111 +1,111 @@
+BLW = {}
 if UnitClass("player") ~= "Warrior" then return end
 
-BLW = {}
-BLW.debug = true
+BLW.debug = false
 BLW.prep = "[BLW] "
-BLW.lastBT = 0
-BLW.lastSS = 0
-BLW.lastSSBT = 0
-BLW.targetCastedAt = 0
-BLW.targetDodgedAt = 0
+BLW.lastAbility = 0
+BLW.lastMainAbility = 0
+BLW.lastStanceChange = 0
+BLW.targetCasting = 0
+BLW.targetDodged = 0
 
 BINDING_HEADER_BLW = "BoldLazyWarrior"
-BINDING_NAME_BLW_PROTTANK = "Default Tank rotation (prot)"
-BINDING_NAME_BLW_FURYTANK = "Default Tank rotation (fury)"
+BINDING_NAME_BLW_DPS = "DPS rotation"
+BINDING_NAME_BLW_TANK = "Tank rotation"
 BINDING_NAME_BLW_NIGHTFALL = "Nightfall Rotation"
-BINDING_NAME_BLW_BATTLENOZERK = "Fury Battle Stance rotation (OP during execute)"
-BINDING_NAME_BLW_BATTLEZERK = "Fury Battle Stance rotation"
-BINDING_NAME_BLW_PROTDPS = "Protection DPS rotation (hamstring)"
-BINDING_NAME_BLW_PROTDPSHS = "Protection DPS rotation (heroic strike)"
-BINDING_NAME_BLW_FURYNORMAL = "Normal fury rotation (heroic strike)"
-BINDING_NAME_BLW_FURYNORMALHAMSTRING = "Normal fury rotation (hamstring)"
-BINDING_NAME_BLW_FURYAOE = "Fury Multi-target"
+BINDING_NAME_BLW_AOE = "Multi-target rotation"
+
+BLW_CAST = "(.+) begins to cast (.+)."
+BLW_OVERPOWER1 = "You attack.(.+) dodges."
+BLW_OVERPOWER2 = "Your (.+) was dodged by (.+)."
+BLW_OVERPOWER3 = "Your Overpower crits (.+) for (%d+)."
+BLW_OVERPOWER4 = "Your Overpower hits (.+) for (%d+)."
+BLW_OVERPOWER5 = "Your Overpower missed (.+)."
+BLW_INTERRUPT1 = "You interrupt (.+)."
+BLW_INTERRUPT2 = "Your Pummel was (.+) by (.+)."
+BLW_INTERRUPT3 = "Your Shield Bash was (.+) by (.+)."
+BLW_INTERRUPT4 = "Your Pummel missed (.+)."
+BLW_INTERRUPT5 = "Your Shield Bash missed (.+)."
 
 function BLW.OnLoad()
+	if UnitClass("player") ~= "Warrior" then return end
 	-- for target casting.
 	BLWFrame:RegisterEvent("CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE")
 	BLWFrame:RegisterEvent("CHAT_MSG_SPELL_CREATURE_VS_CREATURE_BUFF")
 	BLWFrame:RegisterEvent("CHAT_MSG_SPELL_HOSTILEPLAYER_DAMAGE")
 	BLWFrame:RegisterEvent("CHAT_MSG_SPELL_HOSTILEPLAYER_BUFF")
 	-- for overpower.
-	BLWFrame:RegisterEvent("CHAT_MSG_COMBAT_SELF_MISSES")
 	BLWFrame:RegisterEvent("CHAT_MSG_SPELL_SELF_DAMAGE")
+	BLWFrame:RegisterEvent("CHAT_MSG_COMBAT_SELF_MISSES")
 	-- for loading vars
 	BLWFrame:RegisterEvent("PLAYER_LOGIN")
+	-- misc
+	BLWFrame:RegisterEvent("PLAYER_TARGET_CHANGED")
 end
 
 function BLW.OnEvent()
 	if event == "PLAYER_LOGIN" then
-		BLW.BTId = BC.GetSpellId("Bloodthirst")
-		BLW.SSId = BC.GetSpellId("Shield Slam")
-		BLW.OPId = BC.GetSpellId("Overpower")
-		BLW.WWId = BC.GetSpellId("Whirlwind")
-		BLW.BSId = BC.GetSpellId("Battle Shout")
-	elseif (event == "CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE" or
-		event == "CHAT_MSG_SPELL_CREATURE_VS_CREATURE_BUFF" or
-		event == "CHAT_MSG_SPELL_HOSTILEPLAYER_DAMAGE" or
-		event == "CHAT_MSG_SPELL_HOSTILEPLAYER_BUFF") then
-		BLW.CheckCasting(arg1)
-	elseif event == "CHAT_MSG_COMBAT_SELF_MISSES" or event == "CHAT_MSG_SPELL_SELF_DAMAGE" then
-		BLW.CheckDodge(arg1)
+		if BC.GetSpellId("Shield Slam") then
+			BLW.prot = true
+		else
+			BLW.prot = false
+		end
+		BLW.mainAbility, BLW.mainAbilityCost = "Shield Slam", 20
+		if not BLW.prot then 
+			BLW.mainAbility, BLW.mainAbilityCost = "Bloodthirst", 30
+		end
+	elseif (event == "CHAT_MSG_COMBAT_SELF_MISSES" and string.find(arg1, BLW_OVERPOWER1) or event == "CHAT_MSG_SPELL_SELF_DAMAGE" and string.find(arg1, BLW_OVERPOWER2)) then
+		BLW.targetDodged = GetTime()
+	elseif (event == "CHAT_MSG_SPELL_SELF_DAMAGE" and (string.find(arg1, BLW_OVERPOWER3) or string.find(arg1, BLW_OVERPOWER4) or string.find(arg1, BLW_OVERPOWER5))) then
+		BLW.targetDodged = nil
+	elseif (event == "CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE" or event == "CHAT_MSG_SPELL_CREATURE_VS_CREATURE_BUFF" or event == "CHAT_MSG_SPELL_HOSTILEPLAYER_DAMAGE" or event == "CHAT_MSG_SPELL_HOSTILEPLAYER_BUFF") then
+		for mob, spell in string.gfind(arg1, BLW_CAST) do
+			if (mob == UnitName("target") and UnitCanAttack("player", "target") and mob ~= spell) then
+				BLW.targetCasting = GetTime()
+			end
+			return
+		end
+	elseif (event == "CHAT_MSG_SPELL_SELF_DAMAGE" and string.find(arg1, BLW_INTERRUPT1) or event == "CHAT_MSG_COMBAT_SELF_MISSES" and string.find(arg1, BLW_INTERRUPT2) or event == "CHAT_MSG_COMBAT_SELF_MISSES" and string.find(arg1, BLW_INTERRUPT3) or event == "CHAT_MSG_COMBAT_SELF_MISSES" and string.find(arg1, BLW_INTERRUPT4) or event == "CHAT_MSG_COMBAT_SELF_MISSES" and string.find(arg1, BLW_INTERRUPT5)) then
+		BLW.targetCasting = nil
+	elseif (event == "PLAYER_TARGET_CHANGED") then
+		BLW.targetDodged = nil
+		BLW.targetCasting = nil
 	end
 end
 
 -- function BC.MakeMacro(name, macro, perCharacter, macroIconTexture, iconIndex, replace, show, noCreate, replaceMacroIndex, replaceMacroName)
 function BLW.MakeMacros()
-	BC.MakeMacro("FuryBattleRotation", "/blw fbr", 0, "Ability_Warrior_OffensiveStance", nil, 1, 1)
-	BC.MakeMacro("ProtectionTank", "/blw pt", 0, "Ability_Warrior_DefensiveStance", nil, 1, 1)
-	BC.MakeMacro("FuryPrioHS", "/blw fnham", 0, "Spell_Nature_BloodLust", nil, 1, 1)
+	-- BC.MakeMacro("FuryBattleRotation", "/blw fbr", 0, "Ability_Warrior_OffensiveStance", nil, 1, 1)
+	BC.MakeMacro("Tank", "/blw tank", 0, "Ability_Warrior_DefensiveStance", nil, 1, 1)
+	BC.MakeMacro("DPS", "/blw dps", 0, "Spell_Nature_BloodLust", nil, 1, 1)
+	BC.MakeMacro("NF", "/blw nf", 0, "Spell_Holy_ElunesGrace", nil, 1, 1)
 end
 
 SLASH_BLW_ROTATION1 = '/blw'
 function SlashCmdList.BLW_ROTATION(rotation)
-	if rotation == "fbr" then
-		BLW.BattleRotation(false)
-	elseif rotation == "fbro" then
-		BLW.BattleRotation(true)
-	elseif rotation == "pt" then
-		BLW.DefaultTankRotation("prot")
-	elseif rotation == "ft" then
-		BLW.DefaultTankRotation("fury")
+	if rotation == "dps" then
+		BLW.DPS()
+	elseif rotation == "tank" then
+		BLW.Tank()
 	elseif rotation == "nf" then
-		BLW.NightfallRotation()
-	elseif rotation == "pd" then
-		BLW.ProtDPSRotation(true)
-	elseif rotation == "pdhs" then
-		BLW.ProtDPSRotation(false)
-	elseif rotation == "fnhs" then
-		BLW.FuryNormal(false)
-	elseif rotation == "fnham" then
-		BLW.FuryNormal(true)
-	elseif rotation == "faoe" then
-		BLW.FuryAoE()
+		BLW.Nightfall()
+	elseif rotation == "aoe" then
+		BLW.AoE()
 	elseif rotation == "mm" then
 		BLW.MakeMacros()
 	else
-		BC.c("/blw fbr", BLW.prep)
-		BC.m("A fury rotation in battle stance.", BLW.prep)
-		BC.c("/blw fbro", BLW.prep)
-		BC.m("A fury rotation in battle stance only.", BLW.prep)
-		BC.c("/blw pt", BLW.prep)
-		BC.m("A protection tanking rotation.", BLW.prep)
-		BC.c("/blw ft", BLW.prep)
-		BC.m("A fury tanking rotation.", BLW.prep)
+		BC.c("/blw dps", BLW.prep)
+		BC.m("A dps rotation.", BLW.prep)
+		BC.c("/blw tank", BLW.prep)
+		BC.m("A tank rotation.", BLW.prep)
 		BC.c("/blw nf", BLW.prep)
 		BC.m("A Nightfall rotation.", BLW.prep)
-		BC.c("/blw pd", BLW.prep)
-		BC.m("A protection dps rotation (prio hamstring).", BLW.prep)
-		BC.c("/blw pdhs", BLW.prep)
-		BC.m("A protection dps rotation (prio heroic strike).", BLW.prep)
-		BC.c("/blw fnhs", BLW.prep)
-		BC.m("A normal fury rotation (prio hamstring).", BLW.prep)
-		BC.c("/blw fnham", BLW.prep)
-		BC.m("A normal fury rotation (prio heroic strike).", BLW.prep)
-		BC.c("/blw faoe", BLW.prep)
-		BC.m("A fury multi-target rotation.", BLW.prep)
+		BC.c("/blw aoe", BLW.prep)
+		BC.m("A multi-target rotation.", BLW.prep)
 	end
 end
 
+-- TODO: update it.
 function BLW.BattleRotation(battleOnly)
 	if not BLW.TargetAndAttack() then return end
 
@@ -155,81 +155,82 @@ function BLW.BattleRotation(battleOnly)
 	end
 end
 
--- TODO: test with fury spec.
-function BLW.DefaultTankRotation(spec)
-	local timeSinceSSBT = 0
-	if spec == "fury" then
-		timeSinceSSBT = BLW.TimeSinceBT()
-		SSBTCost = 30
-		SSBTId = BLW.BTId
-		SSBT = "Bloodthirst"
-	else
-		timeSinceSSBT = BLW.TimeSinceSS()
-		SSBTCost = 20
-		SSBTId = BLW.SSId
-		SSBT = "Shield Slam"
-	end
-
-	-- target/attack something if nothing is targeted.
+function BLW.Tank()
 	if not BLW.TargetAndAttack() then return end
-
-	-- bools for stances.
 	local _, defensive, _ = BLW.GetStances()
 	local rage = UnitMana("player")
-
-	-- keep battle shout up.
-	BLW.BattleShout()
+	BLW.BattleShout(80)
 
 	if defensive then
-		-- pop trinkets if target is boss and targeting you and you are in combat and in range of boss and SS/BT is not on CD.
-		-- if UnitClassification("target") == "worldboss" and UnitIsUnit("player", "targettarget") and UnitAffectingCombat("player") and CheckInteractDistance("target", 3) and timeSinceSSBT > 6 then
-		-- 	UseInventoryItem(13)
-		-- 	UseInventoryItem(14)
-		-- end
-		-- TODO: not sure it's working all that well.
-		if UnitClassification("target") ~= "worldboss" and (GetTime() - BLW.targetCastedAt) < 3 then
+		if UnitClassification("target") ~= "worldboss" and BLW.targetCasting and BLW.SpellReady("Shield Bash") then
 			CastSpellByName("Shield Bash")
+			BLW.lastAbility = GetTime()
+			if BLW.debug then
+				BC.m("Casting Shield Bash at "..BLW.lastAbility, BLW.prep)
+			end
 		end
-		-- taunt if target is targeting something and it's not a warrior.
 		if UnitExists("targettarget") and UnitClass("targettarget") ~= "Warrior" then
 			CastSpellByName("Taunt")
-		end
-		-- revenge if you can't afford SS or BT or if SS or BT is on CD
-		if rage < SSBTCost or timeSinceSSBT < 5 then
+			if BLW.debug then
+				BC.m("Casting taunt!", BLW.prep)
+			end
+		end	
+		if rage >= 5 and rage < BLW.mainAbilityCost and BLW.SpellReady("Revenge") then
 			CastSpellByName("Revenge")
+			BLW.lastAbility = GetTime()
+			if BLW.debug then
+				BC.m("Casting Revenge at "..BLW.lastAbility, BLW.prep)
+			end
 		end
-		-- SS or BT if not on CD and has the rage, set time.
-		if rage > SSBTCost and not BLW.OnCD(SSBTId) then
-			BLW.lastSSBT = GetTime()
-			CastSpellByName(SSBT)
+		if rage >= BLW.mainAbilityCost and BLW.SpellReady(BLW.mainAbility) then
+			CastSpellByName(BLW.mainAbility)
+			BLW.lastAbility = GetTime()
+			BLW.lastMainAbility = BLW.lastAbility
+			if BLW.debug then
+				BC.m("Casting "..BLW.mainAbility.." at "..BLW.lastMainAbility, BLW.prep)
+			end
 		end
-		-- sunder if not fully sundered and not interrupting SS or BT CD, leaving enough rage for revenge.
-		if BC.HasDebuff("target", "Sunder") < 5 and rage > 19 and timeSinceSSBT < 4.5 then
+		if rage >= 5 and BLW.SpellReady("Revenge") then
+			CastSpellByName("Revenge")
+			BLW.lastAbility = GetTime()
+			if BLW.debug then
+				BC.m("Casting Revenge at "..BLW.lastAbility, BLW.prep)
+			end
+		end
+		if BC.HasDebuff("target", "Sunder") < 5 and rage > 19 and (GetTime() - BLW.lastMainAbility) < 4.5 and BLW.SpellReady("Sunder Armor") then
 			CastSpellByName("Sunder Armor")
+			BLW.lastAbility = GetTime()
+			if BLW.debug then
+				BC.m("Casting Sunder Armor at "..BLW.lastAbility, BLW.prep)
+			end
 		end
-		-- targeting self, has rage, in combat, in ~melee range, no sb up.
-		if UnitIsUnit("player", "targettarget") and rage > (SSBTCost + 15) and UnitAffectingCombat("player") and CheckInteractDistance("target", 3) and not BC.HasBuff("player", "Ability_Defend") then
+		if UnitIsUnit("player", "targettarget") and rage > (BLW.mainAbilityCost + 15) and UnitAffectingCombat("player") and BLW.SpellReady("Shield Block") and CheckInteractDistance("target", 3) and not BC.BuffIndexByName("Shield Block") then
 			CastSpellByName("Shield Block")
+			if BLW.debug then
+				BC.m("Casting Shield Block.", BLW.prep)
+			end
 		end
-		-- hs leaving enough rage to SS or BT.
-		if rage > (SSBTCost + 15) then
+		if rage > (BLW.mainAbilityCost + 15) then
 			CastSpellByName("Heroic Strike")
+			if BLW.debug then
+				BC.m("Casting Heroic Strike.", BLW.prep)
+			end
 		end
-		-- sunder if over 60 rage, making sure not to delay SS/BT cd.
-		if rage > 60 and timeSinceSSBT < 4.5 then
+		if rage > 60 and (GetTime() - BLW.lastMainAbility) < 4.5 and BLW.SpellReady("Sunder Armor") then
 			CastSpellByName("Sunder Armor")
+			BLW.lastAbility = GetTime()
+			if BLW.debug then
+				BC.m("Casting Sunder Armor at "..BLW.lastAbility, BLW.prep)
+			end
 		end
 	else
 		CastSpellByName("Defensive Stance")
 	end
 end
 
--- nightfall.
-function BLW.NightfallRotation()
+function BLW.Nightfall()
 	if not BLW.TargetAndAttack() then return end
 	local battle, _, _ = BLW.GetStances()
-
-	-- keep battle shout up.
 	BLW.BattleShout()
 
 	if battle then
@@ -243,39 +244,54 @@ function BLW.NightfallRotation()
 	end
 end
 
--- prot DEEEPS.
+function BLW.DPS()
+	if BLW.prot then
+		BLW.ProtDPSRotation()
+	else
+		BLW.FuryDPSRotation()
+	end
+end
+
 function BLW.ProtDPSRotation(prioHamstring)
 	if not BLW.TargetAndAttack() then return end
 	local battle, _, berserk = BLW.GetStances()
 	local rage = UnitMana("player")
+	BLW.BattleShout()
 
-	-- keep battle shout up.
-	BLW.BattleShout(99)
-
-	-- main if
 	if battle then
-		if BLW.HP() < 20 and not UnitIsDead("target") then
-			if rage < 10 then
+		if BLW.HP() <= 20 and not UnitIsDead("target") then
+			if rage < 15 then
 				CastSpellByName("Berserker Stance")
+				BLW.lastStanceChange = GetTime()
 			else
-				CastSpellByName("Execute")
+				if BLW.SpellReady("Execute") then
+					CastSpellByName("Execute")
+					BLW.lastAbility = GetTime()
+				end
 			end
 		end
-		CastSpellByName("overpower")
-		if BLW.OnCD(BLW.OPId) or (GetTime() - BLW.targetDodgedAt) > 5 then
+		if BLW.SpellReady("Overpower") and BLW.targetDodged then
+			CastSpellByName("Overpower")
+			BLW.lastAbility = GetTime()
+		else
 			CastSpellByName("Berserker Stance")
+			BLW.lastStanceChange = GetTime()
 		end
 	elseif berserk then
 		-- TODO: not sure it's working all that well.
-		if UnitClassification("target") ~= "worldboss" and (GetTime() - BLW.targetCastedAt) < 3 then
+		if UnitClassification("target") ~= "worldboss" and BLW.targetCasting then
 			CastSpellByName("Pummel")
 		end
-		if BLW.HP() < 20 then
+		if BLW.HP() <= 20 then
 			CastSpellByName("Execute")
 		end
 		CastSpellByName("Whirlwind")
-		if (BLW.OnCD(BLW.WWId) or rage < 25) and (GetTime() - BLW.targetDodgedAt) < 4 and not BLW.OnCD(BLW.OPId) then
+		if BLW.targetDodged and (GetTime() - BLW.targetDodged) > 4 then
+			BLW.targetDodged = nil
+		end
+		if (not BLW.SpellReady("Whirlwind") or rage < 25) and BLW.targetDodged and BLW.SpellReady("Overpower") then
 			CastSpellByName("Battle Stance")
+			BLW.lastStanceChange = GetTime()
 		end
 		local hamstringRage, HSRage = 52, 42
 		if prioHamstring then
@@ -289,90 +305,101 @@ function BLW.ProtDPSRotation(prioHamstring)
 		end
 	else
 		CastSpellByName("Berserker Stance")
+		BLW.lastStanceChange = GetTime()
 	end
 end
 
--- fury normal.
-function BLW.FuryNormal(prioHamstring)
+function BLW.FuryDPSRotation(prioHamstring)
 	if not BLW.TargetAndAttack() then return end
 	local battle, _, berserk = BLW.GetStances()
 	local rage = UnitMana("player")
+	BLW.BattleShout()
 
-	-- keep battle shout up.
-	BLW.BattleShout(99)
-
-	-- main if
 	if battle then
-		if BLW.HP() < 20 and not UnitIsDead("target") then
+		if BLW.HP() <= 20 and not UnitIsDead("target") then
 			if rage < 10 then
 				CastSpellByName("Berserker Stance")
+				BLW.lastStanceChange = GetTime()
 			else
-				CastSpellByName("Execute")
-			end
-		end
-		CastSpellByName("overpower")
-		if BLW.OnCD(BLW.OPId) or (GetTime() - BLW.targetDodgedAt) > 5 then
-			CastSpellByName("Berserker Stance")
-		end
-	elseif berserk then
-		-- TODO: not sure it's working all that well.
-		if UnitClassification("target") ~= "worldboss" and (GetTime() - BLW.targetCastedAt) < 3 then
-			CastSpellByName("Pummel")
-		end
-		if BLW.HP() < 20 then
-			CastSpellByName("Execute")
-		end
-		if rage > 29 and not BLW.OnCD(BLW.BTId) then
-			BLW.lastBT = GetTime()
-			CastSpellByName("Bloodthirst")
-		end
-		if rage > 29 and CheckInteractDistance("target", 3) and BLW.TimeSinceBT() < 2 then
-			CastSpellByName("Whirlwind")
-		end
-		if rage > 39 and CheckInteractDistance("target", 3) and BLW.TimeSinceBT() < 3 then
-			CastSpellByName("Whirlwind")
-		end
-		if rage > 54 and CheckInteractDistance("target", 3) and BLW.TimeSinceBT() < 4 then
-			CastSpellByName("Whirlwind")
-		end
-		if BLW.OnCD(BLW.BTId) or rage < 25 then
-			if BLW.OnCD(BLW.WWId) or rage < 25 then
-				if (GetTime() - BLW.targetDodgedAt) <  4 then
-					if not BLW.OnCD(BLW.OPId) then
-						if BLW.debug then
-							BC.m("OP not on cd, casting!")
-						end
-						CastSpellByName("Battle Stance")
-					end
+				if BLW.SpellReady("Execute") then
+					CastSpellByName("Execute")
+					BLW.lastAbility = GetTime()
 				end
 			end
 		end
-		local hamstringRage, HSRage = 65, 55
-		if prioHamstring then
-			hamstringRage, HSRage = 55, 65
+		if BLW.SpellReady("Overpower") and BLW.targetDodged then
+			CastSpellByName("Overpower")
+			BLW.lastAbility = GetTime()
+		else
+			CastSpellByName("Berserker Stance")
+			BLW.lastStanceChange = GetTime()
 		end
+	elseif berserk then
+		-- TODO: not sure it's working all that well.
+		if UnitClassification("target") ~= "worldboss" and BLW.targetCasting and BLW.SpellReady("Pummel") then
+			CastSpellByName("Pummel")
+			BLW.lastAbility = GetTime()
+		end
+		if BLW.HP() <= 20 and BLW.SpellReady("Execute") then
+			CastSpellByName("Execute")
+			BLW.lastAbility = GetTime()
+		end
+		if rage > 29 and SpellReady("Bloodthirst") then
+			CastSpellByName("Bloodthirst")
+			BLW.lastAbility = GetTime()
+			BLW.lastMainAbility = BLW.lastAbility
+		end
+		if BLW.SpellReady("Whirlwind") and CheckInteractDistance("target", 3) then
+			if rage > 29 and (GetTime() - BLW.lastMainAbility) < 2 then
+				CastSpellByName("Whirlwind")
+				BLW.lastAbility = GetTime()
+			end
+			if rage > 39 and (GetTime() - BLW.lastMainAbility) < 3 then
+				CastSpellByName("Whirlwind")
+				BLW.lastAbility = GetTime()
+			end
+			if rage > 54 and (GetTime() - BLW.lastMainAbility) < 4 then
+				CastSpellByName("Whirlwind")
+				BLW.lastAbility = GetTime()
+			end
+		end
+		if BLW.targetDodged then
+			if (GetTime() - BLW.targetDodged) < 4 then
+				if not BLW.SpellReady("Bloodthirst") or rage <= 25 then
+					if not BLW.SpellReady("Whirlwind") or rage <= 25 then
+						if BLW.debug then
+							BC.m("OP not on cd, casting battle stance!", BLW.prep)
+						end
+						CastSpellByName("Battle Stance")
+						BLW.lastStanceChange = GetTime()
+					end
+				end
+			else
+				BLW.targetDodged = nil
+			end
+		end
+
 		rage = UnitMana("player")
-		if rage > hamstringRage and BLW.TimeSinceBT() < 4 then
-			CastSpellByName("Hamstring")
-		end
-		if rage > HSRage then
-			CastSpellByName("Heroic Strike")
+		if rage > 55 then
+			if BC.BuffIndexByName("Flurry") then
+				CastSpellByName("Heroic Strike")
+			else
+				if (GetTime() - BLW.lastMainAbility) < 4 and BLW.SpellReady("Hamstring") then
+					CastSpellByName("Hamstring")
+				end
+			end
 		end
 	else
 		CastSpellByName("Berserker Stance")
 	end
 end
 
--- fury normal.
-function BLW.FuryAoE()
+function BLW.AoE()
 	if not BLW.TargetAndAttack() then return end
 	local _, _, berserk = BLW.GetStances()
 	local rage = UnitMana("player")
+	BLW.BattleShout()
 
-	-- keep battle shout up.
-	BLW.BattleShout(99)
-
-	-- main if
 	if berserk then
 		if CheckInteractDistance("target", 3) then
 			CastSpellByName("Whirlwind")

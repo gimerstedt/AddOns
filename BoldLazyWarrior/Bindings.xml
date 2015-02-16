@@ -1,32 +1,14 @@
 <Bindings>
-  <Binding name="BLW_PROTTANK" header="BLW">
-    BLW.DefaultTankRotation("prot");
+  <Binding name="BLW_DPS" header="BLW">
+    BLW.DPS()
   </Binding>
-  <Binding name="BLW_FURYTANK">
-    BLW.DefaultTankRotation("fury");
+  <Binding name="BLW_TANK">
+    BLW.Tank()
   </Binding>
   <Binding name="BLW_NIGHTFALL">
-    BLW.NightfallRotation()
+    BLW.Nightfall()
   </Binding>
-  <Binding name="BLW_BATTLENOZERK">
-    BLW.BattleRotation(true)
-  </Binding>
-  <Binding name="BLW_BATTLEZERK">
-    BLW.BattleRotation(false)
-  </Binding>
-  <Binding name="BLW_PROTDPS">
-    BLW.ProtDPSRotation(true)
-  </Binding>
-  <Binding name="BLW_PROTDPSHS">
-    BLW.ProtDPSRotation(false)
-  </Binding>
-  <Binding name="BLW_FURYNORMAL">
-    BLW.FuryNormal(false)
-  </Binding>
-  <Binding name="BLW_FURYNORMALHAMSTRING">
-    BLW.FuryNormal(true)
-  </Binding>
-  <Binding name="BLW_FURYAOE">
-    BLW.FuryAoE()
+  <Binding name="BLW_AOE">
+    BLW.AoE()
   </Binding>
 </Bindings>

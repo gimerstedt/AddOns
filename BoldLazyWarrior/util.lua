@@ -10,27 +10,15 @@ function BLW.HP(unit)
 	return percent
 end
 
--- return time since last BT.
-function BLW.TimeSinceBT()
-	return GetTime() - BLW.lastBT
-end
-
--- return time since last BT.
-function BLW.TimeSinceSS()
-	return GetTime() - BLW.lastSS
-end
-
--- return time since last SS or BT.
-function BLW.TimeSinceSS()
-	return GetTime() - BLW.lastSSBT
-end
-
--- is BT on CD?
-function BLW.OnCD(spellId)
-	if GetSpellCooldown(spellId, "spell") == 0 then
-		return false
+function BLW.SpellReady(spellname)
+	local id = BC.GetSpellId(spellname)
+	if (id) then
+		local start, duration = GetSpellCooldown(id, 0)
+		if (start == 0 and duration == 0 and BLW.lastAbility + 1 <= GetTime()) then
+			return true
+		end
 	end
-	return true
+	return nil
 end
 
 -- target and attack.
@@ -67,9 +55,9 @@ end
 -- cast battle shout.
 function BLW.BattleShout(hp)
 	if hp == nil then
-		hp = 80
+		hp = 99
 	end
-	if BLW.HP() < hp and not BC.HasBuff("player", "BattleShout") then
+	if UnitMana("player") >= 10 and BLW.HP() <= hp and not BC.HasBuff("player", "BattleShout") then
 		CastSpellByName("Battle Shout")
 	end
 end
