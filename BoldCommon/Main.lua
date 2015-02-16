@@ -26,6 +26,8 @@ function BC.OnLoad()
 
 	SlashCmdList["CTHUNRUNIN"] = BC.GenerateCthunRunInOrder
 	SLASH_CTHUNRUNIN1, SLASH_CTHUNRUNIN2 = "/ctri", "/cthunrunin"
+	SlashCmdList["GOTHIKASSIGNS"] = BC.GothikPriestAssigns
+	SLASH_GOTHIKASSIGNS1 = "/gpa"
 	SlashCmdList["MISSINGDEBUFFS"] = BC.ReportMissingDebuffsOnTarget
 	SLASH_MISSINGDEBUFFS1 =  "/cdb"
 	SlashCmdList["RAIDMEMBERSINCOMBAT"] = BC.ReportPlayersInCombat
@@ -56,6 +58,8 @@ function BC.Help()
 	BC.m("Automatically repairs your equipment at vendor.", BC.prep)
 	BC.c("/ctri - /cthunrunin", BC.prep)
 	BC.m("Generates a run in order and writes it in /party.", BC.prep)
+	BC.c("/gpa", BC.prep)
+	BC.m("Generates priest assigns for Gothik.", BC.prep)
 	BC.c("/ri - /resetinstances", BC.prep)
 	BC.m("Resets instances.", BC.prep)
 	BC.c("/cdb - /checkdebuffs", BC.prep)
