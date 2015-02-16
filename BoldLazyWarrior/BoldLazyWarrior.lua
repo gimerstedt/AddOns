@@ -116,7 +116,7 @@ function SlashCmdList.BLW_ROTATION(rotation)
 end
 
 function BLW.DPS2(battleOnly)
-	if BLW.prot then BC.m("This rotation requires a fury spec.", BWL.prep) return end
+	if BLW.prot then BC.m("This rotation requires a fury spec.", BLW.prep) return end
 	if not BLW.TargetAndAttack() then return end
 	local battle, _, berserk = BLW.GetStances()
 	local rage = UnitMana("player")

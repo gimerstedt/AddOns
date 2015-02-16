@@ -4,7 +4,7 @@ function BC.GothikPriestAssigns()
 	for i = 1 , GetNumRaidMembers() do
 		local name, _, _, _, class = GetRaidRosterInfo(i)
 		if class == "Priest" then
-			if table.getn(priests) <= 7 then
+			if table.getn(priests) < 8 then
 				table.insert(priests, name)
 			end
 		end
@@ -25,6 +25,6 @@ function BC.GothikPriestAssigns()
 	end
 	leftString = string.sub(leftString, 0,-3)
 	rightString = string.sub(rightString, 0,-3)
-	BC.r(leftString)
-	BC.r(rightString)
+	BC.r(leftString, BC.prep)
+	BC.r(rightString, BC.prep)
 end

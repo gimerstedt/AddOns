@@ -3,7 +3,6 @@ BLW.doNotTarget = {
 	"Qiraji Scarab",
 }
 
--- hp of target in percent.
 function BLW.HP(unit)
 	local unit = unit or "target"
 	local percent = (UnitHealth(unit) / UnitHealthMax(unit)) * 100
@@ -21,7 +20,6 @@ function BLW.SpellReady(spellname)
 	return nil
 end
 
--- target and attack.
 function BLW.TargetAndAttack()
 	if UnitExists("target") then
 		BC.EnableAttack()
@@ -42,7 +40,6 @@ function BLW.TargetAndAttack()
 	end
 end
 
--- check if the target is in the unwanted list.
 function BLW.unwantedTarget()
 	for k,v in pairs(BLW.doNotTarget) do
 		if UnitName("target") == v then
@@ -52,7 +49,6 @@ function BLW.unwantedTarget()
 	return false
 end
 
--- cast battle shout.
 function BLW.BattleShout(hp)
 	if hp == nil then
 		hp = 99
@@ -62,7 +58,6 @@ function BLW.BattleShout(hp)
 	end
 end
 
--- get bools for stances.
 function BLW.GetStances()
 	local _,_,battle,_ = GetShapeshiftFormInfo(1)
 	local _,_,defensive, _ = GetShapeshiftFormInfo(2)
