@@ -118,7 +118,7 @@ function BC.mb(msg, prepend) -- blue
 end
 function BC.my(msg, prepend) -- yellow
 	prepend = prepend or ""
-	BC.m(msg, prepend, 1, 1, 0.7)
+	BC.m(msg, prepend, 1, 1, 0.5)
 end
 function BC.mo(msg, prepend) -- orange
 	prepend = prepend or ""
