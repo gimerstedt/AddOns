@@ -14,7 +14,7 @@ BINDING_NAME_BC_RELOADUI = "Reload UI"
 function BC.OnLoad()
 	this:RegisterEvent("MERCHANT_SHOW")
 
-	SlashCmdList["BOLDCOMMON"] = BC.Help
+	SlashCmdList["BOLDCOMMON"] = BC.SlashCommand
 	SLASH_BOLDCOMMON1, SLASH_BOLDCOMMON2 = "/bc", "/boldcommon"
 
 	SlashCmdList["BPRELOADUI"] = ReloadUI
@@ -24,28 +24,10 @@ function BC.OnLoad()
 	SlashCmdList["BCHOME"] = Stuck
 	SLASH_BCHOME1 = "/home"
 
-	SlashCmdList["CTHUNRUNIN"] = BC.GenerateCthunRunInOrder
-	SLASH_CTHUNRUNIN1, SLASH_CTHUNRUNIN2 = "/ctri", "/cthunrunin"
-	SlashCmdList["GOTHIKASSIGNS"] = BC.GothikPriestAssigns
-	SLASH_GOTHIKASSIGNS1 = "/gpa"
-	SlashCmdList["MISSINGDEBUFFS"] = BC.ReportMissingDebuffsOnTarget
-	SLASH_MISSINGDEBUFFS1 =  "/cdb"
-	SlashCmdList["RAIDMEMBERSINCOMBAT"] = BC.ReportPlayersInCombat
-	SLASH_RAIDMEMBERSINCOMBAT1, SLASH_RAIDMEMBERSINCOMBAT2 = "/rmic", "/raidmembersincombat"
-	SlashCmdList["CRITCAP"] = BC.ReportCritCap
-	SLASH_CRITCAP1, SLASH_CRITCAP2 = "/cc", "/critcap"
-	SlashCmdList["BUFFSONTARGET"] = BC.ReportBuffsOnTarget
-	SLASH_BUFFSONTARGET1, SLASH_BUFFSONTARGET2 = "/cbot", "/checkbuffsontarget"
-	SlashCmdList["TEABAG"] = BC.TeaBag
-	SLASH_TEABAG1 = "/ss"
 	SlashCmdList["BCUSE"] = BC.UseItemByName
 	SLASH_BCUSE1 = "/use"
-	SlashCmdList["BCMOUNT"] = BC.Mount
-	SLASH_BCMOUNT1 = "/mount"
 	SlashCmdList["BCUNBUFF"] = BC.RemoveBuffByName
 	SLASH_BCUNBUFF1 = "/unbuff"
-	SlashCmdList["BCMACRO"] = BC.MakeMacroTest
-	SLASH_BCMACRO1 = "/mmm"
 end
 
 function BC.OnEvent()
@@ -54,30 +36,68 @@ function BC.OnEvent()
 	end
 end
 
+function BC.SlashCommand(msg)
+	local _, _, c, options = string.find(msg, "([%w%p]+)%s*(.*)$");
+	if c then
+		c = string.lower(c);
+	end
+	if c == nil or c == "" or c == "help" or c == "help1" then
+		BC.Help()
+	elseif c == "2" or c == "help2" then
+		BC.Help2()
+	elseif c == "cthun" or c == "ctri" or c == "cthunrunin" then
+		BC.GenerateCthunRunInOrder()
+	elseif c == "gpa" or c == "gothik" then
+		BC.GothikPriestAssigns()
+	elseif c == "cdb" or c == "missingdebuffs" then
+		BC.ReportMissingDebuffsOnTarget()
+	elseif c == "rmic" or c == "raidmembersincombat" then
+		BC.ReportPlayersInCombat()
+	elseif c == "cc" or c == "critcap" then
+		BC.ReportCritCap(options)
+	elseif c == "cbot" or c == "checkbuffsontarget" then
+		BC.ReportBuffsOnTarget(options)
+	elseif c == "ss" then
+		BC.TeaBag()
+	elseif c == "mount" then
+		BC.Mount()
+	end
+end
+
 function BC.Help()
-	BC.m("Automatically repairs your equipment at vendor.", BC.prep)
-	BC.c("/ctri - /cthunrunin", BC.prep)
-	BC.m("Generates a run in order and writes it in /party.", BC.prep)
-	BC.c("/gpa", BC.prep)
-	BC.m("Generates priest assigns for Gothik.", BC.prep)
-	BC.c("/ri - /resetinstances", BC.prep)
-	BC.m("Resets instances.", BC.prep)
-	BC.c("/cdb - /checkdebuffs", BC.prep)
-	BC.m("Reports missing debuffs on target to /raid.", BC.prep)
-	BC.c("/rmic - /raidmembersincombat", BC.prep)
-	BC.m("Reports raid members in combat in /raid.", BC.prep)
-	BC.c("/cc (hitRate) - /critcap (hitRate)", BC.prep)
-	BC.m("Reports your crit cap based on the hitRate input.", BC.prep)
-	BC.c("/cbot (textures, true/false) - /checkbuffsontarget", BC.prep)
-	BC.m("Reports all buffs on target.", BC.prep)
-	BC.c("/ss", BC.prep)
-	BC.m("Sit/stand up repeatedly for no good reason.", BC.prep)
-	BC.c("/home", BC.prep)
-	BC.m("Unstuck.", BC.prep)
-	BC.c("/use", BC.prep)
+	BC.my("BoldCommon serves as both a library and an assortment of useful commands.", BC.prep)
+	BC.m("Passive: Automatically repairs your equipment at vendor.", BC.prep)
+	BC.mb("/rl", BC.prep)
+	BC.m("Reload UI.", BC.prep)
+	BC.mb("/ri", BC.prep)
+	BC.m("Reset instances.", BC.prep)
+	BC.mb("/home", BC.prep)
+	local home = GetBindLocation()
+	BC.m("Unstuck (go to "..home..")", BC.prep)
+	BC.mb("/use", BC.prep)
 	BC.m("Use item by name.", BC.prep)
-	BC.c("/mount", BC.prep)
-	BC.m("Mount up.", BC.prep)
-	BC.c("/unbuff (name of buff)", BC.prep)
+	BC.mb("/unbuff (name of buff)", BC.prep)
 	BC.m("Removes buff.", BC.prep)
+	BC.my("/bc help2", BC.prep)
+	BC.my("More BoldCommon commands.", BC.prep)
+
+end
+
+function BC.Help2()
+	BC.mb("/bc cthun - /bc ctri", BC.prep)
+	BC.m("Generates a run in order and writes it in /party.", BC.prep)
+	BC.mb("/bc gpa - /bc gothik", BC.prep)
+	BC.m("Generates priest assigns for Gothik.", BC.prep)
+	BC.mb("/bc cdb - /bc missingdebuffs", BC.prep)
+	BC.m("Reports missing debuffs on target to /raid.", BC.prep)
+	BC.mb("/bc rmic - /bc raidmembersincombat", BC.prep)
+	BC.m("Reports raid members in combat in /raid.", BC.prep)
+	BC.mb("/bc cc (hitRate) - /bc critcap (hitRate)", BC.prep)
+	BC.m("Reports your crit cap based on the hitRate input.", BC.prep)
+	BC.mb("/bc cbot (textures, true/false) - /bc checkbuffsontarget", BC.prep)
+	BC.m("Reports all buffs on target.", BC.prep)
+	BC.mb("/cb ss", BC.prep)
+	BC.m("Sit/stand up repeatedly for no good reason.", BC.prep)
+	BC.mb("/cb mount", BC.prep)
+	BC.m("Mount up.", BC.prep)
 end

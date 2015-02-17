@@ -11,7 +11,7 @@ function BC.Mount()
 			bag, slot = BC.GetMount(BCM.mounts)
 		end
 		if not bag then
-			BC.m("Get a mount!")
+			BC.m("Get a mount!", BC.prep)
 			return
 		else
 			CloseMerchant()

@@ -50,9 +50,9 @@ function BC.ReportBuffsOnTarget(showTextureNames)
 		while (UnitBuff(u, counter)) do
 			BC_Buff_Tooltip:SetUnitBuff(u, counter)
 			local name = BC_Buff_TooltipTextLeft1:GetText()
-			BC.m(counter..": "..name, BC.prep)
+			BC.my(counter..": "..name, BC.prep)
 			if showTextureNames then
-				BC.c(counter..": ("..UnitBuff(u, counter)..")", BC.prep)
+				BC.mr(counter..": ("..UnitBuff(u, counter)..")", BC.prep)
 			end
 			counter = counter + 1
 		end

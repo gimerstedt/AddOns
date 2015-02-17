@@ -8,4 +8,7 @@ Automatically repair all items at vendor.
 ##Commands:
 * /bc - list available commands.
 
-![ss of /bc](http://i.imgur.com/2VhTMNx.png)
+![ss of /bc](http://i.imgur.com/ukWdfLH.png)
+![ss of /bc 2](http://i.imgur.com/HrzFXc8.png)
+![ss of /bc cbot true](http://i.imgur.com/syhY00W.png)
+![ss of /bc ss](http://i.imgur.com/I3KSaSl.gif)

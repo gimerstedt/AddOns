@@ -88,16 +88,41 @@ end
 
 function BC.m(msg, prepend, r, g, b)
 	prepend = prepend or ""
-	r = r or 1
-	g = g or 0.6
-	b = b or 0.9
+	r = r or 0.7
+	g = g or 1
+	b = b or 0.7
 	if msg then
-		DEFAULT_CHAT_FRAME:AddMessage(tostring(prepend)..tostring(msg), r, g, b)		
+		DEFAULT_CHAT_FRAME:AddMessage("|cffFF8888"..tostring(prepend).."|r"..tostring(msg), r, g, b)		
 	end
 end
+-- deprecated do not use
 function BC.c(msg, prepend)
 	prepend = prepend or ""
 	BC.m(msg, prepend, 0.7, 0.7, 1)
+end
+function BC.mr(msg, prepend) -- red
+	prepend = prepend or ""
+	BC.m(msg, prepend, 1, 0.7, 0.7)
+end
+function BC.mw(msg, prepend) -- white
+	prepend = prepend or ""
+	BC.m(msg, prepend, 1, 1, 1)
+end
+function BC.mg(msg, prepend) -- green
+	prepend = prepend or ""
+	BC.m(msg, prepend, 0.7, 1, 0.7)
+end
+function BC.mb(msg, prepend) -- blue
+	prepend = prepend or ""
+	BC.m(msg, prepend, 0.7, 0.7, 1)
+end
+function BC.my(msg, prepend) -- yellow
+	prepend = prepend or ""
+	BC.m(msg, prepend, 1, 1, 0.7)
+end
+function BC.mo(msg, prepend) -- orange
+	prepend = prepend or ""
+	BC.m(msg, prepend, 1, 0.44, 0.44)
 end
 function BC.p(msg, prepend)
 	prepend = prepend or ""
