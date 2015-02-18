@@ -6,4 +6,5 @@ Rotations.
 
 ##Commands:
 * /blw - lists rotations.
+
 ![ss of /blw](http://i.imgur.com/UTYT0mb.png)

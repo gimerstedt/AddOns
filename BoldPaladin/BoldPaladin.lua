@@ -21,10 +21,11 @@ function BP.OnEvent()
 end
 
 function BP.Help()
-	BC.m("Notifies you if no aura is active.", BP.prep)
-	BC.c("/safebop", BP.prep)
+	BC.my("BoldPaladin is a collection of useful commands for paladins.", BP.prep)
+	BC.m("Passive: Notifies you if no aura is active.", BP.prep)
+	BC.mb("/safebop", BP.prep)
 	BC.m("Casts Blessing of Protection on your target if your target is NOT a warrior and targetTarget if target is hostile and targetTarget is not a warrior.", BP.prep)
-	BC.c("/t1", BP.prep)
+	BC.mb("/t1", BP.prep)
 	BC.m("Targets, attacks and keeps SotC up.", BP.prep)
 end
 
