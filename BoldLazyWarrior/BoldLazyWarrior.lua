@@ -1,13 +1,18 @@
 BLW = {}
 if UnitClass("player") ~= "Warrior" then return end
 
-BLW.debug = false
+BLW.debug = true
 BLW.prep = "[BLW] "
-BLW.lastAbility = 0
-BLW.lastMainAbility = 0
 BLW.lastStanceChange = 0
 BLW.targetCasting = 0
 BLW.targetDodged = 0
+
+BLW.lastAbility = 0
+BLW.lastMainAbility = 0
+BLW.revenge = 0
+BLW.shieldBash = 0
+BLW.pummel = 0
+BLW.sunder = 0
 
 BINDING_HEADER_BLW = "BoldLazyWarrior"
 BINDING_NAME_BLW_DPS = "DPS rotation"
@@ -27,6 +32,14 @@ BLW_INTERRUPT3 = "Your Shield Bash was (.+) by (.+)."
 BLW_INTERRUPT4 = "Your Pummel missed (.+)."
 BLW_INTERRUPT5 = "Your Shield Bash missed (.+)."
 
+BLW_REVENGE1 = ".+ attacks%. You dodge%."
+BLW_REVENGE2 = ".+'s? .+ was dodged%."           -- GUESS
+BLW_REVENGE3 = ".+ attacks%. You parry%."
+BLW_REVENGE4 = ".+'s? .+ was parried%."          -- GUESS
+BLW_REVENGE5 = ".+ attacks%. You block%."
+BLW_REVENGE6 = ".+'s? .+ was blocked%."          -- GUESS
+BLW_REVENGE7 = ".+'s? .+ was resisted%."
+
 function BLW.OnLoad()
 	if UnitClass("player") ~= "Warrior" then return end
 	-- for target casting.
@@ -37,10 +50,17 @@ function BLW.OnLoad()
 	-- for Overpower.
 	BLWFrame:RegisterEvent("CHAT_MSG_SPELL_SELF_DAMAGE")
 	BLWFrame:RegisterEvent("CHAT_MSG_COMBAT_SELF_MISSES")
-	-- for loading vars
+	-- for loading vars.
 	BLWFrame:RegisterEvent("PLAYER_LOGIN")
-	-- misc
+	-- misc.
 	BLWFrame:RegisterEvent("PLAYER_TARGET_CHANGED")
+
+	-- for Revenge.
+	this:RegisterEvent("CHAT_MSG_COMBAT_SELF_MISSES")
+	this:RegisterEvent("CHAT_MSG_COMBAT_CREATURE_VS_SELF_MISSES")
+	this:RegisterEvent("CHAT_MSG_COMBAT_HOSTILEPLAYER_MISSES")
+	this:RegisterEvent("CHAT_MSG_SPELL_SELF_DAMAGE")
+	this:RegisterEvent("CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE")
 end
 
 function BLW.OnEvent()
@@ -181,74 +201,103 @@ end
 function BLW.Tank()
 	if not BLW.TargetAndAttack() then return end
 	local _, defensive, _ = BLW.GetStances()
-	local rage = UnitMana("player")
 	BLW.BattleShout(80)
 
 	if defensive then
-		if UnitClassification("target") ~= "worldboss" and BLW.targetCasting and BLW.SpellReady("Shield Bash") then
-			CastSpellByName("Shield Bash")
-			BLW.lastAbility = GetTime()
-			if BLW.debug then
-				BC.m("Casting Shield Bash at "..BLW.lastAbility, BLW.prep)
-			end
-		end
+		-- off gce
 		if UnitExists("targettarget") and UnitClass("targettarget") ~= "Warrior" then
 			CastSpellByName("Taunt")
 			if BLW.debug then
 				BC.m("Casting taunt!", BLW.prep)
 			end
 		end	
-		if rage >= 5 and rage < BLW.mainAbilityCost and BLW.SpellReady("Revenge") then
-			CastSpellByName("Revenge")
-			BLW.lastAbility = GetTime()
-			if BLW.debug then
-				BC.m("Casting Revenge at "..BLW.lastAbility, BLW.prep)
-			end
-		end
-		if rage >= BLW.mainAbilityCost and BLW.SpellReady(BLW.mainAbility) then
-			CastSpellByName(BLW.mainAbility)
-			BLW.lastAbility = GetTime()
-			BLW.lastMainAbility = BLW.lastAbility
-			if BLW.debug then
-				BC.m("Casting "..BLW.mainAbility.." at "..BLW.lastMainAbility, BLW.prep)
-			end
-		end
-		if rage >= 5 and BLW.SpellReady("Revenge") then
-			CastSpellByName("Revenge")
-			BLW.lastAbility = GetTime()
-			if BLW.debug then
-				BC.m("Casting Revenge at "..BLW.lastAbility, BLW.prep)
-			end
-		end
-		if BC.HasDebuff("target", "Sunder") < 5 and rage > 19 and (GetTime() - BLW.lastMainAbility) < 4.5 and BLW.SpellReady("Sunder Armor") then
-			CastSpellByName("Sunder Armor")
-			BLW.lastAbility = GetTime()
-			if BLW.debug then
-				BC.m("Casting Sunder Armor at "..BLW.lastAbility, BLW.prep)
-			end
-		end
-		if UnitIsUnit("player", "targettarget") and rage > (BLW.mainAbilityCost + 15) and UnitAffectingCombat("player") and BLW.SpellReady("Shield Block") and CheckInteractDistance("target", 3) and not BC.BuffIndexByName("Shield Block") then
+		if UnitIsUnit("player", "targettarget") and BLW.Rage() > (BLW.mainAbilityCost + 15) and UnitAffectingCombat("player") and CheckInteractDistance("target", 3) and not BC.BuffIndexByName("Shield Block") then
 			CastSpellByName("Shield Block")
 			if BLW.debug then
 				BC.m("Casting Shield Block.", BLW.prep)
 			end
 		end
-		if rage > (BLW.mainAbilityCost + 15) then
+		if BLW.Rage() > (BLW.mainAbilityCost + 15) then
 			CastSpellByName("Heroic Strike")
 			if BLW.debug then
 				BC.m("Casting Heroic Strike.", BLW.prep)
 			end
 		end
-		if rage > 60 and (GetTime() - BLW.lastMainAbility) < 4.5 and BLW.SpellReady("Sunder Armor") then
-			CastSpellByName("Sunder Armor")
-			BLW.lastAbility = GetTime()
-			if BLW.debug then
-				BC.m("Casting Sunder Armor at "..BLW.lastAbility, BLW.prep)
+
+		-- on gcd
+		if (GetTime() - BLW.lastAbility) > 1.5 then
+			if UnitClassification("target") ~= "worldboss" and BLW.targetCasting and not BLW.SpellOnCD("Shield Bash") then
+				CastSpellByName("Shield Bash")
+				if BLW.SpellOnCD("Shield Bash") then
+					BLW.shieldBash = GetTime()
+					if BLW.debug then
+						BC.m("Casting Shield Bash at "..BLW.shieldBash, BLW.prep)
+					end
+				end
+			end
+			if BLW.Rage() < BLW.mainAbilityCost and not BLW.SpellOnCD("Revenge") then
+				CastSpellByName("Revenge")
+				if BLW.SpellOnCD("Revenge") then
+					BLW.revenge = GetTime()
+					if BLW.debug then
+						BC.m("Casting Revenge at "..BLW.revenge, BLW.prep)
+					end
+				end
+			end
+			if not BLW.SpellOnCD(BLW.mainAbility) then
+				CastSpellByName(BLW.mainAbility)
+				if BLW.SpellOnCD(BLW.mainAbility) then
+					BLW.lastMainAbility = GetTime()
+					if BLW.debug then
+						BC.m("Casting "..BLW.mainAbility.." at "..BLW.lastMainAbility, BLW.prep)
+					end
+				end
+			end
+			if not BLW.SpellOnCD("Revenge") then
+				CastSpellByName("Revenge")
+				if BLW.SpellOnCD("Revenge") then
+					BLW.revenge = GetTime()
+					if BLW.debug then
+						BC.m("Casting Revenge at "..BLW.revenge, BLW.prep)
+					end
+				end
+			end
+			if BC.HasDebuff("target", "Sunder") < 5 and BLW.Rage() > 19 and (GetTime() - BLW.lastMainAbility) < 4.5 then
+				CastSpellByName("Sunder Armor")
+				BLW.sunder = GetTime()
+				if BLW.debug then
+					BC.m("Casting Sunder Armor at "..BLW.sunder, BLW.prep)
+				end
+			end
+			if BLW.Rage() > 60 and (GetTime() - BLW.lastMainAbility) < 4.5 then
+				CastSpellByName("Sunder Armor")
+				BLW.lastAbility = GetTime()
+				if BLW.debug then
+					BC.m("Casting Sunder Armor at "..BLW.sunder, BLW.prep)
+				end
 			end
 		end
 	else
 		CastSpellByName("Defensive Stance")
 	end
+
+	BLW.lastAbility = BLW.lastMainAbility
+	if BLW.lastAbility < BLW.revenge then
+		BLW.lastAbility = BLW.revenge
+	end
+	if BLW.lastAbility < BLW.shieldBash then
+		BLW.lastAbility = BLW.shieldBash
+	end
+	if BLW.lastAbility < BLW.sunder then
+		BLW.lastAbility = BLW.sunder
+	end
+end
+
+function BLW.ShouldCastSunder()
+	if (GetTime() - BLW.lastMainAbility) > 4.5 then
+		return false
+	end
+	if (GetTime() - BLW.revenge) 
 end
 
 function BLW.Nightfall()
@@ -367,7 +416,7 @@ function BLW.FuryDPSRotation(prioHamstring)
 			CastSpellByName("Execute")
 			BLW.lastAbility = GetTime()
 		end
-		if rage > 29 and SpellReady("Bloodthirst") then
+		if rage > 29 and BLW.SpellReady("Bloodthirst") then
 			CastSpellByName("Bloodthirst")
 			BLW.lastAbility = GetTime()
 			BLW.lastMainAbility = BLW.lastAbility

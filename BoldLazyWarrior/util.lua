@@ -9,8 +9,8 @@ function BLW.HP(unit)
 	return percent
 end
 
-function BLW.SpellReady(spellname)
-	local id = BC.GetSpellId(spellname)
+function BLW.SpellReady(spellName)
+	local id = BC.GetSpellId(spellName)
 	if (id) then
 		local start, duration = GetSpellCooldown(id, 0)
 		if (start == 0 and duration == 0 and BLW.lastAbility + 1 <= GetTime()) then
@@ -20,6 +20,21 @@ function BLW.SpellReady(spellname)
 	return nil
 end
 
+function BLW.Rage()
+	return UnitMana("player")
+end
+
+function BLW.SpellOnCD(spellName)
+	local id = BC.GetSpellId(spellName)
+	if id then
+		local start, duration = GetSpellCooldown(id, 0)
+		if start == 0 and duration == 0 then
+			return nil
+		end
+	end
+	return true
+end
+
 function BLW.TargetAndAttack()
 	if UnitExists("target") then
 		BC.EnableAttack()
@@ -27,11 +42,11 @@ function BLW.TargetAndAttack()
 	end
 	TargetNearestEnemy()
 	local counter = 0
-	while counter < 10 and BLW.unwantedTarget() do
+	while counter < 10 and BLW.UnwantedTarget() do
 		TargetNearestEnemy()
 		counter = counter + 1
 	end
-	if BLW.unwantedTarget() then
+	if BLW.UnwantedTarget() then
 		ClearTarget()
 		return false
 	else
@@ -40,7 +55,7 @@ function BLW.TargetAndAttack()
 	end
 end
 
-function BLW.unwantedTarget()
+function BLW.UnwantedTarget()
 	for k,v in pairs(BLW.doNotTarget) do
 		if UnitName("target") == v then
 			return true
