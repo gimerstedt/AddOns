@@ -1,11 +1,12 @@
 BLW = {}
 if UnitClass("player") ~= "Warrior" then return end
 
-BLW.debug = true
+BLW.debug = false
 BLW.prep = "[BLW] "
 BLW.lastStanceChange = 0
 BLW.targetCasting = 0
 BLW.targetDodged = 0
+BLW.revengeTimer = 0
 
 BLW.lastAbility = 0
 BLW.lastMainAbility = 0
@@ -32,34 +33,30 @@ BLW_INTERRUPT3 = "Your Shield Bash was (.+) by (.+)."
 BLW_INTERRUPT4 = "Your Pummel missed (.+)."
 BLW_INTERRUPT5 = "Your Shield Bash missed (.+)."
 
-BLW_REVENGE1 = ".+ attacks%. You dodge%."
-BLW_REVENGE2 = ".+'s? .+ was dodged%."           -- GUESS
-BLW_REVENGE3 = ".+ attacks%. You parry%."
-BLW_REVENGE4 = ".+'s? .+ was parried%."          -- GUESS
-BLW_REVENGE5 = ".+ attacks%. You block%."
-BLW_REVENGE6 = ".+'s? .+ was blocked%."          -- GUESS
-BLW_REVENGE7 = ".+'s? .+ was resisted%."
+BLW_REVENGE1 = "Your Revenge crits (.+) for (%d+)."
+BLW_REVENGE2 = "Your Revenge hits (.+) for (%d+)."
+BLW_REVENGE3 = "Your Revenge missed (.+)."
+BLW_REVENGE4 = "Your Revenge was dodged by (.+)."
 
 function BLW.OnLoad()
 	if UnitClass("player") ~= "Warrior" then return end
 	-- for target casting.
-	BLWFrame:RegisterEvent("CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE")
-	BLWFrame:RegisterEvent("CHAT_MSG_SPELL_CREATURE_VS_CREATURE_BUFF")
-	BLWFrame:RegisterEvent("CHAT_MSG_SPELL_HOSTILEPLAYER_DAMAGE")
-	BLWFrame:RegisterEvent("CHAT_MSG_SPELL_HOSTILEPLAYER_BUFF")
+	this:RegisterEvent("CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE")
+	this:RegisterEvent("CHAT_MSG_SPELL_CREATURE_VS_CREATURE_BUFF")
+	this:RegisterEvent("CHAT_MSG_SPELL_HOSTILEPLAYER_DAMAGE")
+	this:RegisterEvent("CHAT_MSG_SPELL_HOSTILEPLAYER_BUFF")
 	-- for Overpower.
-	BLWFrame:RegisterEvent("CHAT_MSG_SPELL_SELF_DAMAGE")
-	BLWFrame:RegisterEvent("CHAT_MSG_COMBAT_SELF_MISSES")
-	-- for loading vars.
-	BLWFrame:RegisterEvent("PLAYER_LOGIN")
-	-- misc.
-	BLWFrame:RegisterEvent("PLAYER_TARGET_CHANGED")
-
-	-- for Revenge.
+	this:RegisterEvent("CHAT_MSG_SPELL_SELF_DAMAGE")
 	this:RegisterEvent("CHAT_MSG_COMBAT_SELF_MISSES")
+	-- for loading vars.
+	this:RegisterEvent("PLAYER_LOGIN")
+	-- misc.
+	this:RegisterEvent("PLAYER_TARGET_CHANGED")
+	-- for Revenge.
+	-- this:RegisterEvent("CHAT_MSG_COMBAT_SELF_MISSES")
 	this:RegisterEvent("CHAT_MSG_COMBAT_CREATURE_VS_SELF_MISSES")
 	this:RegisterEvent("CHAT_MSG_COMBAT_HOSTILEPLAYER_MISSES")
-	this:RegisterEvent("CHAT_MSG_SPELL_SELF_DAMAGE")
+	-- this:RegisterEvent("CHAT_MSG_SPELL_SELF_DAMAGE")
 	this:RegisterEvent("CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE")
 end
 
@@ -90,15 +87,37 @@ function BLW.OnEvent()
 	elseif (event == "PLAYER_TARGET_CHANGED") then
 		BLW.targetDodged = nil
 		BLW.targetCasting = nil
+	elseif event == "CHAT_MSG_COMBAT_SELF_MISSES" or event == "CHAT_MSG_COMBAT_CREATURE_VS_SELF_MISSES" or event == "CHAT_MSG_COMBAT_HOSTILEPLAYER_MISSES" or event == "CHAT_MSG_SPELL_SELF_DAMAGE" or event == "CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE" then
+		BLW.CheckDodgeParryBlockResist(arg1)
 	end
-end
 
--- function BC.MakeMacro(name, macro, perCharacter, macroIconTexture, iconIndex, replace, show, noCreate, replaceMacroIndex, replaceMacroName)
-function BLW.MakeMacros()
-	BC.MakeMacro("Tank", "/blw tank", 0, "Ability_Warrior_DefensiveStance", nil, 1, 1)
-	BC.MakeMacro("DPS", "/blw dps", 0, "Spell_Nature_BloodLust", nil, 1, 1)
-	BC.MakeMacro("DPS2", "/blw dps2", 0, "Ability_Warrior_OffensiveStance", nil, 1, 1)
-	BC.MakeMacro("NF", "/blw nf", 0, "Spell_Holy_ElunesGrace", nil, 1, 1)
+	if event == "CHAT_MSG_SPELL_SELF_DAMAGE" then
+		if string.find(arg1, BLW_REVENGE1) then
+			BLW.revengeTimer = nil
+			if BLW.debug then
+				BC.mr("Revenge crit.")
+			end
+		end
+		if string.find(arg1, BLW_REVENGE2) then
+			BLW.revengeTimer = nil
+			if BLW.debug then
+				BC.mr("Revenge hit.")
+			end
+		end
+		if string.find(arg1, BLW_REVENGE3) then
+			BLW.revengeTimer = nil
+			if BLW.debug then
+				BC.mr("Revenge missed.")
+			end
+		end
+		if string.find(arg1, BLW_REVENGE4) then
+			BLW.revengeTimer = nil
+			if BLW.debug then
+				BC.mr("Revenge dodged")
+			end
+		end
+	end
+
 end
 
 SLASH_BLW_ROTATION1 = '/blw'
@@ -225,13 +244,13 @@ function BLW.Tank()
 		end
 
 		-- on gcd
-		if (GetTime() - BLW.lastAbility) > 1.5 then
+		-- if (GetTime() - BLW.lastAbility) > 1.5 then
 			if UnitClassification("target") ~= "worldboss" and BLW.targetCasting and not BLW.SpellOnCD("Shield Bash") then
 				CastSpellByName("Shield Bash")
 				if BLW.SpellOnCD("Shield Bash") then
 					BLW.shieldBash = GetTime()
 					if BLW.debug then
-						BC.m("Casting Shield Bash at "..BLW.shieldBash, BLW.prep)
+						BC.my("Casting Shield Bash at "..BLW.shieldBash, BLW.prep)
 					end
 				end
 			end
@@ -240,7 +259,7 @@ function BLW.Tank()
 				if BLW.SpellOnCD("Revenge") then
 					BLW.revenge = GetTime()
 					if BLW.debug then
-						BC.m("Casting Revenge at "..BLW.revenge, BLW.prep)
+						BC.mo("Casting Revenge at "..BLW.revenge, BLW.prep)
 					end
 				end
 			end
@@ -249,7 +268,7 @@ function BLW.Tank()
 				if BLW.SpellOnCD(BLW.mainAbility) then
 					BLW.lastMainAbility = GetTime()
 					if BLW.debug then
-						BC.m("Casting "..BLW.mainAbility.." at "..BLW.lastMainAbility, BLW.prep)
+						BC.mr("Casting "..BLW.mainAbility.." at "..BLW.lastMainAbility, BLW.prep)
 					end
 				end
 			end
@@ -258,25 +277,31 @@ function BLW.Tank()
 				if BLW.SpellOnCD("Revenge") then
 					BLW.revenge = GetTime()
 					if BLW.debug then
-						BC.m("Casting Revenge at "..BLW.revenge, BLW.prep)
+						BC.mo("Casting Revenge at "..BLW.revenge, BLW.prep)
 					end
 				end
 			end
-			if BC.HasDebuff("target", "Sunder") < 5 and BLW.Rage() > 19 and (GetTime() - BLW.lastMainAbility) < 4.5 then
-				CastSpellByName("Sunder Armor")
-				BLW.sunder = GetTime()
-				if BLW.debug then
-					BC.m("Casting Sunder Armor at "..BLW.sunder, BLW.prep)
+			if not ((GetTime() - BLW.lastMainAbility) > 4.5) and not ((GetTime() - BLW.revenge) > 3.5 and BLW.revengeTimer) then
+				if BC.HasDebuff("target", "Sunder") < 5 and BLW.Rage() > 19 then
+					CastSpellByName("Sunder Armor")
+					if BLW.SpellOnCD("Sunder Armor") then
+						BLW.sunder = GetTime()
+						if BLW.debug then
+							BC.mb("Casting Sunder Armor at "..BLW.sunder, BLW.prep)
+						end
+					end
+				end
+				if BLW.Rage() > (BLW.mainAbilityCost + 40) then
+					CastSpellByName("Sunder Armor")
+					if BLW.SpellOnCD("Sunder Armor") then
+						BLW.sunder = GetTime()
+						if BLW.debug then
+							BC.mb("Casting Sunder Armor at "..BLW.sunder, BLW.prep)
+						end
+					end
 				end
 			end
-			if BLW.Rage() > 60 and (GetTime() - BLW.lastMainAbility) < 4.5 then
-				CastSpellByName("Sunder Armor")
-				BLW.lastAbility = GetTime()
-				if BLW.debug then
-					BC.m("Casting Sunder Armor at "..BLW.sunder, BLW.prep)
-				end
-			end
-		end
+		-- end
 	else
 		CastSpellByName("Defensive Stance")
 	end
@@ -291,13 +316,6 @@ function BLW.Tank()
 	if BLW.lastAbility < BLW.sunder then
 		BLW.lastAbility = BLW.sunder
 	end
-end
-
-function BLW.ShouldCastSunder()
-	if (GetTime() - BLW.lastMainAbility) > 4.5 then
-		return false
-	end
-	if (GetTime() - BLW.revenge) 
 end
 
 function BLW.Nightfall()

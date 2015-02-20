@@ -3,6 +3,14 @@ BLW.doNotTarget = {
 	"Qiraji Scarab",
 }
 
+-- function BC.MakeMacro(name, macro, perCharacter, macroIconTexture, iconIndex, replace, show, noCreate, replaceMacroIndex, replaceMacroName)
+function BLW.MakeMacros()
+	BC.MakeMacro("Tank", "/blw tank", 0, "Ability_Warrior_DefensiveStance", nil, 1, 1)
+	BC.MakeMacro("DPS", "/blw dps", 0, "Spell_Nature_BloodLust", nil, 1, 1)
+	BC.MakeMacro("DPS2", "/blw dps2", 0, "Ability_Warrior_OffensiveStance", nil, 1, 1)
+	BC.MakeMacro("NF", "/blw nf", 0, "Spell_Holy_ElunesGrace", nil, 1, 1)
+end
+
 function BLW.HP(unit)
 	local unit = unit or "target"
 	local percent = (UnitHealth(unit) / UnitHealthMax(unit)) * 100
@@ -52,6 +60,21 @@ function BLW.TargetAndAttack()
 	else
 		BC.EnableAttack()
 		return true
+	end
+end
+
+function BLW.CheckDodgeParryBlockResist(arg1)
+	local dodged = ".+ attacks%. You dodge%."
+	local dodgedSpell = ".+'s? .+ was dodged%."
+	local parried = ".+ attacks%. You parry%."
+	local parriedSpell = ".+'s? .+ was parried%."
+	local blocked = ".+ attacks%. You block%."
+	local blockedSpell = ".+'s? .+ was blocked%."
+	local resistedSpell = ".+'s? .+ was resisted%."
+	local now = GetTime()
+
+	if string.find(arg1, dodged) or string.find(arg1, dodgedSpell) or string.find(arg1, parried) or string.find(arg1, parriedSpell) or string.find(arg1, blocked) or string.find(arg1, blockedSpell) or string.find(arg1, resistedSpell) then
+		BLW.revengeTimer = now
 	end
 end
 
