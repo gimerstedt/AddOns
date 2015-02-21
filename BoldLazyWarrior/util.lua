@@ -17,16 +17,16 @@ function BLW.HP(unit)
 	return percent
 end
 
-function BLW.SpellReady(spellName)
-	local id = BC.GetSpellId(spellName)
-	if (id) then
-		local start, duration = GetSpellCooldown(id, 0)
-		if (start == 0 and duration == 0 and BLW.lastAbility + 1 <= GetTime()) then
-			return true
-		end
-	end
-	return nil
-end
+-- function BLW.SpellReady(spellName)
+-- 	local id = BC.GetSpellId(spellName)
+-- 	if (id) then
+-- 		local start, duration = GetSpellCooldown(id, 0)
+-- 		if (start == 0 and duration == 0 and BLW.lastAbility + 1 <= GetTime()) then
+-- 			return true
+-- 		end
+-- 	end
+-- 	return nil
+-- end
 
 function BLW.Rage()
 	return UnitMana("player")
