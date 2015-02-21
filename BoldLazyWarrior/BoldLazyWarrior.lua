@@ -1,7 +1,7 @@
 BLW = {}
 if UnitClass("player") ~= "Warrior" then return end
 
-BLW.debug = false
+BLW.debug = true
 BLW.prep = "[BLW] "
 BLW.lastStanceChange = 0
 BLW.targetCasting = 0
@@ -14,6 +14,9 @@ BLW.revenge = 0
 BLW.shieldBash = 0
 BLW.pummel = 0
 BLW.sunder = 0
+BLW.overpower = 0
+BLW.execute = 0
+BLW.hamstring = 0
 
 BINDING_HEADER_BLW = "BoldLazyWarrior"
 BINDING_NAME_BLW_DPS = "DPS rotation"
@@ -159,62 +162,119 @@ function BLW.DPS2(battleOnly)
 	if BLW.prot then BC.m("This rotation requires a fury spec.", BLW.prep) return end
 	if not BLW.TargetAndAttack() then return end
 	local battle, _, berserk = BLW.GetStances()
-	local rage = UnitMana("player")
 	BLW.BattleShout()
 
 	if battle then
 		if BLW.HP() <= 20 then
-			if rage >= 5 and BLW.targetDodged and BLW.SpellReady("Overpower") then
+			if BLW.Rage() >= 5 and BLW.targetDodged and not BLW.SpellOnCD("Overpower") then
 				CastSpellByName("Overpower")
-				BLW.lastAbility = GetTime()
-				BLW.targetDodged = nil
+				if BLW.SpellOnCD("Overpower") then
+					BLW.overpower = GetTime()
+					BLW.targetDodged = nil
+					if BLW.debug then
+						BC.mr("Casting OP below 20%.")
+					end
+				end
 			end
 			if battleOnly then
-				if rage >= 10 and BLW.SpellReady("Execute") then
+				if BLW.Rage() >= 10 and not BLW.SpellOnCD("Execute") then
 					CastSpellByName("Execute")
-					BLW.lastAbility = GetTime()
+					if BLW.SpellOnCD("Execute") then
+						BLW.execute = GetTime()
+						if BLW.debug then
+							BC.mb("Casting execute, battle stance only rotation.")
+						end
+					end
 				end
 			else
-				if rage <= 25 then
+				if BLW.Rage() <= 25 then
 					CastSpellByName("Berserker Stance")
+					if BLW.debug then
+						BC.m("Casting")
+					end
 				else
-					if rage >= 10 and BLW.SpellReady("Execute") then
+					if rage >= 10 and not BLW.SpellOnCD("Execute") then
 						CastSpellByName("Execute")
-						BLW.lastAbility = GetTime()
+						if BLW.SpellOnCD("Execute") then
+							BLW.execute = GetTime()
+							if BLW.debug then
+								BC.mb("Casting execute to dump rage before switching to berserker stance.")
+							end
+						end
 					end
 				end
 			end
 		else
-			if rage >= 5 and BLW.SpellReady("Overpower") and BLW.targetDodged then
+			if BLW.Rage() >= 5 and BLW.targetDodged and not BLW.SpellOnCD("Overpower") then
 				CastSpellByName("Overpower")
-				BLW.lastAbility = GetTime()
-				BLW.targetDodged = nil
-			end
-			if rage >= 30 and BLW.SpellReady("Bloodthirst") then
-				CastSpellByName("Bloodthirst")
-				BLW.lastAbility = GetTime()
-				BLW.lastMainAbility = BLW.lastAbility
-			end
-			if UnitMana("player") > 50 then
-				if not BLW.targetDodged and (GetTime() - BLW.lastMainAbility) < 4 and BLW.SpellReady("Hamstring") then
-					CastSpellByName("Hamstring")
-					BLW.lastAbility = GetTime()
+				if BLW.SpellOnCD("Overpower") then
+					BLW.overpower = GetTime()
+					BLW.targetDodged = nil
+					if BLW.debug then
+						BC.mr("Casting Overpower.")
+					end
 				end
-				if UnitMana("player") > 60 then
+			end
+			if BLW.Rage() >= 30 and not BLW.SpellOnCD("Bloodthirst") then
+				CastSpellByName("Bloodthirst")
+				if BLW.SpellOnCD("Bloodthirst") then
+					BLW.lastMainAbility = GetTime()
+					if BLW.debug then
+						BC.my("Casting bloodthirst.")
+					end
+				end
+			end
+			if BLW.Rage() > 50 then
+				if not BLW.targetDodged and BLW.ShouldCastHamstring() and not BLW.SpellOnCD("Hamstring") then
+					CastSpellByName("Hamstring")
+					if BLW.SpellOnCD("Hamstring") then
+						BLW.hamstring = GetTime()
+						if BLW.debug then
+							BC.mg("Casting Hamstring.")
+						end
+					end
+				end
+				if BLW.Rage() > 60 then
 					CastSpellByName("Heroic Strike")
+					BC.mo("Casting Heroic Strike")
 				end
 			end
 		end
 	elseif berserk then
-		if not battleOnly and BLW.HP() <= 20 and BLW.SpellReady("Execute") then
+		if not battleOnly and BLW.HP() <= 20 and not BLW.SpellOnCD("Execute") then
 			CastSpellByName("Execute")
-			BLW.lastAbility = GetTime()
+			if BLW.SpellOnCD("Execute") then
+				BLW.hamstring = GetTime()
+				if BLW.debug then
+					BC.mb("Casting execute in berserker stance.")
+				end
+			end
 		else
 			CastSpellByName("Battle Stance")
 		end
 	else
 		CastSpellByName("Battle Stance")
 	end
+	BLW.lastAbility = BLW.lastMainAbility
+	if BLW.lastAbility < BLW.overpower then
+		BLW.lastAbility = BLW.overpower
+	end
+	if BLW.lastAbility < BLW.execute then
+		BLW.lastAbility = BLW.execute
+	end
+	if BLW.lastAbility < BLW.hamstring then
+		BLW.lastAbility = BLW.hamstring
+	end
+end
+
+function BLW.ShouldCastHamstring()
+	if BLW.Rage() >= 30 and (GetTime() - BLW.lastMainAbility) > 4.5 then
+		return false
+	end
+	if BLW.Rage() >= 5 and BLW.targetDodged and (GetTime() - BLW.overpower) > 3.5 then
+		return false
+	end
+	return true
 end
 
 function BLW.Tank()
