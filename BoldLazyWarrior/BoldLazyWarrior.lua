@@ -428,6 +428,10 @@ function BLW.FuryDPSRotation(prioHamstring)
 			CastSpellByName("Berserker Stance")
 			BLW.lastStanceChange = GetTime()
 		end
+		if (GetTime() - BLW.overpower) > 5 then
+			CastSpellByName("Berserker Stance")
+			BLW.lastStanceChange = GetTime()
+		end
 	elseif berserk then
 		if UnitClassification("target") ~= "worldboss" and BLW.targetCasting and not BLW.SpellOnCD("Pummel") then
 			CastSpellByName("Pummel")
@@ -467,7 +471,7 @@ function BLW.FuryDPSRotation(prioHamstring)
 				-- end
 			end
 		end
-		if BLW.targetDodged then
+		if BLW.targetDodged and BLW.HP() > 20 then
 			if (GetTime() - BLW.targetDodged) < 4 then
 				if BLW.SpellOnCD("Bloodthirst") or BLW.Rage() <= 25 then
 					if BLW.SpellOnCD("Whirlwind") or BLW.Rage() <= 25 then
@@ -480,19 +484,16 @@ function BLW.FuryDPSRotation(prioHamstring)
 			end
 		end
 
-		if BLW.Rage() > 55 then
-			if BC.BuffIndexByName("Flurry") then
-				CastSpellByName("Heroic Strike")
-			else
-				if (GetTime() - BLW.lastMainAbility) < 4.5 and not BLW.SpellOnCD("Hamstring") then
-					if BLW.targetDodged and (GetTime() - BLW.overpower) < 3.5 or not BLW.targetDodged then
-						CastSpellByName("Hamstring")
-						-- if BLW.SpellOnCD("Hamstring") then
-						-- 	BLW.hamstring = GetTime()
-						-- 	BC.my("Casted Hamstring")
-						-- end
-					end
-				end
+		if BLW.Rage() > 55 and BC.BuffIndexByName("Flurry") then
+			CastSpellByName("Heroic Strike")
+		end
+		if BLW.Rage() > 65 and (GetTime() - BLW.lastMainAbility) < 4.5 and not BLW.SpellOnCD("Hamstring") then
+			if BLW.targetDodged and (GetTime() - BLW.overpower) < 3.5 or not BLW.targetDodged then
+				CastSpellByName("Hamstring")
+				-- if BLW.SpellOnCD("Hamstring") then
+				-- 	BLW.hamstring = GetTime()
+				-- 	BC.my("Casted Hamstring")
+				-- end
 			end
 		end
 	else
