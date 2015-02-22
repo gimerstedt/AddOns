@@ -73,6 +73,8 @@ function BW.OnLoad()
 	SLASH_OVERPOWER1 = "/overpower"
 	SlashCmdList["MAKEMACROS"] = BW.MakeMacros
 	SLASH_MAKEMACROS1 = "/bwmm"
+	SlashCmdList["SAFEUSE"] = BW.SafeUse
+	SLASH_SAFEUSE1 = "/safeuse"
 end
 
 function BW.OnEvent()
@@ -103,6 +105,8 @@ function BW.Help()
 	BC.m("Use Overpower from any stance and swap back to berserker stance.", BW.prep)
 	BC.c("/bwcap (1-32)", BW.prep)
 	BC.m("Set your current buff cap (used to determine if /safe(sw/ls/lgg) removes a buff or not.", BW.prep)
+	BC.c("/safeuse", BW.prep)
+	BC.m("Safely uses an item.", BW.prep)
 	BC.c("/bwmm", BW.prep)
 	BC.m("Make macros for the commands.", BW.prep)
 end
@@ -222,6 +226,17 @@ function BW.SafePopTrinket(announce)
 			BC.y("Using "..trink2.link.."!", BW.announce)
 		end
 		return
+	end
+end
+
+function BW.SafeUse(item)
+	if not UnitBuff("player", BWConfig.BUFFCAP) then
+		BC.UseItemByName(item)
+	else
+		if not BW.RemoveABuff() then
+			BC.m("Could not find a buff to remove, using "..item.." anyway.", BW.prep)
+		end
+		BC.UseItemByName(item)
 	end
 end
 
