@@ -162,22 +162,19 @@ function BLW.DPS2(battleOnly)
 			if battleOnly then
 				if BLW.Rage() >= 10 and not BLW.SpellOnCD("Execute") then
 					CastSpellByName("Execute")
-					if BLW.SpellOnCD("Execute") then
-						BLW.execute = GetTime()
-					end
+					-- if BLW.SpellOnCD("Execute") then
+					-- 	BLW.execute = GetTime()
+					-- end
 				end
 			else
 				if BLW.Rage() <= 25 then
 					CastSpellByName("Berserker Stance")
-					if BLW.debug then
-						BC.m("Casting")
-					end
 				else
 					if rage >= 10 and not BLW.SpellOnCD("Execute") then
 						CastSpellByName("Execute")
-						if BLW.SpellOnCD("Execute") then
-							BLW.execute = GetTime()
-						end
+						-- if BLW.SpellOnCD("Execute") then
+						-- 	BLW.execute = GetTime()
+						-- end
 					end
 				end
 			end
@@ -196,26 +193,25 @@ function BLW.DPS2(battleOnly)
 				end
 			end
 			if BLW.Rage() > 50 then
-				if BLW.Rage() < 30 and not (GetTime() - BLW.lastMainAbility) > 4.5 then
-					if not BLW.targetDodged and not BLW.SpellOnCD("Hamstring") then
+				if BLW.Rage() < 30 and (GetTime() - BLW.lastMainAbility) < 4.5 then
+					if not BLW.targetDodged or (GetTime() - BLW.overpower) < 3.5 then
 						CastSpellByName("Hamstring")
-						if BLW.SpellOnCD("Hamstring") then
-							BLW.hamstring = GetTime()
-						end
+						-- if BLW.SpellOnCD("Hamstring") then
+						-- 	BLW.hamstring = GetTime()
+						-- end
 					end
 				end
 				if BLW.Rage() > 60 then
 					CastSpellByName("Heroic Strike")
-					BC.mo("Casting Heroic Strike")
 				end
 			end
 		end
 	elseif berserk then
 		if not battleOnly and BLW.HP() <= 20 and not BLW.SpellOnCD("Execute") then
 			CastSpellByName("Execute")
-			if BLW.SpellOnCD("Execute") then
-				BLW.execute = GetTime()
-			end
+			-- if BLW.SpellOnCD("Execute") then
+			-- 	BLW.execute = GetTime()
+			-- end
 		else
 			CastSpellByName("Battle Stance")
 		end
@@ -417,9 +413,9 @@ function BLW.FuryDPSRotation(prioHamstring)
 			else
 				if not BLW.SpellOnCD("Execute") then
 					CastSpellByName("Execute")
-					if BLW.SpellOnCD("Execute") then
-						BLW.execute = GetTime()
-					end
+					-- if BLW.SpellOnCD("Execute") then
+					-- 	BLW.execute = GetTime()
+					-- end
 				end
 			end
 		end
@@ -435,15 +431,15 @@ function BLW.FuryDPSRotation(prioHamstring)
 	elseif berserk then
 		if UnitClassification("target") ~= "worldboss" and BLW.targetCasting and not BLW.SpellOnCD("Pummel") then
 			CastSpellByName("Pummel")
-			if BLW.SpellOnCD("Pummel") then
-				BLW.pummel = GetTime()
-			end
+			-- if BLW.SpellOnCD("Pummel") then
+			-- 	BLW.pummel = GetTime()
+			-- end
 		end
 		if BLW.HP() <= 20 and not BLW.SpellOnCD("Execute") then
 			CastSpellByName("Execute")
-			if BLW.SpellOnCD("Execute") then
-				BLW.execute = GetTime()
-			end
+			-- if BLW.SpellOnCD("Execute") then
+			-- 	BLW.execute = GetTime()
+			-- end
 		end
 		if BLW.Rage() > 29 and not BLW.SpellOnCD("Bloodthirst") then
 			CastSpellByName("Bloodthirst")
@@ -454,21 +450,21 @@ function BLW.FuryDPSRotation(prioHamstring)
 		if CheckInteractDistance("target", 3) and not BLW.SpellOnCD("Whirlwind") then
 			if BLW.Rage() > 29 and (GetTime() - BLW.lastMainAbility) < 2 then
 				CastSpellByName("Whirlwind")
-				if BLW.SpellOnCD("Whirlwind") then
-					BLW.whirlwind = GetTime()
-				end
+				-- if BLW.SpellOnCD("Whirlwind") then
+				-- 	BLW.whirlwind = GetTime()
+				-- end
 			end
 			if BLW.Rage() > 39 and (GetTime() - BLW.lastMainAbility) < 3 then
 				CastSpellByName("Whirlwind")
-				if BLW.SpellOnCD("Whirlwind") then
-					BLW.whirlwind = GetTime()
-				end
+				-- if BLW.SpellOnCD("Whirlwind") then
+				-- 	BLW.whirlwind = GetTime()
+				-- end
 			end
 			if BLW.Rage() > 54 and (GetTime() - BLW.lastMainAbility) < 4 then
 				CastSpellByName("Whirlwind")
-				if BLW.SpellOnCD("Whirlwind") then
-					BLW.whirlwind = GetTime()
-				end
+				-- if BLW.SpellOnCD("Whirlwind") then
+				-- 	BLW.whirlwind = GetTime()
+				-- end
 			end
 		end
 		if BLW.targetDodged then
@@ -488,10 +484,13 @@ function BLW.FuryDPSRotation(prioHamstring)
 			if BC.BuffIndexByName("Flurry") then
 				CastSpellByName("Heroic Strike")
 			else
-				if (GetTime() - BLW.lastMainAbility) < 4 and not BLW.SpellOnCD("Hamstring") then
-					CastSpellByName("Hamstring")
-					if BLW.SpellOnCD("Hamstring") then
-						BLW.hamstring = GetTime()
+				if (GetTime() - BLW.lastMainAbility) < 4.5 and not BLW.SpellOnCD("Hamstring") then
+					if BLW.targetDodged and (GetTime() - BLW.overpower) < 3.5 or not BLW.targetDodged then
+						CastSpellByName("Hamstring")
+						-- if BLW.SpellOnCD("Hamstring") then
+						-- 	BLW.hamstring = GetTime()
+						-- 	BC.my("Casted Hamstring")
+						-- end
 					end
 				end
 			end

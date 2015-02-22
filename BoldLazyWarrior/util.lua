@@ -9,6 +9,7 @@ function BLW.MakeMacros()
 	BC.MakeMacro("DPS", "/blw dps", 0, "Spell_Nature_BloodLust", nil, 1, 1)
 	BC.MakeMacro("DPS2", "/blw dps2", 0, "Ability_Warrior_OffensiveStance", nil, 1, 1)
 	BC.MakeMacro("NF", "/blw nf", 0, "Spell_Holy_ElunesGrace", nil, 1, 1)
+	BC.MakeMacro("AoE", "/blw aoe", 0, "Ability_Creature_Cursed_04", nil, 1, 1)
 end
 
 function BLW.HP(unit)
@@ -16,17 +17,6 @@ function BLW.HP(unit)
 	local percent = (UnitHealth(unit) / UnitHealthMax(unit)) * 100
 	return percent
 end
-
--- function BLW.SpellReady(spellName)
--- 	local id = BC.GetSpellId(spellName)
--- 	if (id) then
--- 		local start, duration = GetSpellCooldown(id, 0)
--- 		if (start == 0 and duration == 0 and BLW.lastAbility + 1 <= GetTime()) then
--- 			return true
--- 		end
--- 	end
--- 	return nil
--- end
 
 function BLW.Rage()
 	return UnitMana("player")
