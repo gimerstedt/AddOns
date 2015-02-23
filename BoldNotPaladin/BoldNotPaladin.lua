@@ -1,6 +1,6 @@
+BNP = {}
 if UnitClass("player") == "Paladin" then return end
 
-BNP = {}
 BNP.Assignments = {}
 BNP.Paladins = {}
 BNP.prep = "[BoldNotPaladin] "
@@ -25,6 +25,7 @@ PP_ClassID[6] = "Mage"
 PP_ClassID[7] = "Warlock"
 
 function BNP.OnLoad()
+if UnitClass("player") == "Paladin" then return end
 	this:RegisterEvent("CHAT_MSG_ADDON")
 
 	SlashCmdList["BOLDNOTPALADIN"] = BNP.Help
