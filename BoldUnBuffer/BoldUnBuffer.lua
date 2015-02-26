@@ -49,6 +49,8 @@ function BUB.InitBuffTables()
 			table.insert(BUB.warrior, "Blessing of Salvation")
 			table.insert(BUB.warrior, "Greater Blessing of Salvation")
 		else
+			table.insert(BUB.warrior, "Greater Blessing of Sanctuary")
+			table.insert(BUB.warrior, "Blessing of Sanctuary")
 			-- fury warrior specific things? remove inspiration etc?
 		end
 		for k, buff in pairs(BUB.warrior) do table.insert(BUB.buffs, 1, buff) end
