@@ -1,0 +1,8 @@
+## Interface: 11200
+## Title: |cffffaaffBold|rLazyRogue
+## Notes: Boldi's rogue rotations
+## Author: Boldilocks
+## Version: 0.1
+## Dependencies: BoldCommon
+BoldLazyRogue.xml
+Bindings.xml

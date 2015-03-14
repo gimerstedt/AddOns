@@ -1,0 +1,8 @@
+<Bindings>
+  <Binding name="BLR_COMBAT_SWORDS" header="BLR">
+    BLR.CombatSwords()
+  </Binding>
+  <Binding name="BLR_LVL">
+    BLR.Lvl()
+  </Binding>
+</Bindings>
