@@ -86,8 +86,14 @@ function BLR.CP()
 	return GetComboPoints("player", "target")
 end
 
-function BLR.ApplyPoison(name, oh)
-	BC.UseItemByName(name)
-	if oh then slot = 17 else slot = 16 end
-	PickupInventoryItem(slot)
+function BLR.ApplyPoison(name)
+	mh,_,_,oh = GetWeaponEnchantInfo()
+	if not mh then slot = 17 end
+	if not oh then slot = 16 end
+	if mh and oh then
+		BC.m("Already have poisons applied.", BLR.prep)
+	else
+		BC.UseItemByName(name)
+		PickupInventoryItem(slot)
+	end
 end
