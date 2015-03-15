@@ -88,8 +88,8 @@ end
 
 function BLR.ApplyPoison(name)
 	local mh,_,_,oh = GetWeaponEnchantInfo()
-	if not mh then slot = 17 end
-	if not oh then slot = 16 end
+	if not mh then slot = 16 end
+	if not oh then slot = 17 end
 	if mh and oh then
 		BC.m("Already have poisons applied.", BLR.prep)
 	else
