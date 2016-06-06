@@ -11,8 +11,20 @@ function BC.Mount()
 			bag, slot = BC.GetMount(BCM.mounts)
 		end
 		if not bag then
-			BC.m("Get a mount!", BC.prep)
-			return
+			-- extract method for spell mounts
+			if BC.GetSpellId("Summon Dreadsteed") then
+				CloseMerchant()
+				CastSpellByName("Summon Dreadsteed")
+				return
+			elseif
+				BC.GetSpellId("Summon Felsteed") then
+				CloseMerchant()
+				CastSpellByName("Summon Felsteed")
+				return
+			else
+				BC.m("Get a mount!", BC.prep)
+				return
+			end
 		else
 			CloseMerchant()
 			UseContainerItem(bag, slot)
