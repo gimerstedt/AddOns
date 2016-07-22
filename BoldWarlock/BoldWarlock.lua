@@ -1,6 +1,10 @@
 -- only load if warlock
 if UnitClass("player") ~= "Warlock" then return end
 
+-- check if ds-specced
+_, _, _, _, rank, _= GetTalentInfo(2,13)
+if rank ~= 1 then return end
+
 -- prepend for chat print
 BWLOCK_PREP = "[BoldWarlock] "
 BWLSPELLS = {"Touch of Shadow", "Fel Energy", "Burning Wish", "Fel Stamina"}
