@@ -16,6 +16,10 @@ function BC.Mount()
 				CloseMerchant()
 				CastSpellByName("Summon Dreadsteed")
 				return
+			elseif BC.GetSpellId("Summon Warhorse") then
+				CloseMerchant()
+				CastSpellByName("Summon Warhorse")
+				return
 			elseif
 				BC.GetSpellId("Summon Felsteed") then
 				CloseMerchant()

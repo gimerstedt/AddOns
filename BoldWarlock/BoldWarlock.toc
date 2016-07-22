@@ -1,0 +1,7 @@
+## Interface: 11200
+## Title: |cffffaaffBold|rWarlock
+## Notes: Boldi's warlock crap
+## Author: Boldilocks
+## Version: 0.1
+## Dependencies: BoldCommon
+BoldWarlock.lua

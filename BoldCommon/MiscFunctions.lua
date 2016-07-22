@@ -86,6 +86,24 @@ function BC.EnableAttack()
 	end
 end
 
+function BC.ReportArmorAndResistances(unit)
+	if unit == "target" and not UnitExists("target") then return end
+	if not unit then return end
+	local res = {}
+	for i=0,6 do
+		res[i] = {}
+		res[i].base, res[i].tot, res[i].pos, res[i].neg = UnitResistance(unit, i)
+	end
+	BC.m("Armor and Resistances for "..UnitName(unit), BC.prep)
+	BC.mw(res[0].base.." + "..res[0].pos.." - "..res[0].neg.." = "..res[0].tot.." armor.", BC.prep)
+	BC.my(res[1].base.." + "..res[1].pos.." - "..res[1].neg.." = "..res[1].tot.." holy resistance.", BC.prep)
+	BC.mr(res[2].base.." + "..res[2].pos.." - "..res[2].neg.." = "..res[2].tot.." fire resistance.", BC.prep)
+	BC.mg(res[3].base.." + "..res[3].pos.." - "..res[3].neg.." = "..res[3].tot.." nature resistance.", BC.prep)
+	BC.mb(res[4].base.." + "..res[4].pos.." - "..res[4].neg.." = "..res[4].tot.." frost resistance.", BC.prep)
+	BC.mp(res[5].base.." + "..res[5].pos.." - "..res[5].neg.." = "..res[5].tot.." shadow resistance.", BC.prep)
+	BC.mw(res[6].base.." + "..res[6].pos.." - "..res[6].neg.." = "..res[6].tot.." arcane resistance.", BC.prep)
+end
+
 function BC.m(msg, prepend, r, g, b)
 	prepend = prepend or ""
 	r = r or 0.7
@@ -123,6 +141,10 @@ end
 function BC.mo(msg, prepend) -- orange
 	prepend = prepend or ""
 	BC.m(msg, prepend, 1, 0.44, 0.44)
+end
+function BC.mp(msg, prepend) -- purple
+	prepend = prepend or ""
+	BC.m(msg, prepend, 0.65, 0, 0.85)
 end
 function BC.p(msg, prepend)
 	prepend = prepend or ""
